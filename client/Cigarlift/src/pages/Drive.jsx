@@ -5,8 +5,9 @@ import img2 from '../assets/placeholderPics/img2.jpg'
 import img3 from '../assets/placeholderPics/img3.jpg'
 
 import { Tabs, Tab, Box } from '@mui/material/';
+import Navbar from '../components/Navbar'
 
-function Itinerary() {
+function Drive() {
   const [unvisited, setUnvisited] = useState([
     {
       "_id": 0,
@@ -35,7 +36,6 @@ function Itinerary() {
   const [currentTab, setCurrentTab] = useState(0)
 
   const handleTabChange = (e, tabIndex) => {
-    console.log(tabIndex);
     setCurrentTab(tabIndex);
   };
 
@@ -56,37 +56,44 @@ function Itinerary() {
 
   const UnvisitedList = () => {
     return (
-    unvisited.length === 0 ?
-        <p>All done for today...</p> 
-        :
-        unvisited.map((loc, index) => (
-          <LocationCard location={loc} onVisit={handleVisit} key={index} />
-        ))
+      <Box sx={{ pb: 7 }}>
+        {unvisited.length === 0 ?
+            <p>All done for today...</p> 
+            :
+            unvisited.map((loc, index) => (
+              <LocationCard location={loc} onVisit={handleVisit} key={index} />
+            ))
+        }
+      </Box>
     )
   }
   const VisitedList = () => {
     return (
-    visited.length === 0 ?
-        <p>No stops yet...</p> 
-        :
-        visited.map((loc, index) => (
-          <LocationCard location={loc} key={index} />
-        ))
+      <Box>
+        {visited.length === 0 ?
+            <p>No stops yet...</p> 
+            :
+            visited.map((loc, index) => (
+              <LocationCard location={loc} key={index} />
+            ))
+        }
+      </Box>
     )
   }
 
   return (
     <>
-      <h4>Itinerary</h4>
+      <h2>Itinerary</h2>
+      
       <Tabs value={currentTab} onChange={handleTabChange} centered>
         <Tab label="Schedule" />
         <Tab label="Visited" />
       </Tabs>
       {currentTab === 0 && <UnvisitedList />}
       {currentTab === 1 && <VisitedList />}
-      
+      <Navbar />
     </>
   )
 } 
 
-export default Itinerary
+export default Drive

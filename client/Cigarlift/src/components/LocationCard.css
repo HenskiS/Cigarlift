@@ -10,9 +10,9 @@
   }
   
   .image-container {
-    width: 150px; /* Equal width and height */
-    height: 150px; /* Equal width and height */
-    flex: 0 0 150px; /* Adjust the width of the image container as needed */
+    width: 100px; /* Equal width and height */
+    height: 100px; /* Equal width and height */
+    flex: 0 0 100px; /* Adjust the width of the image container as needed */
   }
   
   .location-image {
