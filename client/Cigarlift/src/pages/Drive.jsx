@@ -3,12 +3,18 @@ import LocationCard from '../components/LocationCard'
 import img1 from '../assets/placeholderPics/img1.jpg'
 import img2 from '../assets/placeholderPics/img2.jpg'
 import img3 from '../assets/placeholderPics/img3.jpg'
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  visit,
+  selectVisited,
+  selectUnvisited
+} from '../components/itinerarySlice';
 
 import { Tabs, Tab, Box } from '@mui/material/';
 import Navbar from '../components/Navbar'
 
 function Drive() {
-  const [unvisited, setUnvisited] = useState([
+  /*const [unvisited, setUnvisited] = useState([
     {
       "_id": 0,
       "name": "Rixos The Palm",
@@ -31,7 +37,11 @@ function Drive() {
       "image": img3
     }
   ])
-  const [visited, setVisited] = useState([])
+  const [visited, setVisited] = useState([])*/
+
+  const unvisited = useSelector(selectUnvisited);
+  const visited = useSelector(selectVisited);
+  const dispatch = useDispatch();
 
   const [currentTab, setCurrentTab] = useState(0)
 
@@ -40,7 +50,8 @@ function Drive() {
   };
 
   const handleVisit = (locationId) => {
-    const locationIndex = unvisited.findIndex(loc => loc._id === locationId);
+    dispatch(visit(locationId))
+    /*const locationIndex = unvisited.findIndex(loc => loc._id === locationId);
     if (locationIndex !== -1) {
       console.log("visited: " + unvisited[locationIndex].name)
       const visitedLocation = unvisited[locationIndex]; // Copy visited location
@@ -50,7 +61,7 @@ function Drive() {
       // Add the location to the visited array
       setVisited(prevVisitedLocations => [...prevVisitedLocations, visitedLocation]);
       console.log(visited)
-    }
+    }*/
 
   }
 
