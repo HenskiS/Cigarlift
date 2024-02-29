@@ -40,3 +40,10 @@
 .read-the-docs {
   color: #888;
 }
+.navdiv {
+  width: 100%;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}

@@ -102,7 +102,7 @@ function Drive() {
       </Tabs>
       {currentTab === 0 && <UnvisitedList />}
       {currentTab === 1 && <VisitedList />}
-      <Navbar />
+      {/*<Navbar />*/}
     </>
   )
 } 

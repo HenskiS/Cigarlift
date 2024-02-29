@@ -15,21 +15,21 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<PrivateRoutes />}>
-        <Route path="/" element={<Navbar />}>
+      <Route path="/*" element={<PrivateRoutes />}>
+        {/*<Route path="/" element={<Navbar />}>*/}
           {/*<Route index element={<AdminRoute />} />*/}
-          <Route index element={<AdminRoute />} />
+          {/*<Route index element={<AdminRoute />} />
           <Route path="drive" element={<Drive />} />
-          <Route path="order" element={<Order />} />
+          <Route path="order" element={<Order />} />*/}
           {/*
           <Route path="photos" element={<Photos />} />
           <Route path="reppersonal" element={<RepPersonal />} />
           <Route path="clientlist" element={<ClientList />} />
           */}
 
-          <Route path="*" element={<Drive />} />
+          {/*<Route path="*" element={<Drive />} />*/}
         </Route>
-      </Route>
+      {/*</Route>*/}
       <Route path="/auth" element={<Auth />} />
     </Routes>
   )
