@@ -1,35 +1,44 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom';
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
-import Drive from './pages/Drive.jsx'
-import Navbar from './components/Navbar.jsx';
 import PrivateRoutes from './components/PrivateRoutes.jsx';
 import Auth from './pages/Auth.jsx';
-import AdminRoute from './components/AdminRoute.jsx';
-import Order from './pages/Order.jsx';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const getUser = () => {
+      fetch("http://localhost:5000/auth/login/success", {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Credentials": true,
+        },
+      })
+        .then((response) => {
+          if (response.status === 200) return response.json();
+          throw new Error("authentication has been failed!");
+        })
+        .then((resObject) => {
+          console.log(resObject.user)
+          setUser(resObject.user);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+    getUser();
+  }, []);
 
   return (
     <Routes>
-      <Route path="/*" element={<PrivateRoutes />}>
-        {/*<Route path="/" element={<Navbar />}>*/}
-          {/*<Route index element={<AdminRoute />} />*/}
-          {/*<Route index element={<AdminRoute />} />
-          <Route path="drive" element={<Drive />} />
-          <Route path="order" element={<Order />} />*/}
-          {/*
-          <Route path="photos" element={<Photos />} />
-          <Route path="reppersonal" element={<RepPersonal />} />
-          <Route path="clientlist" element={<ClientList />} />
-          */}
-
-          {/*<Route path="*" element={<Drive />} />*/}
-        </Route>
-      {/*</Route>*/}
+      <Route 
+        path="/*" 
+        element={user ? <PrivateRoutes user={user}/> : <Auth />}>
+      </Route>
       <Route path="/auth" element={<Auth />} />
     </Routes>
   )

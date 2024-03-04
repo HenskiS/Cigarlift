@@ -1,10 +1,12 @@
 import React from 'react';
+import './Navbar.css';
 import { Link, useLocation } from 'react-router-dom';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import DeliveryDiningIcon from '@mui/icons-material/DeliveryDining';
 import FeedIcon from '@mui/icons-material/Feed';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { Paper } from '@mui/material';
 
 const Navbar = () => {
   const location = useLocation();
@@ -14,9 +16,18 @@ const Navbar = () => {
     console.log(`Navigating to: ${path}`);
   };
 
+  const logout = () => {
+    window.open("http://localhost:5000/auth/logout", "_self");
+  };
+
   return (
-    <div className='navdiv'>
-      <BottomNavigation value={location.pathname} showLabels>
+    <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0  }} elevation={3}>
+
+      <BottomNavigation 
+        value={location.pathname} 
+        showLabels
+        className='navbar'
+      >
         <BottomNavigationAction 
           label="Drive"
           value="/drive"
@@ -39,10 +50,11 @@ const Navbar = () => {
           icon={<LogoutIcon />} 
           component={Link}
           to="/logout"
-          //onClick={() => handleNavigation('/logout')}
+          onClick={logout}
         />
       </BottomNavigation>
-    </div>
+
+    </Paper>
   );
 };
 

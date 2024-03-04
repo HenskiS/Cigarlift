@@ -4,7 +4,7 @@ import Order from '../pages/Order.jsx';
 import AdminRoute from './AdminRoute.jsx';
 import Navbar from './Navbar';
 
-const PrivateRoutes = () => {
+const PrivateRoutes = ( user ) => {
     const tokenString = sessionStorage.getItem('token');
     const token = true //(tokenString !== 'undefined') ? tokenString : null;
     console.log("private routes")
@@ -13,7 +13,10 @@ const PrivateRoutes = () => {
         token ? <Outlet /> : <Navigate to='/auth'/>
     )
     */
-   if (!token) return (<Navigate to='/auth'/>)
+   //if (!token) return (<Navigate to='/auth'/>)
+   console.log("Private routes user:")
+   console.log(user)
+   if (!user.user) return (<Navigate to='/auth'/>)
 
    return (
     <>
