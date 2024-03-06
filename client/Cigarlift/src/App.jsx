@@ -10,7 +10,7 @@ import AdminDashboard from './pages/AdminDashboard.jsx';
 import Missing from './pages/Missing.jsx';
 
 const ROLES = {
-  'User': 2001,
+  'Driver': 2001,
   //'Editor': 1984,
   'Admin': 5150
 }
@@ -28,10 +28,9 @@ function App() {
       <Route element={<PrivateRoutes allowedRoles={[ROLES.Admin]} />} >
         <Route path="/" element={<AdminDashboard />} />
       </Route>
-      <Route element={ <PrivateRoutes allowedRoles={[ROLES.User]} /> }>
+      <Route element={ <PrivateRoutes allowedRoles={[ROLES.Driver, ROLES.Admin]} /> }>
         <Route path="drive" element={<Drive />} />
         <Route path="order" element={<Order />} />
-        {/*<Route path="*" element={<Drive />} />*/}
       </Route>
       
       <Route path="*" element={<Missing />} />

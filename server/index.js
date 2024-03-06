@@ -1,47 +1,67 @@
-const cookieSession = require('cookie-session');
-const passport = require('passport');
-const passportSetup = require('./passport')
+require('dotenv').config();
+const express = require('express');
+const app = express();
+const path = require('path');
 const cors = require('cors');
-const authRoute = require('./routes/auth')
-const orderRoute = require('./routes/order')
-const express = require('express')
-const app = express()
+const corsOptions = require('./config/corsOptions');
+const { logger } = require('./middleware/logEvents');
+const errorHandler = require('./middleware/errorHandler');
+const verifyJWT = require('./middleware/verifyJWT');
+const cookieParser = require('cookie-parser');
+const credentials = require('./middleware/credentials');
+const mongoose = require('mongoose');
+const connectDB = require('./config/dbConn');
+const PORT = process.env.PORT || 3500;
 
-app.use(cookieSession({
-    name: "session",
-    keys: ["cigarlift"],
-    maxAge: 24 * 60 * 60 * 1000 // 1 day
-}))
+// Connect to MongoDB
+connectDB();
 
-// The code below is from philippkrauss, it fixes a session.regenerate not found
-// error. Another fix would be to use passport v0.5.0, but this seems to work.
-// Source is https://stackoverflow.com/questions/72375564/typeerror-req-session-regenerate-is-not-a-function-using-passport
-app.use(function(request, response, next) {
-    if (request.session && !request.session.regenerate) {
-        request.session.regenerate = (cb) => {
-            cb()
-        }
+// custom middleware logger
+app.use(logger);
+
+// Handle options credentials check - before CORS!
+// and fetch cookies credentials requirement
+app.use(credentials);
+
+// Cross Origin Resource Sharing
+app.use(cors(corsOptions));
+
+// built-in middleware to handle urlencoded form data
+app.use(express.urlencoded({ extended: false }));
+
+// built-in middleware for json 
+app.use(express.json());
+
+//middleware for cookies
+app.use(cookieParser());
+
+//serve static files
+app.use('/', express.static(path.join(__dirname, '/public')));
+
+// routes
+app.use('/', require('./routes/root'));
+app.use('/register', require('./routes/register'));
+app.use('/auth', require('./routes/auth'));
+app.use('/refresh', require('./routes/refresh'));
+app.use('/logout', require('./routes/logout'));
+
+app.use(verifyJWT);
+app.use('/users', require('./routes/api/users'));
+
+app.all('*', (req, res) => {
+    res.status(404);
+    if (req.accepts('html')) {
+        res.sendFile(path.join(__dirname, 'views', '404.html'));
+    } else if (req.accepts('json')) {
+        res.json({ "error": "404 Not Found" });
+    } else {
+        res.type('txt').send("404 Not Found");
     }
-    if (request.session && !request.session.save) {
-        request.session.save = (cb) => {
-            cb()
-        }
-    }
-    next()
-})
+});
 
-app.use(passport.initialize())
-app.use(passport.session())
+app.use(errorHandler);
 
-app.use(cors({
-    origin: "http://localhost:5173",
-    methods:"GET, POST, DELETE, PATCH",
-    credentials: true,
-}))
-
-app.use("/auth", authRoute)
-app.use("/order", orderRoute)
-
-app.listen("5000", ()=>{
-    console.log("Server is running!")
-})
+mongoose.connection.once('open', () => {
+    console.log('Connected to MongoDB');
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+});
