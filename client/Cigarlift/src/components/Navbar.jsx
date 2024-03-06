@@ -1,24 +1,28 @@
-import React from 'react';
+import { useContext } from 'react';
+import AuthContext from '../context/AuthProvider';
 import './Navbar.css';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
+
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import DeliveryDiningIcon from '@mui/icons-material/DeliveryDining';
 import FeedIcon from '@mui/icons-material/Feed';
 import LogoutIcon from '@mui/icons-material/Logout';
+
 import { Paper } from '@mui/material';
+import useAuth from '../hooks/useAuth';
 
 const Navbar = () => {
+  const { auth } = useAuth();
+  const { setAuth } = useContext(AuthContext);
+  const navigate = useNavigate();
   const location = useLocation();
 
-  const handleNavigation = (path) => {
-    // You can perform any additional logic here if needed
-    console.log(`Navigating to: ${path}`);
-  };
-
-  const logout = () => {
-    window.open("http://localhost:5000/auth/logout", "_self");
-  };
+  const logout = async () => {
+    setAuth({});
+    navigate('/auth');
+  }
 
   return (
     <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0  }} elevation={3}>
@@ -28,13 +32,21 @@ const Navbar = () => {
         showLabels
         className='navbar'
       >
+
+        {auth?.roles.includes(5150)
+        ? <BottomNavigationAction 
+          label="Dashboard"
+          value="/"
+          icon={<DashboardIcon />}
+          component={Link}
+          to="/"
+        /> : null}
         <BottomNavigationAction 
           label="Drive"
           value="/drive"
           icon={<DeliveryDiningIcon />}
           component={Link}
           to="/drive"
-          //onClick={() => handleNavigation('/drive')}
         />
         <BottomNavigationAction 
           label="Order"
@@ -42,14 +54,11 @@ const Navbar = () => {
           icon={<FeedIcon />} 
           component={Link}
           to="/order"
-          //onClick={() => handleNavigation('/order')}
         />
         <BottomNavigationAction 
           label="Logout"
           value="/logout"
-          icon={<LogoutIcon />} 
-          component={Link}
-          to="/logout"
+          icon={<LogoutIcon />}
           onClick={logout}
         />
       </BottomNavigation>

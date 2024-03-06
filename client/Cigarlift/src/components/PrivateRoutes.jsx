@@ -1,33 +1,18 @@
-import { Navigate, Outlet, Routes, Route } from 'react-router-dom'
-import Drive from '../pages/Drive.jsx'
-import Order from '../pages/Order.jsx';
-import AdminRoute from './AdminRoute.jsx';
+import { Navigate, Outlet, Routes, Route, useLocation } from 'react-router-dom'
+
 import Navbar from './Navbar';
+import useAuth from '../hooks/useAuth.jsx';
 
-const PrivateRoutes = ( user ) => {
-    const tokenString = sessionStorage.getItem('token');
-    const token = true //(tokenString !== 'undefined') ? tokenString : null;
-    console.log("private routes")
-    /*
+const PrivateRoutes = ({ allowedRoles }) => {
+    const { auth } = useAuth();
+    const location = useLocation();
+    console.log("Auth.roles: " + auth.roles)
     return (
-        token ? <Outlet /> : <Navigate to='/auth'/>
-    )
-    */
-   //if (!token) return (<Navigate to='/auth'/>)
-   console.log("Private routes user:")
-   console.log(user)
-   if (!user.user) return (<Navigate to='/auth'/>)
-
-   return (
-    <>
-        <Navbar />
-        <Routes>
-            <Route index element={<AdminRoute />} />
-          <Route path="drive" element={<Drive />} />
-          <Route path="order" element={<Order />} />
-          <Route path="*" element={<Drive />} />
-        </Routes>
-    </>
-   )
+        auth?.roles?.find(role => allowedRoles?.includes(role))
+            ? <><Navbar /><Outlet /></> 
+            : auth?.user
+                ? <Navigate to="/drive" state={{ from: location }} replace />
+                : <Navigate to="/auth" state={{ from: location }} replace />
+    );
 }
 export default PrivateRoutes
