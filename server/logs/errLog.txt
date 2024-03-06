@@ -1,0 +1,2 @@
+20240306	14:57:45	1543509b-9c8a-42d9-a7a9-9b9308bda143	Error: Not allowed by CORS
+20240306	14:57:52	2880b847-49d3-4b65-bb5c-97ef00506a98	Error: Not allowed by CORS

@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import useAuth from '../hooks/useAuth';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode'
 
 import axios from '../api/axios';
 const LOGIN_URL = '/auth';
@@ -10,7 +11,7 @@ const Auth = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
-    const from = location.state?.from?.pathname || "/dash";
+    const from = location.state?.from?.pathname || "/";
 
     const userRef = useRef();
     const errRef = useRef();
@@ -39,9 +40,10 @@ const Auth = () => {
                 }
             );
             console.log(JSON.stringify(response?.data));
-            //console.log(JSON.stringify(response));
+            console.log(response);
             const accessToken = response?.data?.accessToken;
-            const roles = response?.data?.roles;
+            const roles = jwtDecode(response?.data?.accessToken).UserInfo.roles;
+            console.log("roles: " + roles)
             setAuth({ user, pwd, roles, accessToken });
             setUser('');
             setPwd('');
