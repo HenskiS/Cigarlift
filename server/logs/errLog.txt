@@ -1,2 +1,24 @@
 20240306	14:57:45	1543509b-9c8a-42d9-a7a9-9b9308bda143	Error: Not allowed by CORS
 20240306	14:57:52	2880b847-49d3-4b65-bb5c-97ef00506a98	Error: Not allowed by CORS
+20240308	15:30:33	280822ce-c2f9-4060-8089-4d0ea11db42d	ReferenceError: users is not defined
+20240308	15:30:34	35c94dc5-7f12-4d8a-a7e5-881d64de00b8	ReferenceError: users is not defined
+20240308	15:30:36	78bf07b4-c00a-4e27-91ef-5c86cbdc44a4	ReferenceError: users is not defined
+20240308	15:30:38	907d9353-a1de-4b50-b256-fbaf6592817b	ReferenceError: users is not defined
+20240308	15:30:39	92885480-7682-48ae-9a8a-173bf63e42ed	ReferenceError: users is not defined
+20240308	15:30:49	f1079be0-0159-496c-912d-fc88d928800f	ReferenceError: users is not defined
+20240308	15:31:24	c3e127da-714b-461e-be95-a24ee9e1bbc3	ReferenceError: users is not defined
+20240308	15:32:24	7e7628bf-394a-4232-9242-672130bc1156	ReferenceError: users is not defined
+20240308	15:32:57	5cde8c33-6833-4527-a11b-a5e218f76c54	ReferenceError: users is not defined
+20240308	15:33:57	91b8d842-e27e-477e-84bb-4e45f358348f	ReferenceError: users is not defined
+20240308	15:53:30	e4aa3a97-f86f-4964-ad67-35ce8bffb8a3	CastError: Cast to ObjectId failed for value "20240308" (type string) at path "_id" for model "Itinerary"
+20240308	15:53:38	e2998049-69bc-4a2e-8ebc-8db100c9ea0b	CastError: Cast to ObjectId failed for value "{ id: '20240308', stopId: 0 }" (type Object) at path "_id" for model "Itinerary"
+20240308	15:54:57	a788926d-b36e-4f94-9f27-76ef95ee7f04	CastError: Cast to string failed for value "{ id: '20240308', stopId: 0 }" (type Object) at path "date" for model "Itinerary"
+20240308	15:56:46	cc6fd2d4-2b8d-45c4-ae83-d0105f9f1fba	CastError: Cast to string failed for value "{ id: '20240308', stopId: 0 }" (type Object) at path "date" for model "Itinerary"
+20240308	15:57:49	42906432-a792-4240-858b-e588a968d4ee	CastError: Cast to string failed for value "{ id: '20240308', stopId: 0 }" (type Object) at path "date" for model "Itinerary"
+20240308	15:58:30	e7d54440-7c42-4bf4-990b-2ea5f0ae3baf	CastError: Cast to string failed for value "{ id: '20240308', stopId: 0 }" (type Object) at path "date" for model "Itinerary"
+20240308	15:59:45	de43907a-2437-4365-b84c-23bc339fb645	CastError: Cast to string failed for value "{ id: '20240308', stopId: 0 }" (type Object) at path "date" for model "Itinerary"
+20240308	16:00:09	be6062fb-3cca-49fd-81fc-c718a0ed67a7	CastError: Cast to string failed for value "{ id: '20240308', stopId: 0 }" (type Object) at path "date" for model "Itinerary"
+20240308	16:00:31	0bc9a8b8-1382-48f7-9013-80a14a826bc2	CastError: Cast to string failed for value "{ id: '20240308', stopId: 0 }" (type Object) at path "date" for model "Itinerary"
+20240308	16:01:41	cda023b5-4701-49b8-934a-553facbd9d75	CastError: Cast to string failed for value "{ id: '20240308', stopId: 0 }" (type Object) at path "date" for model "Itinerary"
+20240308	16:02:10	9383ba74-80ce-467d-ab08-de1009aca177	CastError: Cast to string failed for value "{ id: '20240308', stopId: 0 }" (type Object) at path "date" for model "Itinerary"
+20240308	16:03:10	388501b8-a0ee-4406-a5d8-3e5dd52a155e	ValidationError: Itinerary validation failed: stops.0.position: Cast to string failed for value "[ 25.1212, 55.1535 ]" (type Array) at path "position"

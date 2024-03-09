@@ -7,15 +7,16 @@ const userSchema = new Schema({
         required: true
     },
     roles: {
-        Driver: {
-            type: Number,
-            default: 2001
-        },
-        Admin: Number
+        type: [String],
+        default: ["Employee"]
     },
     password: {
         type: String,
         required: true
+    },
+    active: {
+        type: Boolean,
+        default: true
     },
     refreshToken: [String]
 });

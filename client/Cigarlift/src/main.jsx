@@ -6,10 +6,11 @@ import {
 } from "react-router-dom";
 import App from './App.jsx'
 import './index.css'
-import store from './store'
+import { store } from './app/store'
 import { Provider } from 'react-redux'
 import { AuthProvider } from './context/AuthProvider';
 import Auth from './pages/Auth.jsx';
+import { apiSlice } from './app/api/apiSlice.jsx';
 
 const router = createBrowserRouter([
   {
@@ -22,7 +23,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <AuthProvider>
     <Provider store={store}>
-      <RouterProvider router={router} />
+        <RouterProvider router={router} />
     </Provider>
     </AuthProvider>
   </React.StrictMode>,

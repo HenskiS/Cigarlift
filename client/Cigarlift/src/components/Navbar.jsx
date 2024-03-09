@@ -14,7 +14,7 @@ import { Paper } from '@mui/material';
 import useAuth from '../hooks/useAuth';
 
 const Navbar = () => {
-  const { auth } = useAuth();
+  const { isAdmin } = useAuth();
   const { setAuth } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
@@ -33,13 +33,13 @@ const Navbar = () => {
         className='navbar'
       >
 
-        {auth?.roles.includes(5150)
+        {isAdmin
         ? <BottomNavigationAction 
           label="Dashboard"
-          value="/"
+          value="/dash"
           icon={<DashboardIcon />}
           component={Link}
-          to="/"
+          to="/dash"
         /> : null}
         <BottomNavigationAction 
           label="Drive"

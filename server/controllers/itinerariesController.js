@@ -1,3 +1,4 @@
+const Itinerary = require('../models/Itinerary')
 const User = require('../models/User')
 //const Note = require('../models/Note')
 const bcrypt = require('bcrypt')
@@ -5,22 +6,23 @@ const bcrypt = require('bcrypt')
 // @desc Get all users
 // @route GET /users
 // @access Private
-const getAllUsers = async (req, res) => {
+const getItinerary = async (req, res) => {
+    const { date } = req.body
     // Get all users from MongoDB
-    const users = await User.find().select('-password').lean()
+    const itin = await Itinerary.findOne({ date }).lean()
 
     // If no users 
-    if (!users?.length) {
+    if (!itin) {
         return res.status(400).json({ message: 'No users found' })
     }
 
-    res.json(users)
+    res.json(itin)
 }
 
 // @desc Create new user
 // @route POST /users
 // @access Private
-const createNewUser = async (req, res) => {
+const createNewItinerary = async (req, res) => {
     const { username, password, roles } = req.body
 
     // Confirm data
@@ -55,47 +57,50 @@ const createNewUser = async (req, res) => {
 // @desc Update a user
 // @route PATCH /users
 // @access Private
-const updateUser = async (req, res) => {
-    const { id, username, roles, active, password } = req.body
+const updateItinerary = async (req, res) => {
+    const id = req.body.id.id
+    const stopId = req.body.id.stopId
+
 
     // Confirm data 
-    if (!id || !username || !Array.isArray(roles) || !roles.length || typeof active !== 'boolean') {
+    /*if (!id || !username || !Array.isArray(roles) || !roles.length || typeof active !== 'boolean') {
         return res.status(400).json({ message: 'All fields except password are required' })
-    }
+    }*/
 
     // Does the user exist to update?
-    const user = await User.findById(id).exec()
+    const itin = await Itinerary.findOne({ date: id }).exec()
 
-    if (!user) {
-        return res.status(400).json({ message: 'User not found' })
+    if (!itin) {
+        return res.status(400).json({ message: 'itin not found' })
     }
 
     // Check for duplicate 
-    const duplicate = await User.findOne({ username }).collation({ locale: 'en', strength: 2 }).lean().exec()
+    // const duplicate = await User.findOne({ username }).collation({ locale: 'en', strength: 2 }).lean().exec()
 
     // Allow updates to the original user 
-    if (duplicate && duplicate?._id.toString() !== id) {
+    /*if (duplicate && duplicate?._id.toString() !== id) {
         return res.status(409).json({ message: 'Duplicate username' })
+    }*/
+    let locIndex = itin.stops.findIndex(loc => loc._id === stopId)
+    if (locIndex !== -1) {
+        console.log("Visiting location " + locIndex)
+        itin.stops[locIndex].isVisited = true
     }
 
-    user.username = username
-    user.roles = roles
-    user.active = active
-
-    if (password) {
+    /*if (password) {
         // Hash password 
         user.password = await bcrypt.hash(password, 10) // salt rounds 
-    }
+    }*/
 
-    const updatedUser = await user.save()
+    const updatedItin = await itin.save()
 
-    res.json({ message: `${updatedUser.username} updated` })
+    res.json({ message: `${updatedItin.date} updated` })
 }
 
 // @desc Delete a user
 // @route DELETE /users
 // @access Private
-const deleteUser = async (req, res) => {
+const deleteItinerary = async (req, res) => {
     const { id } = req.body
 
     // Confirm data
@@ -124,8 +129,8 @@ const deleteUser = async (req, res) => {
 }
 
 module.exports = {
-    getAllUsers,
-    createNewUser,
-    updateUser,
-    deleteUser
+    getItinerary,
+    createNewItinerary,
+    updateItinerary,
+    deleteItinerary
 }

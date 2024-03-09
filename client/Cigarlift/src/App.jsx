@@ -1,31 +1,74 @@
 import { useState, useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom';
 import './App.css'
+import PersistLogin from './features/auth/PersistLogin'
+import RequireAuth from './features/auth/RequireAuth'
+import Prefetch from './features/auth/Prefetch';
+import Layout from './components/Layout'
+import Public from './components/Public';
+import UsersList from './features/users/UsersList'
+import EditUser from './features/users/EditUser'
+import EditUserForm from './features/users/EditUserForm'
+import NewUserForm from './features/users/NewUserForm'
 import PrivateRoutes from './components/PrivateRoutes.jsx';
 import Auth from './pages/Auth.jsx';
-import Drive from './pages/Drive.jsx'
+import Drive from './features/drive/Drive.jsx'
 import Order from './pages/Order.jsx';
 import Unauthorized from './pages/Unauthorized.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx';
 import Missing from './pages/Missing.jsx';
-
-const ROLES = {
-  'Driver': 2001,
-  //'Editor': 1984,
-  'Admin': 5150
-}
+import Login from './features/auth/Login.jsx';
+import useTitle from './hooks/useTitle.jsx';
+import { ROLES } from './config/roles'
+import Navbar from './components/Navbar.jsx';
+import DashLayout from './components/DashLayout.jsx';
 
 function App() {
-  
+  useTitle('Cigarlift')
 
   return (
     <Routes>
-      {/* public routes */}
-      <Route path="/unauthorized" element={<Unauthorized />} />
-      <Route path="/auth" element={<Auth />} />
-      {/* private routes */}
+      <Route path="/" element={<Layout />}>
+        {/* public routes */}
+        <Route index element={<Public />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/login" element={<Login />} />
       
-      <Route element={<PrivateRoutes allowedRoles={[ROLES.Admin]} />} >
+      {/* private routes */}
+      <Route element={<PersistLogin />}>
+          <Route element={<RequireAuth allowedRoles={[...Object.values(ROLES)]} />}>
+            <Route element={<Prefetch />}>
+              <Route path='/*' element={<DashLayout />}>
+                <Route path="drive" element={<Drive />} />
+
+                <Route element={<RequireAuth allowedRoles={[ROLES.Manager, ROLES.Admin]} />}>
+                  <Route path="dash" element={<AdminDashboard />} />
+                  <Route path="users">
+                    <Route index element={<UsersList />} />
+                    <Route path=":id" element={<EditUser />} />
+                    <Route path="new" element={<NewUserForm />} />
+                  </Route>
+                </Route>
+
+                {/* Not using notes
+                <Route path="notes">
+                  <Route index element={<NotesList />} />
+                  <Route path=":id" element={<EditNote />} />
+                  <Route path="new" element={<NewNote />} />
+                </Route>*/}
+
+              </Route>{/* End Dash */}
+            </Route>
+          </Route>
+        </Route>{/* End Protected Routes */}
+      </Route>
+
+
+
+
+
+
+      {/*<Route element={<PrivateRoutes allowedRoles={[ROLES.Admin]} />} >
         <Route path="/" element={<AdminDashboard />} />
       </Route>
       <Route element={ <PrivateRoutes allowedRoles={[ROLES.Driver, ROLES.Admin]} /> }>
@@ -33,7 +76,7 @@ function App() {
         <Route path="order" element={<Order />} />
       </Route>
       
-      <Route path="*" element={<Missing />} />
+              <Route path="*" element={<Missing />} />*/}
       
     </Routes>
   )
