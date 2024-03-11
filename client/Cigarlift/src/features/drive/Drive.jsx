@@ -1,11 +1,6 @@
 import { Fragment, useState } from 'react'
 import LocationCard from '../../components/LocationCard'
-import { useSelector, useDispatch } from 'react-redux';
-import {
-  visit,
-  selectVisited,
-  selectUnvisited
-} from '../../components/itinerarySlice';
+import { useSelector, useDispatch } from 'react-redux'
 import { useGetItineraryQuery, useUpdateItineraryMutation } from "./itineraryApiSlice"
 //import User from './User'
 import useTitle from "../../hooks/useTitle"
@@ -16,6 +11,8 @@ import Navbar from '../../components/Navbar'
 
 function Drive() {
   useTitle('Cigarlift: Drive')
+
+  const [currentTab, setCurrentTab] = useState(0)
 
   const [updateItinerary, {
     isLoading: isUpdateLoading,
@@ -54,15 +51,44 @@ function Drive() {
     if (isSuccess) {
 
         const { stops } = itinerary
+        const unvisited = stops.filter(stop => !stop.isVisited)
+        const visited = stops.filter(stop => stop.isVisited)
 
-        //const tableContent = 
+        const handleTabChange = (e, tabIndex) => {
+          setCurrentTab(tabIndex);
+        };
+
 
         content = (
             <>
-              <h1>I drive...</h1>
-              {stops.map((stop, index)=>(
+              <h2>Itinerary</h2>
+              {/*unvisited.map((stop, index)=>(
                 <LocationCard location={stop} onVisit={handleVisit} key={index} />
-              ))}
+              ))*/}
+              <Tabs value={currentTab} onChange={handleTabChange} centered>
+                <Tab label="Schedule" />
+                <Tab label="Visited" />
+              </Tabs>
+              {currentTab === 0 && 
+                <Box sx={{ pb: 7 }}>
+                  {unvisited.length === 0 ?
+                      <p>All done for today...</p> 
+                      :
+                      unvisited.map((loc, index) => (
+                        <LocationCard location={loc} onVisit={handleVisit} key={index} />
+                      ))
+                  }
+              </Box>}
+              {currentTab === 1 && 
+                <Box>
+                  {visited.length === 0 ?
+                      <p>No stops yet...</p> 
+                      :
+                      visited.map((loc, index) => (
+                        <LocationCard location={loc} onVisit={handleVisit} key={index} />
+                      ))
+                  }
+                </Box>}
             </>
         )
     }

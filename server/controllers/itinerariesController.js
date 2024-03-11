@@ -2,6 +2,8 @@ const Itinerary = require('../models/Itinerary')
 const User = require('../models/User')
 //const Note = require('../models/Note')
 const bcrypt = require('bcrypt')
+const path = require('path');
+const fs = require('fs');
 
 // @desc Get all users
 // @route GET /users
@@ -84,7 +86,7 @@ const updateItinerary = async (req, res) => {
     let locIndex = itin.stops.findIndex(loc => loc._id === stopId)
     if (locIndex !== -1) {
         console.log("Visiting location " + locIndex)
-        itin.stops[locIndex].isVisited = true
+        itin.stops[locIndex].isVisited = !itin.stops[locIndex].isVisited
     }
 
     /*if (password) {
@@ -128,9 +130,33 @@ const deleteItinerary = async (req, res) => {
     res.json(reply)
 }
 
+const getImage = async (req, res) => {
+    const imageToBase64 = require('image-to-base64')
+    const imageName = req.params.imageName
+    const imagePath = path.join(__dirname, '../images', imageName)
+    if (fs.existsSync(imagePath)) {
+        // Set the appropriate content type for the response
+        //res.setHeader('Content-Type', 'image/jpeg'); // Adjust the content type based on the image type (e.g., jpeg, png)
+        
+        console.log("Sending image at location:")
+        console.log(imagePath)
+        // Read the image file and stream it back as the response
+        //const stream = fs.createReadStream(imagePath);
+        //stream.pipe(res);
+        //res.sendFile(imagePath)
+        imageToBase64(imagePath).then(response => res.send(response))
+      } 
+    else {
+        console.log("couldn't find that image at path:")
+        console.log(imagePath)
+        res.status(404).send('Image not found');
+    }
+}
+
 module.exports = {
     getItinerary,
     createNewItinerary,
     updateItinerary,
-    deleteItinerary
+    deleteItinerary,
+    getImage
 }

@@ -47,6 +47,16 @@ export const itineraryApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: (result, error, arg) => ['Itinerary']
         }),
+        getItineraryImage: builder.query({
+            query: ( imageName ) => ({
+                url: `/itineraries/images/${imageName}`,
+                method: 'GET',
+                responseHandler: (response) => response.text(),
+            }),
+            async onQueryStarted(queryArg, { dispatch, getState, extra, requestId }) {
+                console.log('Fetching image:', `/itineraries/images/${queryArg}`);
+            }
+        }),
     }),
 })
 
@@ -55,6 +65,7 @@ export const {
     useAddNewItineraryMutation,
     useUpdateItineraryMutation,
     useDeleteItineraryMutation,
+    useGetItineraryImageQuery,
 } = itineraryApiSlice
 
 // returns the query result object
