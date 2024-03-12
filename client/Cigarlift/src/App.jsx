@@ -22,6 +22,7 @@ import useTitle from './hooks/useTitle.jsx';
 import { ROLES } from './config/roles'
 import Navbar from './components/Navbar.jsx';
 import DashLayout from './components/DashLayout.jsx';
+import ClientsList from './features/clients/ClientsList.jsx';
 
 function App() {
   useTitle('Cigarlift')
@@ -47,6 +48,11 @@ function App() {
                     <Route index element={<UsersList />} />
                     <Route path=":id" element={<EditUser />} />
                     <Route path="new" element={<NewUserForm />} />
+                  </Route>
+                  <Route path="clients">
+                    <Route index element={<ClientsList />} />
+                    {/*<Route path=":id" element={<EditUser />} />
+                    <Route path="new" element={<NewUserForm />} />*/}
                   </Route>
                 </Route>
 

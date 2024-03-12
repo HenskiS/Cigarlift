@@ -8,10 +8,13 @@ import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import DeliveryDiningIcon from '@mui/icons-material/DeliveryDining';
 import FeedIcon from '@mui/icons-material/Feed';
+import ListIcon from '@mui/icons-material/List';
+import GroupIcon from '@mui/icons-material/Group';
 import LogoutIcon from '@mui/icons-material/Logout';
 
 import { Paper } from '@mui/material';
 import useAuth from '../hooks/useAuth';
+import { useSendLogoutMutation } from '../features/auth/authApiSlice'
 
 const Navbar = () => {
   const { isAdmin } = useAuth();
@@ -19,9 +22,18 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [sendLogout, {
+    isLoading,
+    isSuccess,
+    isError,
+    error
+  }] = useSendLogoutMutation()
+
   const logout = async () => {
-    setAuth({});
-    navigate('/auth');
+    //setAuth({});
+    //navigate('/auth');
+    sendLogout()
+    navigate('/login');
   }
 
   return (
@@ -54,6 +66,13 @@ const Navbar = () => {
           icon={<FeedIcon />} 
           component={Link}
           to="/order"
+        />
+        <BottomNavigationAction 
+          label="Clients"
+          value="/clients"
+          icon={<GroupIcon />} 
+          component={Link}
+          to="/clients"
         />
         <BottomNavigationAction 
           label="Logout"

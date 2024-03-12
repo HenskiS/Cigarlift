@@ -4,7 +4,7 @@ import useTitle from "../../hooks/useTitle"
 import PulseLoader from 'react-spinners/PulseLoader'
 
 const UsersList = () => {
-    useTitle('techNotes: Users List')
+    useTitle('Cigarlift: Users List')
 
     const {
         data: users,
@@ -20,7 +20,7 @@ const UsersList = () => {
 
     let content
 
-    if (isLoading) content = <PulseLoader color={"#FFF"} />
+    if (isLoading) content = <PulseLoader color={"#CCC"} />
 
     if (isError) {
         content = <p className="errmsg">{error?.data?.message}</p>

@@ -29,6 +29,7 @@ app.use('/', express.static(path.join(__dirname, 'public')))
 app.use('/', require('./routes/root'))
 app.use('/auth', require('./routes/authRoutes'))
 app.use('/users', require('./routes/userRoutes'))
+app.use('/clients', require('./routes/clientRoutes'))
 app.use('/itineraries', require('./routes/itineraryRoutes'))
 //app.use('/notes', require('./routes/noteRoutes'))
 
