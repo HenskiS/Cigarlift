@@ -1,7 +1,8 @@
 import UsersList from "../features/users/UsersList"
+import useTitle from "../hooks/useTitle"
 
 function AdminDashboard() {
-    
+    useTitle('Cigarlift: Dashboard')
 
     return (
         <>

@@ -41,6 +41,11 @@ function App() {
             <Route element={<Prefetch />}>
               <Route path='/*' element={<DashLayout />}>
                 <Route path="drive" element={<Drive />} />
+                <Route path="clients">
+                  <Route index element={<ClientsList />} />
+                  {/*<Route path=":id" element={<EditUser />} />
+                  <Route path="new" element={<NewUserForm />} />*/}
+                </Route>
 
                 <Route element={<RequireAuth allowedRoles={[ROLES.Manager, ROLES.Admin]} />}>
                   <Route path="dash" element={<AdminDashboard />} />
@@ -49,11 +54,7 @@ function App() {
                     <Route path=":id" element={<EditUser />} />
                     <Route path="new" element={<NewUserForm />} />
                   </Route>
-                  <Route path="clients">
-                    <Route index element={<ClientsList />} />
-                    {/*<Route path=":id" element={<EditUser />} />
-                    <Route path="new" element={<NewUserForm />} />*/}
-                  </Route>
+                  
                 </Route>
 
                 {/* Not using notes
