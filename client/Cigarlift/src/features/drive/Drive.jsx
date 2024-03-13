@@ -75,7 +75,9 @@ function Drive() {
                       <p>All done for today...</p> 
                       :
                       unvisited.map((loc, index) => (
-                        <LocationCard location={loc} onVisit={handleVisit} key={index} />
+                        <Fragment key={index}>
+                          <LocationCard location={loc} onVisit={handleVisit} key={index} />
+                        </Fragment>
                       ))
                   }
               </Box>}

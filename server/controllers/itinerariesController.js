@@ -138,8 +138,9 @@ const getImage = async (req, res) => {
         // Set the appropriate content type for the response
         //res.setHeader('Content-Type', 'image/jpeg'); // Adjust the content type based on the image type (e.g., jpeg, png)
         
-        console.log("Sending image at location:")
-        console.log(imagePath)
+        //console.log("Sending image at location:")
+        //console.log(imagePath)
+        
         // Read the image file and stream it back as the response
         //const stream = fs.createReadStream(imagePath);
         //stream.pipe(res);

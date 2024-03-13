@@ -6,6 +6,9 @@ function LocationCard({ location, onVisit }) {
   const handleVisitClick = () => {
     onVisit(location._id);
   };
+  const handleDirections = () => {
+    window.open("https://www.google.com/maps/dir/?api=1&destination="+encodeURI(location.address))
+  };
 
   const { data: imageData, error, isLoading, isSuccess } = useGetItineraryImageQuery(location.imageName);
 
@@ -20,7 +23,13 @@ function LocationCard({ location, onVisit }) {
         <h3 className="name">{location.name}</h3>
         <p className="address">{location.address}</p>
       </div>
-      { onVisit? <button onClick={handleVisitClick}>{location.isVisited? "Unvisit" : "Visit"}</button> : <></> }
+      <div className="location-buttons">
+        { onVisit? 
+          <button className='visit' variant='outlined' onClick={handleVisitClick}>{location.isVisited? "Unvisit" : "Visit"}</button> 
+          : <></> }
+        <button className='directions' variant='outlined' onClick={handleDirections}>Directions</button>
+      </div>
+      
     </div>
   )
 } 
