@@ -60,7 +60,7 @@ function Drive() {
 
 
         content = (
-            <>
+            <div className="itinerary">
               <h2>Itinerary</h2>
               {/*unvisited.map((stop, index)=>(
                 <LocationCard location={stop} onVisit={handleVisit} key={index} />
@@ -70,7 +70,7 @@ function Drive() {
                 <Tab label="Visited" />
               </Tabs>
               {currentTab === 0 && 
-                <Box sx={{ pb: 7 }}>
+                <>
                   {unvisited.length === 0 ?
                       <p>All done for today...</p> 
                       :
@@ -80,9 +80,10 @@ function Drive() {
                         </Fragment>
                       ))
                   }
-              </Box>}
+                </>
+              }
               {currentTab === 1 && 
-                <Box>
+                <>
                   {visited.length === 0 ?
                       <p>No stops yet...</p> 
                       :
@@ -90,8 +91,9 @@ function Drive() {
                         <LocationCard location={loc} onVisit={handleVisit} key={index} />
                       ))
                   }
-                </Box>}
-            </>
+                </>
+              }
+            </div>
         )
     }
 

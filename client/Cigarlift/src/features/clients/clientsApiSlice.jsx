@@ -17,21 +17,14 @@ export const clientsApiSlice = apiSlice.injectEndpoints({
                     return response.status === 200 && !result.isError
                 },
             }),
-            transformResponse: responseData => {
+            /*transformResponse: responseData => {
                 const loadedClients = responseData.map(client => {
                     client.id = client._id
                     return client
                 });
                 return clientsAdapter.setAll(initialState, loadedClients)
-            },
-            providesTags: (result, error, arg) => {
-                if (result?.ids) {
-                    return [
-                        { type: 'Client', id: 'LIST' },
-                        ...result.ids.map(id => ({ type: 'Client', id }))
-                    ]
-                } else return [{ type: 'Client', id: 'LIST' }]
-            }
+            },*/
+            providesTags: { type: 'Client', id: 'LIST' },
         }),
         addNewClient: builder.mutation({
             query: initialClientData => ({

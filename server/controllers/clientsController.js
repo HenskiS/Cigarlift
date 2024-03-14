@@ -7,7 +7,7 @@ const bcrypt = require('bcrypt')
 // @access Private
 const getAllClients = async (req, res) => {
     // Get all clients from MongoDB
-    const clients = await Client.find().select('-password').lean()
+    const clients = await Client.find().select('dba taxpayer address city').lean()
 
     // If no clients 
     if (!clients?.length) {
