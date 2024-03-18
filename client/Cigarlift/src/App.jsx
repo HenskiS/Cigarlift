@@ -22,6 +22,8 @@ import { ROLES } from './config/roles'
 import Navbar from './components/Navbar.jsx';
 import DashLayout from './components/DashLayout.jsx';
 import ClientsList from './features/clients/ClientsList.jsx';
+import EditClient from './features/clients/EditClient.jsx';
+import Client from './features/clients/Client.jsx';
 
 function App() {
   useTitle('Cigarlift')
@@ -42,15 +44,15 @@ function App() {
                 <Route path="drive" element={<Drive />} />
                 <Route path="clients">
                   <Route index element={<ClientsList />} />
-                  {/*<Route path=":id" element={<EditUser />} />
-                  <Route path="new" element={<NewUserForm />} />*/}
+                  <Route path=":id" element={<Client />} />
+                  <Route path="new" element={<NewUserForm />} />
                 </Route>
 
                 <Route element={<RequireAuth allowedRoles={[ROLES.Manager, ROLES.Admin]} />}>
                   <Route path="dash" element={<AdminDashboard />} />
                   <Route path="users">
                     <Route index element={<UsersList />} />
-                    <Route path=":id" element={<EditUser />} />
+                    {/*<Route path=":id" element={<EditUser />} />*/}
                     <Route path="new" element={<NewUserForm />} />
                   </Route>
                   

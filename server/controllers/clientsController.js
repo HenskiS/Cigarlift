@@ -17,6 +17,24 @@ const getAllClients = async (req, res) => {
     res.json(clients)
 }
 
+// @desc Get one client by id
+// @route GET /clients/:id
+// @access Private
+const getClientById = async (req, res) => {
+    const id = req.params.id
+    console.log("id:")
+    console.log(id)
+
+    // Does the client exist?
+    const client = await Client.findById(id).exec()
+
+    if (!client) {
+        return res.status(400).json({ message: 'Client not found' })
+    }
+    console.log("---found client---")
+    res.json(client)
+}
+
 // @desc Create new client
 // @route POST /clients
 // @access Private
@@ -125,6 +143,7 @@ const deleteClient = async (req, res) => {
 
 module.exports = {
     getAllClients,
+    getClientById,
     createNewClient,
     updateClient,
     deleteClient

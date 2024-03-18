@@ -14,7 +14,12 @@ const clientSchema = new Schema({
     website: String,
     notes: String,
     isVisited: Boolean,
-    images: [String]
+    images: {
+        locationImage: String,
+        contractImage: String,
+        licenseImage: String,
+        humidorImage: String,
+    }
 });
 
 module.exports = mongoose.model('Client', clientSchema);

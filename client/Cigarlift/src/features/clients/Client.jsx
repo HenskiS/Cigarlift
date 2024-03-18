@@ -1,44 +1,67 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons"
-import { useNavigate } from 'react-router-dom'
-import { useGetClientsQuery } from './clientsApiSlice'
-import { memo } from 'react'
+import { useParams } from 'react-router-dom'
+//import EditClientForm from './EditClientForm'
+import { useGetClientByIdQuery } from './clientsApiSlice'
+import PulseLoader from 'react-spinners/PulseLoader'
+import useTitle from '../../hooks/useTitle'
+import { useGetItineraryImageQuery } from '../drive/itineraryApiSlice'
+import './Client.css'
+import ClientImage from './ClientImage'
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
-const Client = ({ clientId }) => {
+const Client = ({ id, close }) => {
+    useTitle('Cigarlift: Client')
+    
+    //const { id } = useParams()
 
-    const { client } = useGetClientsQuery("clientsList", {
-        selectFromResult: ({ data }) => ({
-            client: data?.entities[clientId]
-        }),
-    })
+    const { data: client, 
+        isLoading, 
+        isError, 
+        error, 
+        isSuccess 
+    } = useGetClientByIdQuery(id)
 
-    const navigate = useNavigate()
+    let content
+    if (isLoading) content = <PulseLoader color={"#CCC"} />
 
-    if (client) {
-        const handleEdit = () => navigate(`/clients/${clientId}`)
+    if (isError) content =  <p>error</p>
 
-        const clientRolesString = client.roles.toString().replaceAll(',', ', ')
+    if (isSuccess) {
+        console.log(client)
+        const handleButtonClose = () => {
+            close()
+        }
 
-        const cellStatus = client.active ? '' : 'table__cell--inactive'
+        content = 
+            <div className='client'>
+            {close?
+            <div className="client-button-header">
+            <button className="client-button" onClick={handleButtonClose}><ArrowBackIosIcon /> Contacts</button>
+            <button className="client-button">Edit</button>
+            </div>
+            : null}
+            <div className='client-header'>
+                <ClientImage src={client.images.locationImage} />
+                <div className='client-name'>
+                    <h1>{client.dba}</h1>
+                    <h3>{client.taxpayer}</h3>
+                </div>
+            </div>
+            <div className="client-body">
+                <p>License: {client.license}</p>
+                <p>Address: {client.address}, {client.city}, {client.state} {client.zip}</p>
 
-        return (
-            <tr className="table__row client">
-                <td className={`table__cell ${cellStatus}`}>{client.clientname}</td>
-                <td className={`table__cell ${cellStatus}`}>{clientRolesString}</td>
-                <td className={`table__cell ${cellStatus}`}>
-                    <button
-                        className="icon-button table__button"
-                        onClick={handleEdit}
-                    >
-                        <FontAwesomeIcon icon={faPenToSquare} />
-                    </button>
-                </td>
-            </tr>
-        )
+                <p>Contact: {client.contact}</p>
+                <p>Phone: {client.phone}</p>
+                <p>Website: {client.website}</p>
+                <p>Notes: {client.notes}</p>
+                <p>Visited: {client.isVisited ? 'Yes' : 'No'}</p>
+            </div>
+                
+                
+            </div>
+    }
 
-    } else return null
+    return content
 }
 
-const memoizedClient = memo(Client)
-
-export default memoizedClient
+export default Client
