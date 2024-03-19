@@ -52,7 +52,7 @@ function App() {
                   <Route path="dash" element={<AdminDashboard />} />
                   <Route path="users">
                     <Route index element={<UsersList />} />
-                    {/*<Route path=":id" element={<EditUser />} />*/}
+                    <Route path=":id" element={<EditUser />} />
                     <Route path="new" element={<NewUserForm />} />
                   </Route>
                   

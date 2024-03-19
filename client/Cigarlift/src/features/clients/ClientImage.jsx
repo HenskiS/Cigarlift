@@ -1,13 +1,12 @@
 import PulseLoader from 'react-spinners/PulseLoader'
 import { useGetItineraryImageQuery } from '../drive/itineraryApiSlice'
 import './Client.css'
+import { memo } from 'react'
 
-const ClientImage = ({ src }) => {
-    console.log("src: " + src)
-    console.log(src)
+const ClientImage = memo(function ClientImage({ src }) {
+    console.log("img src: " + src)
     let content 
     if (src) {
-        console.log("inside conditrionl")
         const { data: imageData, 
             isError,
             error, 
@@ -42,5 +41,5 @@ const ClientImage = ({ src }) => {
     }
 
     return content
-}
+})
 export default ClientImage

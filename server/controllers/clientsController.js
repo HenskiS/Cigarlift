@@ -74,11 +74,11 @@ const createNewClient = async (req, res) => {
 // @route PATCH /clients
 // @access Private
 const updateClient = async (req, res) => {
-    const { id, username, roles, active, password } = req.body
+    const { id, license, dba, taxpayer, address, city, state, contact, phone, website, notes, isVisited } = req.body
 
     // Confirm data 
-    if (!id || !username || !Array.isArray(roles) || !roles.length || typeof active !== 'boolean') {
-        return res.status(400).json({ message: 'All fields except password are required' })
+    if ( !id || !dba ) {
+        return res.status(400).json({ message: 'DBA is required' })
     }
 
     // Does the client exist to update?
@@ -89,25 +89,27 @@ const updateClient = async (req, res) => {
     }
 
     // Check for duplicate 
-    const duplicate = await Client.findOne({ username }).collation({ locale: 'en', strength: 2 }).lean().exec()
+    //const duplicate = await Client.findOne({ username }).collation({ locale: 'en', strength: 2 }).lean().exec()
 
     // Allow updates to the original client 
-    if (duplicate && duplicate?._id.toString() !== id) {
+    /*if (duplicate && duplicate?._id.toString() !== id) {
         return res.status(409).json({ message: 'Duplicate username' })
-    }
-
-    client.username = username
-    client.roles = roles
-    client.active = active
-
-    if (password) {
-        // Hash password 
-        client.password = await bcrypt.hash(password, 10) // salt rounds 
-    }
+    }*/
+    
+    client.dba = dba
+    client.taxpayer = taxpayer
+    client.address = address
+    client.city = city
+    client.state = state
+    client.contact = contact
+    client.phone = phone
+    client.website = website
+    client.notes = notes
+    client.isVisited = isVisited
 
     const updatedClient = await client.save()
 
-    res.json({ message: `${updatedClient.username} updated` })
+    res.json({ message: `${updatedClient.dba} updated` })
 }
 
 // @desc Delete a client

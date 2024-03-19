@@ -9,11 +9,16 @@ import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional Theme applied to the grid
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import './Client.css'
+import EditClientForm from "./EditClientForm";
+import EditClient from "./EditClient";
 
 const ClientsList = () => {
     useTitle('Cigarlift: Clients List')
     const navigate = useNavigate()
     const [clientSelected, setClientSelected] = useState(false);
+    const [isClientEdit, setIsClientEdit] = useState(false);
     
     const [colDefs, setColDefs] = useState([
         { headerName: "Company", 
@@ -33,7 +38,7 @@ const ClientsList = () => {
         isError,
         error
     } = useGetClientsQuery('clientsList', {
-        pollingInterval: 120000,
+        pollingInterval: 60000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })
@@ -84,10 +89,33 @@ const ClientsList = () => {
             setClientSelected(e.data._id)//navigate(`/clients/${e.data._id}`)
             console.log(e.data._id)
         }
+        const handleButtonClose = () => {
+            setClientSelected(false)
+            setIsClientEdit(false)
+        }
+        const handleButtonEdit  = () => setIsClientEdit(!isClientEdit)
 
         content = (
             <>
-                {clientSelected? <Client id={clientSelected} close={()=>setClientSelected(false)}/> : null} 
+                {clientSelected? 
+                isClientEdit ?
+                <>
+                    <div className="client-button-header">
+                    <button className="client-button" onClick={handleButtonClose}><ArrowBackIosIcon /> Contacts</button>
+                    <button className="client-button" onClick={handleButtonEdit}>Cancel</button>
+                    </div>
+                    <EditClient id={clientSelected} /> 
+                </>
+                :
+                <>
+                    <div className="client-button-header">
+                    <button className="client-button" onClick={handleButtonClose}><ArrowBackIosIcon /> Contacts</button>
+                    <button className="client-button" onClick={handleButtonEdit}>Edit</button>
+                    </div>
+                    <Client id={clientSelected} /> 
+                </>
+                : null} 
+                
                 <div hidden={clientSelected} className="ag-theme-quartz" style={{width:"100%",height:"85%"}}>
                     <h2>Clients List</h2>
                     <div className="column--selectors">

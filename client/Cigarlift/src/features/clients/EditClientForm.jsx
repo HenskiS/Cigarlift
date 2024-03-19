@@ -1,14 +1,13 @@
-import { useState, useEffect } from "react"
-import { useUpdateClientMutation, useDeleteClientMutation } from "./clientsApiSlice"
-import { useNavigate } from "react-router-dom"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSave, faTrashCan } from "@fortawesome/free-solid-svg-icons"
-import { ROLES } from "../../config/roles"
-
-const CLIENT_REGEX = /^[A-z]{3,20}$/
-const PWD_REGEX = /^[A-z0-9!@#$%]{4,12}$/
+import { useUpdateClientMutation } from './clientsApiSlice'
+import PulseLoader from 'react-spinners/PulseLoader'
+import useTitle from '../../hooks/useTitle'
+import './Client.css'
+import ClientImage from './ClientImage'
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const EditClientForm = ({ client }) => {
+    useTitle('Cigarlift: Client')
 
     const [updateClient, {
         isLoading,
@@ -17,168 +16,116 @@ const EditClientForm = ({ client }) => {
         error
     }] = useUpdateClientMutation()
 
-    const [deleteClient, {
-        isSuccess: isDelSuccess,
-        isError: isDelError,
-        error: delerror
-    }] = useDeleteClientMutation()
-
     const navigate = useNavigate()
 
-    const [clientname, setClientname] = useState(client.clientname)
-    const [validClientname, setValidClientname] = useState(false)
-    const [password, setPassword] = useState('')
-    const [validPassword, setValidPassword] = useState(false)
-    const [roles, setRoles] = useState(client.roles)
-    const [active, setActive] = useState(client.active)
-
-    useEffect(() => {
-        setValidClientname(CLIENT_REGEX.test(clientname))
-    }, [clientname])
-
-    useEffect(() => {
-        setValidPassword(PWD_REGEX.test(password))
-    }, [password])
-
+    const [address, setAddress] = useState(client.address)
+    const [city, setCity] = useState(client.city)
+    const [state, setState] = useState(client.state)
+    const [contact, setContact] = useState(client.contact)
+    const [phone, setPhone] = useState(client.phone)
+    const [website, setWebsite] = useState(client.website)
+    const [notes, setNotes] = useState(client.notes)
+    const [isVisited, setIsVisited] = useState(client.isVisited)
+    
     useEffect(() => {
         console.log(isSuccess)
-        if (isSuccess || isDelSuccess) {
-            setClientname('')
-            setPassword('')
-            setRoles([])
-            navigate('/dash')
+        if ( isSuccess ) {
+            //setClientname('')
+            //setPassword('')
+            //setRoles([])
+            navigate('/clients')
+            window.location.reload()
         }
 
-    }, [isSuccess, isDelSuccess, navigate])
+    }, [isSuccess, navigate])
 
-    const onClientnameChanged = e => setClientname(e.target.value)
-    const onPasswordChanged = e => setPassword(e.target.value)
-
-    const onRolesChanged = e => {
-        const values = Array.from(
-            e.target.selectedOptions,
-            (option) => option.value
-        )
-        setRoles(values)
-    }
-
-    const onActiveChanged = () => setActive(prev => !prev)
-
+    address, city, state, contact, phone, website, notes, isVisited
     const onSaveClientClicked = async (e) => {
-        if (password) {
-            await updateClient({ id: client.id, clientname, password, roles, active })
-        } else {
-            await updateClient({ id: client.id, clientname, roles, active })
-        }
+        await updateClient({ 
+            id: client._id, 
+            license: client.license, 
+            dba: client.dba, 
+            taxpayer: client.taxpayer, 
+            address, city, state, 
+            contact, phone, website, 
+            notes, isVisited })
     }
 
-    const onDeleteClientClicked = async () => {
-        await deleteClient({ id: client.id })
-    }
+    const onAddressChanged = e => setAddress(e.target.value)
+    const onCityChanged = e => setCity(e.target.value)
+    const onStateChanged = e => setState(e.target.value)
+    const onContactChanged = e => setContact(e.target.value)
+    const onPhoneChanged = e => setPhone(e.target.value)
+    const onWebsiteChanged = e => setWebsite(e.target.value)
+    const onNotesChanged = e => setNotes(e.target.value)
+    const onIsVisitedChanged = e => setIsVisited(!isVisited)
 
-    const options = Object.values(ROLES).map(role => {
-        return (
-            <option
-                key={role}
-                value={role}
+    let content
 
-            > {role}</option >
-        )
-    })
-
-    let canSave
-    if (password) {
-        canSave = [roles.length, validClientname, validPassword].every(Boolean) && !isLoading
-    } else {
-        canSave = [roles.length, validClientname].every(Boolean) && !isLoading
-    }
-
-    const errClass = (isError || isDelError) ? "errmsg" : "offscreen"
-    const validClientClass = !validClientname ? 'form__input--incomplete' : ''
-    const validPwdClass = password && !validPassword ? 'form__input--incomplete' : ''
-    const validRolesClass = !Boolean(roles.length) ? 'form__input--incomplete' : ''
-
-    const errContent = (error?.data?.message || delerror?.data?.message) ?? ''
-
-
-    const content = (
-        <>
-            <p className={errClass}>{errContent}</p>
-
-            <form className="form" onSubmit={e => e.preventDefault()}>
-                <div className="form__title-row">
-                    <h2>Edit Client</h2>
-                    <div className="form__action-buttons">
-                        <button
-                            className="icon-button"
-                            title="Save"
-                            onClick={onSaveClientClicked}
-                            disabled={!canSave}
-                        >
-                            <FontAwesomeIcon icon={faSave} />
-                        </button>
-                        <button
-                            className="icon-button"
-                            title="Delete"
-                            onClick={onDeleteClientClicked}
-                        >
-                            <FontAwesomeIcon icon={faTrashCan} />
-                        </button>
-                    </div>
+    content = 
+        <div className='client'>
+        <form className="form" onSubmit={e => e.preventDefault()}>
+            <div className='client-header'>
+                <ClientImage src={client.images.locationImage} />
+                <div className='client-name'>
+                    <h1>{client.dba}</h1>
+                    <h3>{client.taxpayer}</h3>
                 </div>
-                <label className="form__label" htmlFor="clientname">
-                    Clientname: <span className="nowrap">[3-20 letters]</span></label>
-                <input
-                    className={`form__input ${validClientClass}`}
-                    id="clientname"
-                    name="clientname"
-                    type="text"
-                    autoComplete="off"
-                    value={clientname}
-                    onChange={onClientnameChanged}
-                />
+            </div>
+            <table className='client-table'>
+                <tbody>
+                <tr>
+                    <td className='label'><label>License: </label></td>
+                    <td><p>{client.license}</p></td>
+                </tr>
 
-                <label className="form__label" htmlFor="password">
-                    Password: <span className="nowrap">[empty = no change]</span> <span className="nowrap">[4-12 chars incl. !@#$%]</span></label>
-                <input
-                    className={`form__input ${validPwdClass}`}
-                    id="password"
-                    name="password"
-                    type="password"
-                    value={password}
-                    onChange={onPasswordChanged}
-                />
+                <tr>
+                    <td className='label'><label htmlFor='address'>Address: </label></td>
+                    <td><input id='address' value={address} onChange={onAddressChanged} /></td>
+                </tr>
+                
+                <tr>
+                    <td className='label'><label htmlFor='city'>City: </label></td>
+                    <td><input id='city' value={city} onChange={onCityChanged} /></td>
+                </tr>
+                
+                <tr>
+                    <td className='label'><label htmlFor='state'>State: </label></td>
+                    <td><input id='state' value={state} onChange={onStateChanged} /></td>
+                </tr>
 
-                <label className="form__label form__checkbox-container" htmlFor="client-active">
-                    ACTIVE:
-                    <input
-                        className="form__checkbox"
-                        id="client-active"
-                        name="client-active"
-                        type="checkbox"
-                        checked={active}
-                        onChange={onActiveChanged}
-                    />
-                </label>
-
-                <label className="form__label" htmlFor="roles">
-                    ASSIGNED ROLES:</label>
-                <select
-                    id="roles"
-                    name="roles"
-                    className={`form__select ${validRolesClass}`}
-                    multiple={true}
-                    size="3"
-                    value={roles}
-                    onChange={onRolesChanged}
-                >
-                    {options}
-                </select>
-
-            </form>
-        </>
-    )
+                <tr>
+                    <td className='label'><label htmlFor='contact'>Contact: </label></td>
+                    <td><input id='contact' value={contact} onChange={onContactChanged} /></td>
+                </tr>
+                
+                <tr>
+                    <td className='label'><label htmlFor='phone'>Phone: </label></td>
+                    <td><input id='phone' value={phone} onChange={onPhoneChanged} /></td>
+                </tr>
+                
+                <tr>
+                    <td className='label'><label htmlFor='website'>Website: </label></td>
+                    <td><input id='website' value={website} onChange={onWebsiteChanged} /></td>
+                </tr>
+                
+                <tr>
+                    <td className='label'><label htmlFor='notes'>Notes: </label></td>
+                    <td><textarea rows={3} id='notes' value={notes} onChange={onNotesChanged} /></td>
+                </tr>
+                
+                <tr>
+                    <td className='label'><label htmlFor='isVisited'>Visited: </label></td>
+                    <td><input type='checkbox' id='isVisited' value={isVisited} onChange={onIsVisitedChanged} /></td>
+                </tr>
+                </tbody>
+            </table>
+            <button style={{marginBottom: '10px'}} className='client-button' onClick={onSaveClientClicked}>Save</button>
+        </form>
+            
+        </div>
 
     return content
 }
+
 export default EditClientForm

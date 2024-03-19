@@ -1,14 +1,10 @@
-import { useParams } from 'react-router-dom'
-//import EditClientForm from './EditClientForm'
 import { useGetClientByIdQuery } from './clientsApiSlice'
 import PulseLoader from 'react-spinners/PulseLoader'
 import useTitle from '../../hooks/useTitle'
-import { useGetItineraryImageQuery } from '../drive/itineraryApiSlice'
 import './Client.css'
 import ClientImage from './ClientImage'
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
-const Client = ({ id, close }) => {
+const Client = ({ id }) => {
     useTitle('Cigarlift: Client')
     
     //const { id } = useParams()
@@ -33,12 +29,7 @@ const Client = ({ id, close }) => {
 
         content = 
             <div className='client'>
-            {close?
-            <div className="client-button-header">
-            <button className="client-button" onClick={handleButtonClose}><ArrowBackIosIcon /> Contacts</button>
-            <button className="client-button">Edit</button>
-            </div>
-            : null}
+                
             <div className='client-header'>
                 <ClientImage src={client.images.locationImage} />
                 <div className='client-name'>
@@ -48,8 +39,10 @@ const Client = ({ id, close }) => {
             </div>
             <div className="client-body">
                 <p>License: {client.license}</p>
-                <p>Address: {client.address}, {client.city}, {client.state} {client.zip}</p>
-
+                <p>Address: {client.address}</p>
+                <p>City: {client.city}</p>
+                <p>State: {client.state}</p>
+                <p>Zip: {client.zip}</p>
                 <p>Contact: {client.contact}</p>
                 <p>Phone: {client.phone}</p>
                 <p>Website: {client.website}</p>

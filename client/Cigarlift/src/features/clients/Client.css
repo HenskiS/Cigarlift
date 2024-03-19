@@ -5,7 +5,7 @@
     width: 100%;
 }
 
-.image-container {
+.client .image-container {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -43,10 +43,43 @@
 }
 .client-button-header{
     display: flex;
+    width: 100%;
     justify-content: space-between;
     margin-bottom: 10px;
 }
 .client-button {
     display: flex;
+    justify-content: center;
     color: blue;
+}
+.form {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 0.75em;
+    max-width: 800px;
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+.client-table td, p{
+    padding: 0px 0px;
+    margin: 0px 0px;
+}
+.client-table .label {
+    text-align: right;
+}
+.client-table input{
+    height: 2em;
+    width: 80%;
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin: 5px;
+    padding: 0px 10px;
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+.client-table textarea{
+    width: 80%;
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin: 5px;
+    padding: 5px 10px;
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
