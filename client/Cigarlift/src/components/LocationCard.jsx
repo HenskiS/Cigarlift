@@ -7,8 +7,9 @@ function LocationCard({ location, onVisit }) {
     onVisit(location._id);
   };
   const handleDirections = () => {
-    window.open("https://www.google.com/maps/dir/?api=1&destination="+encodeURI(location.address))
+    window.open("https://www.google.com/maps/dir/?api=1&destination="+encodeURI(`${location.address} ${location.city} ${location.state}`))
   };
+  console.log(location)
 
   const { data: imageData, error, isLoading, isSuccess } = useGetItineraryImageQuery(location.imageName);
 
