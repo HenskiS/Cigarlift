@@ -66,6 +66,12 @@
 .client-table .label {
     text-align: right;
 }
+.client-table p {
+    text-align: left;
+    margin-left: 10px;
+    margin: 3px 10px;
+    vertical-align: middle;
+}
 .client-table input{
     height: 2em;
     width: 80%;

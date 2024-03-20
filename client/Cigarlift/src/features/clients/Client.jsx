@@ -26,6 +26,9 @@ const Client = ({ id }) => {
         const handleButtonClose = () => {
             close()
         }
+        const handleDirections = () => {
+            window.open("https://www.google.com/maps/dir/?api=1&destination="+encodeURI(`${client.address} ${client.city} ${client.state}`))
+        };
 
         content = 
             <div className='client'>
@@ -37,18 +40,55 @@ const Client = ({ id }) => {
                     <h3>{client.taxpayer}</h3>
                 </div>
             </div>
-            <div className="client-body">
-                <p>License: {client.license}</p>
-                <p>Address: {client.address}</p>
-                <p>City: {client.city}</p>
-                <p>State: {client.state}</p>
-                <p>Zip: {client.zip}</p>
-                <p>Contact: {client.contact}</p>
-                <p>Phone: {client.phone}</p>
-                <p>Website: {client.website}</p>
-                <p>Notes: {client.notes}</p>
-                <p>Visited: {client.isVisited ? 'Yes' : 'No'}</p>
-            </div>
+            <button onClick={handleDirections}>Get Directions</button>
+            <table className='client-table'>
+                <tbody>
+                <tr>
+                    <td className='label'><label>License: </label></td>
+                    <td><p>{client.license}</p></td>
+                </tr>
+
+                <tr>
+                    <td className='label'><label>Address: </label></td>
+                    <td><p>{client.address}</p></td>
+                </tr>
+                
+                <tr>
+                    <td className='label'><label>City: </label></td>
+                    <td><p>{client.city}</p></td>
+                </tr>
+                
+                <tr>
+                    <td className='label'><label>State: </label></td>
+                    <td><p>{client.state}</p></td>
+                </tr>
+
+                <tr>
+                    <td className='label'><label>Contact: </label></td>
+                    <td><p>{client.contact}</p></td>
+                </tr>
+                
+                <tr>
+                    <td className='label'><label>Phone: </label></td>
+                    <td><p>{client.phone}</p></td>
+                </tr>
+                
+                <tr>
+                    <td className='label'><label>Website: </label></td>
+                    <td><p>{client.website}</p></td>
+                </tr>
+                
+                <tr>
+                    <td className='label'><label>Notes: </label></td>
+                    <td><p>{client.notes}</p></td>
+                </tr>
+                
+                <tr>
+                    <td className='label'><label>Visited: </label></td>
+                    <td><p>{client.isVisited}</p></td>
+                </tr>
+                </tbody>
+            </table>
                 
                 
             </div>
