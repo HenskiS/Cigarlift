@@ -2,6 +2,8 @@ const express = require('express')
 const router = express.Router()
 const itinerariesController = require('../controllers/itinerariesController')
 const verifyJWT = require('../middleware/verifyJWT')
+const path = require('path');
+const fs = require('fs');
 
 const multer = require('multer')
 const storage = multer.diskStorage({

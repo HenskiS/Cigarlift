@@ -1,8 +1,8 @@
-import { useGetClientByIdQuery } from './clientsApiSlice'
+import { useGetClientByIdQuery, useGetClientImageQuery } from './clientsApiSlice'
 import PulseLoader from 'react-spinners/PulseLoader'
 import useTitle from '../../hooks/useTitle'
 import './Client.css'
-import ClientImage from './ClientImage'
+import ClientImage, { NoImage } from './ClientImage'
 
 const Client = ({ id }) => {
     useTitle('Cigarlift: Client')
@@ -19,13 +19,10 @@ const Client = ({ id }) => {
     let content
     if (isLoading) content = <PulseLoader color={"#CCC"} />
 
-    if (isError) content =  <p>error</p>
+    if (isError) content = <p>error</p>
 
     if (isSuccess) {
         console.log(client)
-        const handleButtonClose = () => {
-            close()
-        }
         const handleDirections = () => {
             window.open("https://www.google.com/maps/dir/?api=1&destination="+encodeURI(`${client.address} ${client.city} ${client.state}`))
         };
@@ -34,7 +31,11 @@ const Client = ({ id }) => {
             <div className='client'>
                 
             <div className='client-header'>
-                <ClientImage src={client.images.locationImage} />
+                { client.images.locationImage?
+                    <ClientImage src={client.images.locationImage} />
+                    :
+                    <NoImage />
+                }
                 <div className='client-name'>
                     <h1>{client.dba}</h1>
                     <h3>{client.taxpayer}</h3>

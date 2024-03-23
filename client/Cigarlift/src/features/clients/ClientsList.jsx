@@ -116,7 +116,7 @@ const ClientsList = () => {
                 </>
                 : null} 
                 
-                <div hidden={clientSelected} className="ag-theme-quartz" style={{width:"100%",height:"85%"}}>
+                <div hidden={clientSelected} className="ag-theme-quartz" style={{width:"100%",height:"80%"}}>
                     <h2>Clients List</h2>
                     <div className="column--selectors">
                         <input type="checkbox" name="company" id="company" defaultChecked={false} 

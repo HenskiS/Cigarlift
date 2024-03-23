@@ -49,7 +49,7 @@ export const itineraryApiSlice = apiSlice.injectEndpoints({
         }),
         getItineraryImage: builder.query({
             query: ( imageName ) => ({
-                url: `/itineraries/images/${imageName}`,
+                url: `/images/${imageName}`,
                 method: 'GET',
                 responseHandler: (response) => response.text(),
             }),

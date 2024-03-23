@@ -69,6 +69,28 @@ export const clientsApiSlice = apiSlice.injectEndpoints({
                 { type: 'Client', id: arg.id }
             ]
         }),
+        getClientImage: builder.query({
+            query: ( imageName ) => ({
+                url: `/images/${imageName}`,
+                method: 'GET',
+                responseHandler: (response) => response.text(),
+            }),
+            async onQueryStarted(queryArg) {
+                console.log('Fetching image:', `/images/${queryArg}`);
+            }
+        }),
+        uploadClientImage: builder.mutation({
+            query: ( formData ) => ({
+                
+                url: `/images/`,
+                method: 'POST',
+                body: formData
+            }),
+            async onQueryStarted(queryArg) {
+                console.log('Postin image');
+            },
+            invalidatesTags: ['Client']
+        }),
     }),
 })
 
@@ -78,6 +100,8 @@ export const {
     useAddNewClientMutation,
     useUpdateClientMutation,
     useDeleteClientMutation,
+    useGetClientImageQuery,
+    useUploadClientImageMutation,
 } = clientsApiSlice
 
 // returns the query result object

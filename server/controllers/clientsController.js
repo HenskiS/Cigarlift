@@ -74,7 +74,7 @@ const createNewClient = async (req, res) => {
 // @route PATCH /clients
 // @access Private
 const updateClient = async (req, res) => {
-    const { id, license, dba, taxpayer, address, city, state, contact, phone, website, notes, isVisited } = req.body
+    const { id, license, dba, taxpayer, address, city, state, contact, phone, website, notes, isVisited, images } = req.body
 
     // Confirm data 
     if ( !id || !dba ) {
@@ -106,6 +106,7 @@ const updateClient = async (req, res) => {
     client.website = website
     client.notes = notes
     client.isVisited = isVisited
+    client.images = images
 
     const updatedClient = await client.save()
 
