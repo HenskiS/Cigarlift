@@ -90,8 +90,28 @@ const Client = ({ id }) => {
                 </tr>
                 </tbody>
             </table>
-                
-                
+            <div className="images-header">
+                <p>Contract</p>
+                <p>License</p>
+                <p>Humidor</p>
+            </div>
+            <div className='images'>
+                { client.images.contractImage?
+                    <ClientImage src={client.images.contractImage} />
+                    :
+                    <NoImage />
+                }
+                { client.images.licenseImage?
+                    <ClientImage src={client.images.licenseImage} />
+                    :
+                    <NoImage />
+                }
+                { client.images.humidorImage?
+                    <ClientImage src={client.images.humidorImage} />
+                    :
+                    <NoImage />
+                }
+            </div>
             </div>
     }
 

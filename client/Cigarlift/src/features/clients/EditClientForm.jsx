@@ -32,10 +32,10 @@ const EditClientForm = ({ client }) => {
     const [website, setWebsite] = useState(client.website)
     const [notes, setNotes] = useState(client.notes)
     const [isVisited, setIsVisited] = useState(client.isVisited)
-    const [locationImage, setLocationImage] = useState(client.images.locationImage)
-    const [contractImage, setContractImage] = useState(client.images.contractImage)
-    const [licenseImage, setLicenseImage] = useState(client.images.licenseImage)
-    const [humidorImage, setHumidorImage] = useState(client.images.humidorImage)
+    const [locationImage, setLocationImage] = useState()
+    const [contractImage, setContractImage] = useState()
+    const [licenseImage, setLicenseImage] = useState()
+    const [humidorImage, setHumidorImage] = useState()
     
     useEffect(() => {
         console.log(isSuccess)
@@ -51,20 +51,14 @@ const EditClientForm = ({ client }) => {
 
     address, city, state, contact, phone, website, notes, isVisited
     const onSaveClientClicked = async (e) => {
-        const images = {locationImage:"",contractImage:"",licenseImage:"",humidorImage:""}
-        if (locationImage?.name) images.locationImage = locationImage.name
-        if (contractImage?.name) images.contractImage = contractImage.name
-        if (licenseImage?.name) images.licenseImage = licenseImage.name
-        if (humidorImage?.name) images.humidorImage = humidorImage.name
-        console.log({ 
-            id: client._id, 
-            license: client.license, 
-            dba: client.dba, 
-            taxpayer: client.taxpayer, 
-            images,
-            address, city, state, 
-            contact, phone, website, 
-            notes, isVisited })
+        const images = {locationImage: client.images.locationImage ?? "",
+            contractImage: client.images.contractImage ?? "",
+            licenseImage: client.images.licenseImage ?? "",
+            humidorImage: client.images.humidorImage ?? ""}
+        if (locationImage?.name) images.locationImage = client.license + "Location." + locationImage.name.substring(locationImage.name.lastIndexOf('.') + 1)
+        if (contractImage?.name) images.contractImage = client.license + "Contract." + contractImage.name.substring(contractImage.name.lastIndexOf('.') + 1)
+        if (licenseImage?.name) images.licenseImage = client.license + "License." + licenseImage.name.substring(licenseImage.name.lastIndexOf('.') + 1)
+        if (humidorImage?.name) images.humidorImage = client.license + "Humidor." + humidorImage.name.substring(humidorImage.name.lastIndexOf('.') + 1)
         await updateClient({ 
             id: client._id, 
             license: client.license, 
@@ -74,9 +68,27 @@ const EditClientForm = ({ client }) => {
             address, city, state, 
             contact, phone, website, 
             notes, isVisited })
-        const formData = new FormData();
-        formData.append("file", locationImage);
-        await uploadImage(formData)
+        let formData
+        if (locationImage) {
+            formData = new FormData();
+            formData.append("file", locationImage, client.license + "Location." + locationImage.name.substring(locationImage.name.lastIndexOf('.') + 1));
+            await uploadImage(formData)
+        }
+        if (contractImage) {
+            formData = new FormData();
+            formData.append("file", contractImage, client.license + "Contract." + contractImage.name.substring(contractImage.name.lastIndexOf('.') + 1));
+            await uploadImage(formData)
+        }
+        if (licenseImage) {
+            formData = new FormData()
+            formData.append("file", licenseImage, client.license + "License." + licenseImage.name.substring(licenseImage.name.lastIndexOf('.') + 1));
+            await uploadImage(formData) 
+        }
+        if (humidorImage) {
+            formData = new FormData()
+            formData.append("file", humidorImage, client.license + "Humidor." + humidorImage.name.substring(humidorImage.name.lastIndexOf('.') + 1));
+            await uploadImage(formData)
+        }
     }
     /*const onUploadClicked = async (e) => {
         await uploadImage(locationImage)
@@ -90,11 +102,7 @@ const EditClientForm = ({ client }) => {
     const onWebsiteChanged = e => setWebsite(e.target.value)
     const onNotesChanged = e => setNotes(e.target.value)
     const onIsVisitedChanged = e => setIsVisited(!isVisited)
-    const handleLocation = e => {
-        console.log(e.target.files[0].name)
-        setLocationImage(e.target.files[0])
-        console.log(locationImage)
-    }
+    const handleLocation = e => setLocationImage(e.target.files[0])
     const handleContract = e => setContractImage(e.target.files[0])
     const handleHumidor = e => setHumidorImage(e.target.files[0])
     const handleLicense = e => setLicenseImage(e.target.files[0])
@@ -164,12 +172,22 @@ const EditClientForm = ({ client }) => {
                 </tbody>
             </table>
             <div className='image-upload'>
-                <br />
                 <p>Upload Images</p>
-                <hr />
                 <span>
-                    <label htmlFor="location">Location Image: </label>
+                    <label className='image-upload-label' htmlFor="location">Location Image: </label>
                     <input type="file" id="location" onChange={handleLocation}/>
+                </span>
+                <span>
+                    <label htmlFor="contract">Contract Image: </label>
+                    <input type="file" id="contract" onChange={handleContract}/>
+                </span>
+                <span>
+                    <label htmlFor="license">License Image: </label>
+                    <input type="file" id="license" onChange={handleLicense}/>
+                </span>
+                <span>
+                    <label htmlFor="humidor">Humidor Image: </label>
+                    <input type="file" id="humidor" onChange={handleHumidor}/>
                 </span>
             </div>
             <button style={{marginBottom: '10px'}} className='client-button' onClick={onSaveClientClicked}>Save</button>
