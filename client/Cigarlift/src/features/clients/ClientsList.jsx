@@ -13,9 +13,14 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import './Client.css'
 import EditClientForm from "./EditClientForm";
 import EditClient from "./EditClient";
+import { useDispatch, useSelector } from "react-redux";
+import { setPage, selectCurrentPage } from "./clientsSlice";
 
 const ClientsList = () => {
     useTitle('Cigarlift: Clients List')
+    
+    const dispatch = useDispatch()
+    const pageToNavigate = useSelector(selectCurrentPage)
     const navigate = useNavigate()
     const [clientSelected, setClientSelected] = useState(false);
     const [isClientEdit, setIsClientEdit] = useState(false);
@@ -69,6 +74,9 @@ const ClientsList = () => {
                     }
                 ]
             },
+            onFirstDataRendered: (params) => {
+                params.api.paginationGoToPage(pageToNavigate)
+            }
             // other grid options ...
         }
 
@@ -93,27 +101,18 @@ const ClientsList = () => {
             setClientSelected(false)
             setIsClientEdit(false)
         }
-        const handleButtonEdit  = () => setIsClientEdit(!isClientEdit)
+        const handlePagination = (params) => {
+            if (params.newPage) {
+                console.log(params)
+                const pageNumber = params.api.paginationGetCurrentPage()
+                dispatch(setPage(pageNumber))
+            }
+        }
 
         content = (
             <>
                 {clientSelected? 
-                isClientEdit ?
-                <>
-                    <div className="client-button-header">
-                    <button className="client-button" onClick={handleButtonClose}><ArrowBackIosIcon /> Contacts</button>
-                    <button className="client-button" onClick={handleButtonEdit}>Cancel</button>
-                    </div>
-                    <EditClient id={clientSelected} /> 
-                </>
-                :
-                <>
-                    <div className="client-button-header">
-                    <button className="client-button" onClick={handleButtonClose}><ArrowBackIosIcon /> Contacts</button>
-                    <button className="client-button" onClick={handleButtonEdit}>Edit</button>
-                    </div>
-                    <Client cid={clientSelected} /> 
-                </>
+                    <Client cid={clientSelected} close={handleButtonClose} />
                 : null} 
                 
                 <div hidden={clientSelected} className="ag-theme-quartz" style={{width:"100%",height:"80%"}}>
@@ -144,6 +143,7 @@ const ClientsList = () => {
                         paginationPageSizeSelector={paginationPageSizeSelector}
                         gridOptions={gridOptions}
                         onRowClicked={(e) => handleClick(e)}
+                        onPaginationChanged={handlePagination}
                     />
                 </div>
             </>

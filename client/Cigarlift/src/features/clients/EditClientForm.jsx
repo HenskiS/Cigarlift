@@ -6,7 +6,7 @@ import ClientImage, { NoImage } from './ClientImage'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-const EditClientForm = ({ client }) => {
+const EditClientForm = ({ client, close }) => {
     useTitle('Cigarlift: Client')
     console.log(client)
 
@@ -89,6 +89,7 @@ const EditClientForm = ({ client }) => {
             formData.append("file", humidorImage, client.license + "Humidor." + humidorImage.name.substring(humidorImage.name.lastIndexOf('.') + 1));
             await uploadImage(formData)
         }
+        close()
     }
     /*const onUploadClicked = async (e) => {
         await uploadImage(locationImage)
