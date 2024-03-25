@@ -7,13 +7,12 @@ const itinerarySchema = new Schema({
         required: true
     },
     stops: {
-        type: [{
+        type: Array,/*[{
             _id: String,
             name: String,
             address: String,
-            position: String,
             isVisited: Boolean
-        }]
+        }]*/
     },
     cigarsStart: {
         type: Number

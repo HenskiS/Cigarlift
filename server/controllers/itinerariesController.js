@@ -1,5 +1,6 @@
 const Itinerary = require('../models/Itinerary')
 const User = require('../models/User')
+const Client = require('../models/Client')
 //const Note = require('../models/Note')
 const bcrypt = require('bcrypt')
 const path = require('path');
@@ -25,35 +26,31 @@ const getItinerary = async (req, res) => {
 // @route POST /users
 // @access Private
 const createNewItinerary = async (req, res) => {
-    const { username, password, roles } = req.body
+    const { date } = req.body
 
-    // Confirm data
-    if (!username || !password) {
-        return res.status(400).json({ message: 'All fields are required' })
+    const clients = await
+    Client
+    .find({city: "SAN CLEMENTE", isVisited: false})
+    .limit(10)
+    .sort({zip: 1})
+    //.select('_id ')
+    const itinObject = {
+        date,
+        cigarsStart: 200,
+        cigarsEnd: 200,
+        stops: clients
     }
+    const itin = await Itinerary.create(itinObject)
 
-    // Check for duplicate username
-    const duplicate = await User.findOne({ username }).collation({ locale: 'en', strength: 2 }).lean().exec()
-
-    if (duplicate) {
-        return res.status(409).json({ message: 'Duplicate username' })
-    }
-
-    // Hash password 
-    const hashedPwd = await bcrypt.hash(password, 10) // salt rounds
-
-    const userObject = (!Array.isArray(roles) || !roles.length)
-        ? { username, "password": hashedPwd }
-        : { username, "password": hashedPwd, roles }
-
+    res.json(itin)
     // Create and store new user 
-    const user = await User.create(userObject)
+    /*const user = await User.create(userObject)
 
     if (user) { //created 
-        res.status(201).json({ message: `New user ${username} created` })
+        res.status(201).json({ message: `New itinerary ${username} created` })
     } else {
-        res.status(400).json({ message: 'Invalid user data received' })
-    }
+        res.status(400).json({ message: 'Invalid itinerary data received' })
+    }*/
 }
 
 // @desc Update a user
@@ -63,40 +60,25 @@ const updateItinerary = async (req, res) => {
     const id = req.body.id.id
     const stopId = req.body.id.stopId
 
-
-    // Confirm data 
-    /*if (!id || !username || !Array.isArray(roles) || !roles.length || typeof active !== 'boolean') {
-        return res.status(400).json({ message: 'All fields except password are required' })
-    }*/
-
-    // Does the user exist to update?
+    // Does the itin exist to update?
     const itin = await Itinerary.findOne({ date: id }).exec()
 
     if (!itin) {
         return res.status(400).json({ message: 'itin not found' })
     }
 
-    // Check for duplicate 
-    // const duplicate = await User.findOne({ username }).collation({ locale: 'en', strength: 2 }).lean().exec()
-
-    // Allow updates to the original user 
-    /*if (duplicate && duplicate?._id.toString() !== id) {
-        return res.status(409).json({ message: 'Duplicate username' })
-    }*/
-    let locIndex = itin.stops.findIndex(loc => loc._id === stopId)
+    let locIndex = itin.stops.findIndex(loc => loc._id.toString() === stopId)
     if (locIndex !== -1) {
+        const visited = itin.stops[locIndex].isVisited
         console.log("Visiting location " + locIndex)
-        itin.stops[locIndex].isVisited = !itin.stops[locIndex].isVisited
-    }
+        itin.stops.set(locIndex, { ...itin.stops[locIndex], isVisited: !visited });
 
-    /*if (password) {
-        // Hash password 
-        user.password = await bcrypt.hash(password, 10) // salt rounds 
-    }*/
+        console.log("isVisited: " + itin.stops[locIndex].isVisited)
+    }
 
     const updatedItin = await itin.save()
 
-    res.json({ message: `${updatedItin.date} updated` })
+    res.json({ message: `${updatedItin.date} updated`, updatedItin })
 }
 
 // @desc Delete a user

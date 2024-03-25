@@ -18,6 +18,13 @@ const upload = multer({ storage });
 
 router.use(verifyJWT)
 
+router.get("/", async (req, res) => {
+    const imageToBase64 = require('image-to-base64')
+    const imagePath = path.join(__dirname, '../images', 'placeholder.jpg')
+    if (fs.existsSync(imagePath)) {
+        imageToBase64(imagePath).then(response => res.send(response))
+    }
+});
 router.get("/:imageName", async (req, res) => {
     const imageToBase64 = require('image-to-base64')
     const imageName = req.params.imageName

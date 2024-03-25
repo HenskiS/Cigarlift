@@ -15,6 +15,7 @@ function Drive() {
   const [currentTab, setCurrentTab] = useState(0)
 
   const [updateItinerary, {
+    data,
     isLoading: isUpdateLoading,
     isSuccess: isUpdateSuccess,
     isError: isUpdateError,
@@ -34,8 +35,9 @@ function Drive() {
     })
 
     const handleVisit = (locationID) => {
-      console.log("visited " + locationID)
-      updateItinerary({ id: "20240325", stopId: locationID.toString() })
+      console.log("visited " + locationID) 
+      console.log(locationID) 
+      updateItinerary({ id: "20240325", stopId: locationID })
     }
 
     let content
@@ -62,9 +64,7 @@ function Drive() {
         content = (
             <div className="itinerary">
               <h2>Itinerary</h2>
-              {/*unvisited.map((stop, index)=>(
-                <LocationCard location={stop} onVisit={handleVisit} key={index} />
-              ))*/}
+              
               <Tabs value={currentTab} onChange={handleTabChange} centered>
                 <Tab label="Schedule" />
                 <Tab label="Visited" />
@@ -100,62 +100,5 @@ function Drive() {
     return content
 
 }
-  /*
-
-  const unvisited = useSelector(selectUnvisited);
-  const visited = useSelector(selectVisited);
-  const dispatch = useDispatch();
-
-  const [currentTab, setCurrentTab] = useState(0)
-
-  const handleTabChange = (e, tabIndex) => {
-    setCurrentTab(tabIndex);
-  };
-
-  const handleVisit = (locationId) => {
-    dispatch(visit(locationId))
-  }
-
-  const UnvisitedList = () => {
-    return (
-      <Box sx={{ pb: 7 }}>
-        {unvisited.length === 0 ?
-            <p>All done for today...</p> 
-            :
-            unvisited.map((loc, index) => (
-              <LocationCard location={loc} onVisit={handleVisit} key={index} />
-            ))
-        }
-      </Box>
-    )
-  }
-  const VisitedList = () => {
-    return (
-      <Box>
-        {visited.length === 0 ?
-            <p>No stops yet...</p> 
-            :
-            visited.map((loc, index) => (
-              <LocationCard location={loc} key={index} />
-            ))
-        }
-      </Box>
-    )
-  }
-
-  return (
-    <>
-      <h2>Itinerary</h2>
-      
-      <Tabs value={currentTab} onChange={handleTabChange} centered>
-        <Tab label="Schedule" />
-        <Tab label="Visited" />
-      </Tabs>
-      {currentTab === 0 && <UnvisitedList />}
-      {currentTab === 1 && <VisitedList />}
-      {//<Navbar />}
-    </>
-  )
-} */
 
 export default Drive
