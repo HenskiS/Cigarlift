@@ -3,11 +3,17 @@ import PulseLoader from 'react-spinners/PulseLoader'
 import useTitle from '../../hooks/useTitle'
 import './Client.css'
 import ClientImage, { NoImage } from './ClientImage'
+import { useParams } from 'react-router-dom'
 
-const Client = ({ id }) => {
+const Client = ({ cid }) => {
     useTitle('Cigarlift: Client')
     
-    //const { id } = useParams()
+    let id // id is set by param if it exists, or prop if it does not
+
+    const {id: paramId} = useParams()
+    if (paramId) {
+        id = paramId
+    } else id = cid
 
     const { data: client, 
         isLoading, 
@@ -86,7 +92,7 @@ const Client = ({ id }) => {
                 
                 <tr>
                     <td className='label'><label>Visited: </label></td>
-                    <td><p>{client.isVisited}</p></td>
+                    <td><p>{client.isVisited? "Yes" : "No"}</p></td>
                 </tr>
                 </tbody>
             </table>

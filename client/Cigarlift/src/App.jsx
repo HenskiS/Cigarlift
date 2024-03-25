@@ -44,7 +44,7 @@ function App() {
                 <Route path="drive" element={<Drive />} />
                 <Route path="clients">
                   <Route index element={<ClientsList />} />
-                  {/*<Route path=":id" element={<Client />} />*/}
+                  <Route path=":id" element={<Client />} />
                   <Route path="new" element={<NewUserForm />} />
                 </Route>
 

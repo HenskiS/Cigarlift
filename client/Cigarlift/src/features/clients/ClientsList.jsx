@@ -112,7 +112,7 @@ const ClientsList = () => {
                     <button className="client-button" onClick={handleButtonClose}><ArrowBackIosIcon /> Contacts</button>
                     <button className="client-button" onClick={handleButtonEdit}>Edit</button>
                     </div>
-                    <Client id={clientSelected} /> 
+                    <Client cid={clientSelected} /> 
                 </>
                 : null} 
                 

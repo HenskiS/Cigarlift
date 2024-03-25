@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom'
 
 const EditClientForm = ({ client }) => {
     useTitle('Cigarlift: Client')
+    console.log(client)
 
     const [updateClient, {
         isLoading,
@@ -49,7 +50,6 @@ const EditClientForm = ({ client }) => {
 
     }, [isSuccess, imgisSuccess, navigate])
 
-    address, city, state, contact, phone, website, notes, isVisited
     const onSaveClientClicked = async (e) => {
         const images = {locationImage: client.images.locationImage ?? "",
             contractImage: client.images.contractImage ?? "",
@@ -101,7 +101,7 @@ const EditClientForm = ({ client }) => {
     const onPhoneChanged = e => setPhone(e.target.value)
     const onWebsiteChanged = e => setWebsite(e.target.value)
     const onNotesChanged = e => setNotes(e.target.value)
-    const onIsVisitedChanged = e => setIsVisited(!isVisited)
+    const onIsVisitedChanged = () => setIsVisited(!isVisited)
     const handleLocation = e => setLocationImage(e.target.files[0])
     const handleContract = e => setContractImage(e.target.files[0])
     const handleHumidor = e => setHumidorImage(e.target.files[0])
@@ -167,7 +167,7 @@ const EditClientForm = ({ client }) => {
                 
                 <tr>
                     <td className='label'><label htmlFor='isVisited'>Visited: </label></td>
-                    <td><input type='checkbox' id='isVisited' value={isVisited} onChange={onIsVisitedChanged} /></td>
+                    <td><input type='checkbox' id='isVisited' checked={isVisited} onChange={onIsVisitedChanged} /></td>
                 </tr>
                 </tbody>
             </table>
