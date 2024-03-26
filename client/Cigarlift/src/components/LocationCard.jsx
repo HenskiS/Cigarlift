@@ -16,7 +16,7 @@ function LocationCard({ location, onVisit }) {
 
   const { data: imageData, error, isLoading, isSuccess } = useGetClientImageQuery(location.images.locationImage);
   const handleClick = () => {
-    navigate(`/clients/${location._id}/?from=drive`)
+    navigate(`/clients/${location._id}`)
   }
 
   return (

@@ -1,10 +1,12 @@
 const Itinerary = require('../models/Itinerary')
 const User = require('../models/User')
-const Client = require('../models/Client')
+const ClientModel = require('../models/Client')
 //const Note = require('../models/Note')
 const bcrypt = require('bcrypt')
 const path = require('path');
 const fs = require('fs');
+
+const {Client} = require("@googlemaps/google-maps-services-js");
 
 // @desc Get all users
 // @route GET /users
@@ -29,20 +31,37 @@ const createNewItinerary = async (req, res) => {
     const { date } = req.body
 
     const clients = await
-    Client
+    ClientModel
     .find({city: "SAN CLEMENTE", isVisited: false})
     .limit(10)
     .sort({zip: 1})
     //.select('_id ')
-    const itinObject = {
-        date,
-        cigarsStart: 200,
-        cigarsEnd: 200,
-        stops: clients
-    }
-    const itin = await Itinerary.create(itinObject)
 
-    res.json(itin)
+    const params = {
+        key: process.env.GOOGLE_MAPS_API_KEY,
+        origin: '106 Avenida Miramar, San Clemente, CA',
+        destination: '106 Avenida Miramar, San Clemente, CA',
+        waypoints: clients.map(c=> `${c.address}, ${c.city}, ${c.state}`),
+        optimize: true // the important param
+    }
+    const client = new Client({})
+
+    try {
+        const response = await client.directions({ params,timeout: 1000, })
+        const orderedClients = response.data.routes[0].waypoint_order.map(index => clients[index])
+        const itinObject = {
+            date,
+            cigarsStart: 200,
+            cigarsEnd: 200,
+            stops: orderedClients
+        }
+        const itin = await Itinerary.create(itinObject)
+
+        res.json(itin)
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ message: "Error creating itinerary" })
+    }
     // Create and store new user 
     /*const user = await User.create(userObject)
 

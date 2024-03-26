@@ -56,7 +56,7 @@ export const clientsApiSlice = apiSlice.injectEndpoints({
                 }
             }),
             invalidatesTags: (result, error, arg) => [
-                { type: 'Client', id: arg.id }
+                'Client'//{ type: 'Client', id: arg.id }
             ]
         }),
         deleteClient: builder.mutation({

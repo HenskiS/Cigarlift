@@ -74,9 +74,9 @@ const ClientsList = () => {
                     }
                 ]
             },
-            onFirstDataRendered: (params) => {
-                params.api.paginationGoToPage(pageToNavigate)
-            }
+            //onFirstDataRendered: (params) => {
+            //    params.api.paginationGoToPage(pageToNavigate)
+            //}
             // other grid options ...
         }
 
@@ -143,7 +143,7 @@ const ClientsList = () => {
                         paginationPageSizeSelector={paginationPageSizeSelector}
                         gridOptions={gridOptions}
                         onRowClicked={(e) => handleClick(e)}
-                        onPaginationChanged={handlePagination}
+                        //onPaginationChanged={handlePagination}
                     />
                 </div>
             </>
