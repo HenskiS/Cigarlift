@@ -15,6 +15,7 @@ import EditClientForm from "./EditClientForm";
 import EditClient from "./EditClient";
 import { useDispatch, useSelector } from "react-redux";
 import { setPage, selectCurrentPage } from "./clientsSlice";
+import ClientsNearby from "./ClientsNearby";
 
 const ClientsList = () => {
     useTitle('Cigarlift: Clients List')
@@ -114,9 +115,9 @@ const ClientsList = () => {
                 {clientSelected? 
                     <Client cid={clientSelected} close={handleButtonClose} />
                 : null} 
-                
-                <div hidden={clientSelected} className="ag-theme-quartz" style={{width:"100%",height:"80%"}}>
-                    <h2>Clients List</h2>
+                <h2>Clients List</h2>
+                <div hidden={clientSelected} className="ag-theme-quartz" style={{width:"100%",height:"80%"}} >
+                    
                     <div className="column--selectors">
                         <input type="checkbox" name="company" id="company" defaultChecked={false} 
                             onChange={e => handleSetCols("taxpayer", e.target.checked)} />
@@ -136,6 +137,7 @@ const ClientsList = () => {
                     </div>
                     
                     <AgGridReact
+                        
                         rowData={clients}
                         columnDefs={colDefs}
                         pagination={pagination}
@@ -146,6 +148,7 @@ const ClientsList = () => {
                         //onPaginationChanged={handlePagination}
                     />
                 </div>
+                {/*<ClientsNearby />*/}
             </>
         )
     }

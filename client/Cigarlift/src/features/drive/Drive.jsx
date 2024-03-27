@@ -34,7 +34,7 @@ function Drive() {
         isSuccess,
         isError,
         error
-    } = useGetItineraryQuery("20240326", {
+    } = useGetItineraryQuery("20240327", {
         pollingInterval: 60000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
@@ -43,7 +43,7 @@ function Drive() {
     const handleVisit = (locationID) => {
       console.log("visited " + locationID) 
       console.log(locationID) 
-      updateItinerary({ id: "20240326", stopId: locationID })
+      updateItinerary({ id: "20240327", stopId: locationID })
     }
 
     let content

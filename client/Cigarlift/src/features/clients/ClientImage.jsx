@@ -5,7 +5,6 @@ import { memo } from 'react'
 import { useGetClientImageQuery } from './clientsApiSlice'
 
 const ClientImage = memo(function ClientImage({ src }) {
-    console.log("img src: " + src)
     let content 
     
     const { data: imageData, 
