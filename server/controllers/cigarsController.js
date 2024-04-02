@@ -19,7 +19,7 @@ const getAllCigars = async (req, res) => {
 // @route POST /cigars
 // @access Private
 const createNewCigar = async (req, res) => {
-    const { name, blend, size, price } = req.body
+    const { name, blend, size, price, quantity } = req.body
 
     // Confirm data
     if (!name || !price) {
@@ -34,7 +34,7 @@ const createNewCigar = async (req, res) => {
     }*/
 
 
-    const cigarObject = { name, blend, size, price }
+    const cigarObject = { name, blend, size, price, quantity }
 
     // Create and store new cigar 
     const cigar = await Cigar.create(cigarObject)

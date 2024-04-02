@@ -1,9 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import {
-  MaterialReactTable,
-  useMaterialReactTable,
-} from 'material-react-table';
-import { useGetCigarsQuery, useUpdateCigarMutation } from './cigarsApiSlice';
+import { useEffect, useState } from 'react';
+import { useAddNewCigarMutation, useGetCigarsQuery, useUpdateCigarMutation } from './cigarsApiSlice';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
@@ -12,14 +8,22 @@ import PulseLoader from 'react-spinners/PulseLoader';
 function Inventory() {
     const [cigars, setCigars] = useState([]);
     const [updateCigarMutation] = useUpdateCigarMutation();
+    const [addNewCigarMutation] = useAddNewCigarMutation()
 
-    const [colDefs, setColDefs] = useState([
+    const [name, setName] = useState();
+    const [blend, setBlend] = useState();
+    const [size, setSize] = useState();
+    const [price, setPrice] = useState();
+    const [quantity, setQuantity] = useState();
+
+
+    const colDefs = [
         { field: "name", filter: true, floatingFilter: true, flex: 2, editable: true },
         { field: "blend", filter: true, floatingFilter: true, flex: 1, editable: true },
         { field: "size", filter: true, floatingFilter: true, flex: 1, editable: true },
         { field: "price", filter: true, floatingFilter: true, flex: 1, editable: true },
         { field: "quantity", filter: true, floatingFilter: true, flex: 1, editable: true },
-    ])
+    ]
 
     const { data, isLoading, isError, error, isSuccess } = useGetCigarsQuery()
 
@@ -59,26 +63,44 @@ function Inventory() {
             }
             console.log("updated cigar")
         };
+        const handleSubmit = async () => {
+            const cigar = {name, blend, size, price, quantity}
+            console.log(cigar)
+            const response = await addNewCigarMutation(cigar)
+            console.log(response)
+        }
         const pagination = true;
         const paginationPageSize = 20;
-        const paginationPageSizeSelector = [ 2, 20, 50, 100 ];
+        const paginationPageSizeSelector = [ 20, 50, 100 ];
         const gridOptions = {
             readOnlyEdit: true,
             onCellEditRequest: handleCellValueChanged
         }
     
         return (
-            <div className="ag-theme-quartz" style={{ height: 500, width: '100%', marginBottom: "100px" }}>
+            <div className='inventory'>
                 <h2>Inventory</h2>
-                <AgGridReact 
-                    rowData={cigars}
-                    columnDefs={colDefs}
-                    gridOptions={gridOptions}
-                    pagination={pagination}
-                    paginationPageSize={paginationPageSize}
-                    paginationPageSizeSelector={paginationPageSizeSelector}
-                    defaultColDef={{ editable: true }}
-                />
+                <div className="new-cigar">
+                    <input type="text" id="name" placeholder='name' value={name?? ""} onChange={(e)=>setName(e.target.value)} />
+                    <input type="text" id="blend" placeholder='blend' value={blend?? ""} onChange={(e)=>setBlend(e.target.value)} />
+                    <input type="text" id="size" placeholder='size' value={size?? ""} onChange={(e)=>setSize(e.target.value)} />
+                    <input type="number" id="price" placeholder='price' value={price?? ""} onChange={(e)=>setPrice(e.target.value)} />
+                    <input type="number" id="quantity" placeholder='quantity' value={quantity?? ""} onChange={(e)=>setQuantity(e.target.value)} />
+                    <button className="new-cigar-submit" onClick={handleSubmit}>Submit</button>
+                </div>
+                <div className="ag-theme-quartz" style={{ height: 500, width: '100%', marginBottom: "100px" }}>
+                    <AgGridReact 
+                        rowData={cigars}
+                        columnDefs={colDefs}
+                        gridOptions={gridOptions}
+                        pagination={pagination}
+                        paginationPageSize={paginationPageSize}
+                        paginationPageSizeSelector={paginationPageSizeSelector}
+                        defaultColDef={{ editable: true }}
+                        singleClickEdit
+                        rowSelection='single'
+                    />
+                </div>
             </div>
         )
     

@@ -201,10 +201,9 @@ th, td {
 }
 
 .inventory {
-  display: flex;
-  flex-direction: column;
   margin-top: 20px;
   margin-bottom: 56px;
+  width: 100%;
 }
 
 .p-datatable-thead{
@@ -213,4 +212,28 @@ th, td {
 .cigar-table {
   margin-bottom: 100px;
   margin-top: 20px;
+}
+.new-cigar {
+  display: flex;
+  flex-direction: row;
+  max-width: 100%;
+  align-items: center;
+}
+.new-cigar input{
+  border: 1px solid grey;
+  height: 39px;
+  width: 10%;
+  border-radius: 4px;
+  margin: 5px;
+  flex: 1;
+  text-indent: 5px;
+}
+.new-cigar input::selection{
+  border: 1px solid #2196f3;
+}
+.new-cigar input::placeholder{
+  margin-left: 5px;
+}
+.new-cigar-submit {
+  height: 39px;
 }
