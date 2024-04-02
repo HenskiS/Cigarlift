@@ -4,7 +4,6 @@ import {
   useMaterialReactTable,
 } from 'material-react-table';
 import { useGetCigarsQuery, useUpdateCigarMutation } from './cigarsApiSlice';
-import CigarTable from './CigarTable';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
@@ -59,14 +58,6 @@ function Inventory() {
                 console.error('Failed to update cigar:', error);
             }
             console.log("updated cigar")
-            // Update the local state if mutation succeeds
-            //console.log(cigars)
-            /*const updatedCigars = cigars.map((cigar) =>
-                cigar._id === updatedCigar._id ? updatedCigar : cigar
-            );*/
-            //console.log(updatedCigars)
-            //setCigars(updatedCigars);
-                //.catch((error) => console.error('Failed to update cigar:', error));
         };
         const pagination = true;
         const paginationPageSize = 20;
