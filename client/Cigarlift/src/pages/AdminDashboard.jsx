@@ -1,3 +1,4 @@
+import Inventory from "../features/cigars/Inventory"
 import UsersList from "../features/users/UsersList"
 import useTitle from "../hooks/useTitle"
 
@@ -8,6 +9,7 @@ function AdminDashboard() {
         <>
         <h1>Admin Dashboard</h1>
         <UsersList />
+        <Inventory />
         </>
     )
 }

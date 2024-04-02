@@ -199,3 +199,18 @@ th, td {
   margin: 2px;
   margin-right: 8px;
 }
+
+.inventory {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  margin-bottom: 56px;
+}
+
+.p-datatable-thead{
+  align-content: center;
+}
+.cigar-table {
+  margin-bottom: 100px;
+  margin-top: 20px;
+}

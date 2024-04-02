@@ -102,13 +102,6 @@ const ClientsList = () => {
             setClientSelected(false)
             setIsClientEdit(false)
         }
-        const handlePagination = (params) => {
-            if (params.newPage) {
-                console.log(params)
-                const pageNumber = params.api.paginationGetCurrentPage()
-                dispatch(setPage(pageNumber))
-            }
-        }
 
         content = (
             <>
