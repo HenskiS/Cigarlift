@@ -68,6 +68,11 @@ function Inventory() {
             console.log(cigar)
             const response = await addNewCigarMutation(cigar)
             console.log(response)
+            setName("")
+            setBlend("")
+            setSize("")
+            setPrice("")
+            setQuantity("")
         }
         const pagination = true;
         const paginationPageSize = 20;
@@ -86,7 +91,7 @@ function Inventory() {
                     <input type="text" id="size" placeholder='size' value={size?? ""} onChange={(e)=>setSize(e.target.value)} />
                     <input type="number" id="price" placeholder='price' value={price?? ""} onChange={(e)=>setPrice(e.target.value)} />
                     <input type="number" id="quantity" placeholder='quantity' value={quantity?? ""} onChange={(e)=>setQuantity(e.target.value)} />
-                    <button className="new-cigar-submit" onClick={handleSubmit}>Submit</button>
+                    <button className="new-cigar-submit" onClick={handleSubmit}>Add Cigar</button>
                 </div>
                 <div className="ag-theme-quartz" style={{ height: 500, width: '100%', marginBottom: "100px" }}>
                     <AgGridReact 

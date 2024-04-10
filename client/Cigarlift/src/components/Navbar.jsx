@@ -1,5 +1,4 @@
 import { useContext } from 'react';
-import AuthContext from '../context/AuthProvider';
 import './Navbar.css';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import BottomNavigation from '@mui/material/BottomNavigation';
@@ -18,7 +17,6 @@ import { useSendLogoutMutation } from '../features/auth/authApiSlice'
 
 const Navbar = () => {
   const { isAdmin } = useAuth();
-  const { setAuth } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
 

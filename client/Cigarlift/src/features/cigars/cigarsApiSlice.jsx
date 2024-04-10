@@ -17,7 +17,7 @@ export const cigarsApiSlice = apiSlice.injectEndpoints({
                     return response.status === 200 && !result.isError
                 },
             }),
-            providesTags: { type: 'Cigar', id: 'LIST' },
+            providesTags: [{ type: 'Cigar', id: 'LIST' }],
         }),
         addNewCigar: builder.mutation({
             query: initialCigarData => ({

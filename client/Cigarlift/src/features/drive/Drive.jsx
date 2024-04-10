@@ -78,7 +78,7 @@ function Drive() {
         content = (
   
               <div className="itinerary" hidden={clientSelected}>
-                <h2>Itinerary</h2>
+                <h1>Itinerary</h1>
                 
                 <Tabs value={currentTab} onChange={handleTabChange} centered>
                   <Tab label="Schedule" />

@@ -43,8 +43,8 @@ const login = async (req, res) => {
     res.cookie('jwt', refreshToken, {
         httpOnly: true, //accessible only by web server 
         // uncomment 2 lines below in production
-        //secure: true, //https
-        //sameSite: 'None', //cross-site cookie 
+        secure: true, //https
+        sameSite: 'None', //cross-site cookie 
         maxAge: 7 * 24 * 60 * 60 * 1000 //cookie expiry: set to match rT
     })
 
@@ -63,6 +63,8 @@ const refresh = (req, res) => {
     if (!cookies?.jwt) return res.status(401).json({ message: 'Unauthorized' })
 
     const refreshToken = cookies.jwt
+    console.log("refreshToken")
+    console.log(refreshToken)
 
     jwt.verify(
         refreshToken,

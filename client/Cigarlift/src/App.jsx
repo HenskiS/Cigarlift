@@ -12,7 +12,7 @@ import NewUserForm from './features/users/NewUserForm'
 import PrivateRoutes from './components/PrivateRoutes.jsx';
 import Auth from './pages/Auth.jsx';
 import Drive from './features/drive/Drive.jsx'
-import Order from './pages/Order.jsx';
+import Order from './features/order/Order'
 import Unauthorized from './pages/Unauthorized.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx';
 import Missing from './pages/Missing.jsx';
@@ -24,6 +24,7 @@ import DashLayout from './components/DashLayout.jsx';
 import ClientsList from './features/clients/ClientsList.jsx';
 import EditClient from './features/clients/EditClient.jsx';
 import Client from './features/clients/Client.jsx';
+import NewOrderForm from './features/order/NewOrderForm.jsx';
 
 function App() {
   useTitle('Cigarlift')
@@ -41,10 +42,18 @@ function App() {
           <Route element={<RequireAuth allowedRoles={[...Object.values(ROLES)]} />}>
             <Route element={<Prefetch />}>
               <Route path='/*' element={<DashLayout />}>
+
                 <Route path="drive" element={<Drive />} />
+
                 <Route path="clients">
                   <Route index element={<ClientsList />} />
                   <Route path=":id" element={<Client />} />
+                  <Route path="new" element={<NewUserForm />} />
+                </Route>
+
+                <Route path="order">
+                  <Route index element={<NewOrderForm />} />
+                  <Route path=":id" element={<Order />} />
                   <Route path="new" element={<NewUserForm />} />
                 </Route>
 

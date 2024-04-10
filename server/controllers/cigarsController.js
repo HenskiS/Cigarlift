@@ -5,7 +5,7 @@ const Cigar = require('../models/Cigar')
 // @access Private
 const getAllCigars = async (req, res) => {
     // Get all cigars from MongoDB
-    const cigars = await Cigar.find().lean()
+    const cigars = await Cigar.find().sort("name").sort("blend").lean()
 
     // If no cigars 
     if (!cigars?.length) {

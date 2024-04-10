@@ -128,9 +128,6 @@ form {
   flex-grow: 1;
   padding-bottom: 1rem;
 }
-input {
-  margin-bottom: 10px;
-}
 
 button {
   border-radius: 8px;
@@ -220,7 +217,7 @@ th, td {
   align-items: center;
 }
 .new-cigar input{
-  border: 1px solid grey;
+  border: 1px solid rgb(176, 176, 176);
   height: 39px;
   width: 10%;
   border-radius: 4px;
@@ -236,4 +233,28 @@ th, td {
 }
 .new-cigar-submit {
   height: 39px;
+}
+.order {
+  width: 100%;
+}
+.cigar-list table {
+  border-bottom: 1px solid #ddd;
+  border-collapse: collapse;
+  width: 100%;
+  padding: 3px;
+}
+.cigar-list th,td {
+  border-bottom: 1px solid #ddd;
+  border-collapse: collapse;
+  padding: 3px;
+  text-align: left;
+}
+.cigar-col::placeholder{
+  color: #AAA;
+}
+.row-selected{
+  background-color: rgb(195, 225, 255);
+}
+.cigar-qty {
+  width: 30px;
 }

@@ -108,7 +108,7 @@ const ClientsList = () => {
                 {clientSelected? 
                     <Client cid={clientSelected} close={handleButtonClose} />
                 : null} 
-                <h2>Clients List</h2>
+                <h1 hidden={clientSelected}>Client List</h1>
                 <div hidden={clientSelected} className="ag-theme-quartz" style={{width:"100%",height:"80%"}} >
                     
                     <div className="column--selectors">
