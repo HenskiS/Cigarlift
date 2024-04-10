@@ -243,7 +243,7 @@ th, td {
   width: 100%;
   padding: 3px;
 }
-.cigar-list th,td {
+.cigar-list th, .cigar-list td {
   border-bottom: 1px solid #ddd;
   border-collapse: collapse;
   padding: 3px;
