@@ -100,7 +100,7 @@ function Drive() {
                 {currentTab === 1 && 
                   <>
                     {visited.length === 0 ?
-                        <p>No stops yet...</p> 
+                        <p>No stops visited yet...</p> 
                         :
                         visited.map((loc, index) => (
                             <LocationCard location={loc} onVisit={handleVisit} key={index} />

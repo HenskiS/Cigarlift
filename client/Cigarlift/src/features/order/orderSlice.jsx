@@ -5,7 +5,7 @@ const orderSlice = createSlice({
     initialState: { cart: [] },
     reducers: {
         removeCigar: (state, action) => {
-            const newCart = state.cart.filter(cigar => cigar._id !== action.payload.id)
+            const newCart = state.cart.filter(cigar => cigar._id !== action.payload)
             state.cart = newCart
         },
         addCigar: (state, action) => {

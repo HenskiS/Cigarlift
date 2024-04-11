@@ -258,3 +258,39 @@ th, td {
 .cigar-qty {
   width: 30px;
 }
+.order-totals {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-top: 5px;
+  color: #1976d2;
+}
+.order-totals h4{
+  margin: 0px 0px;
+}
+.payment-type{
+  display: flex;
+  justify-content: space-evenly;
+}
+.remove-cigar-button {
+  color: rgb(255, 93, 93);
+  background-color: white;
+  vertical-align: inherit;
+  width: 24px;
+  height: 24px;
+  margin-bottom: 4px;
+}
+.payment-amounts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.payment-amounts input{
+  width: 50px;
+}
+.submit-order {
+  background-color: #1976d2;
+  color: white;
+  border: 1px solid lightgrey;
+  padding: 8px;
+}
