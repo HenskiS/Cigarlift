@@ -22,9 +22,9 @@ const createNewOrder = async (req, res) => {
     const { client, cigars, cigarStrings, total } = req.body
 
     // Confirm data
-    /*if (!name || !price) {
-        return res.status(400).json({ message: 'Name and price are required' })
-    }*/
+    if (!client || !cigars || !total) {
+        return res.status(400).json({ error: 'Client, cigars, and total are required' })
+    }
 
     // Check for duplicate username
     /*const duplicate = await Order.findOne({ username }).collation({ locale: 'en', strength: 2 }).lean().exec()
@@ -40,9 +40,9 @@ const createNewOrder = async (req, res) => {
     const order = await Order.create(orderObject)
 
     if (order) { //created 
-        res.status(201).json({ message: `New order ${name} created` })
+        res.status(201).json({ success: `New order created: ${filename}` })
     } else {
-        res.status(400).json({ message: 'Invalid order data received' })
+        res.status(400).json({ error: 'Invalid order data received' })
     }
 }
 

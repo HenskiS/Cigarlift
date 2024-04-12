@@ -2,7 +2,30 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const orderSlice = createSlice({
     name: 'order',
-    initialState: { cart: [] },
+    initialState: { 
+        cart: [],
+        client: {
+            _id: "65f233c0ee1c07dac4550465",
+            taxpayer: "3 BOB'S INC.",
+            dba: "BOB'S FOOD MART",
+            address: "1650 OCEAN PARK BLVD",
+            city: "SANTA MONICA",
+            state: "CA",
+            zip: "90405-4822",
+            contact: "",
+            isVisited: false,
+            notes: "",
+            phone: "",
+            license: 91204989,
+            website: "",
+            images: {
+                locationImage: "",
+                contractImage: "",
+                licenseImage: "",
+                humidorImage: ""
+            }
+        }
+    },
     reducers: {
         removeCigar: (state, action) => {
             const newCart = state.cart.filter(cigar => cigar._id !== action.payload)
@@ -37,3 +60,4 @@ export const { removeCigar, addCigar, updateQuantity } = orderSlice.actions
 export default orderSlice.reducer
 
 export const selectCart = (state) => state.order.cart
+export const selectClient = (state) => state.order.client

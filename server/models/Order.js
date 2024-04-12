@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const cigarSchema = new Schema({
+const orderSchema = new Schema({
     client: {
         type: {}
     },
@@ -21,4 +21,4 @@ const cigarSchema = new Schema({
     }
 });
 
-module.exports = mongoose.model('Cigar', cigarSchema);
+module.exports = mongoose.model('Order', orderSchema);

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useGetCigarsQuery } from "../cigars/cigarsApiSlice";
 import PulseLoader from 'react-spinners/PulseLoader';
 import { useDispatch, useSelector } from "react-redux";
-import { selectCart, updateQuantity, removeCigar } from "./orderSlice";
+import { selectCart, updateQuantity, removeCigar, selectClient } from "./orderSlice";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useAddNewOrderMutation } from "./ordersApiSlice";
 
@@ -17,6 +17,7 @@ function NewOrderForm() {
     
     const dispatch = useDispatch()
     const cart = useSelector(selectCart)
+    const client = useSelector(selectClient)
     const [addNewOrderMutation] = useAddNewOrderMutation()
 
     const [isCash, setIsCash] = useState(false)
@@ -40,13 +41,16 @@ function NewOrderForm() {
         if (isCheck && check) p += parseFloat(check)
         if (isMoneyorder && moneyorder) p += parseFloat(moneyorder)
         setPayed(p)
-    }, [cash, check, isCash, isCheck, isMoneyorder, moneyorder])
+    }, [cash, check, moneyorder, isCash, isCheck, isMoneyorder ])
 
     const handleRemoveCigar = (id) => {
         dispatch(removeCigar(id))
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
+        if (!cart.length) {
+            return alert('No cigars have been selected')
+        }
         let p = (Math.ceil(payed*100)/100)
         let t = (Math.ceil(total*100)/100)
         if (p < t) {
@@ -55,7 +59,13 @@ function NewOrderForm() {
         if (p > t){
             return alert(`Payment: $${p.toFixed(2)} is greater than Total: $${t.toFixed(2)}`)
         }
-        //addNewOrderMutation
+        const response = await addNewOrderMutation({ client: {name: "Client"}, cigars: cart, cigarStrings: "C1,C2,C3", total: t })
+        if (response.data) {
+            alert(response.data.success ?? "success")
+            window.location.reload()
+        }
+        else if (response.error) alert(response.error.data.error ?? "error")
+        else alert('error')
     }
 
     let content
@@ -69,7 +79,12 @@ function NewOrderForm() {
         <h1>New Order</h1>
         <div className="order-header">
             <div className="client-header">
-
+                <p>{client.taxpayer}</p>
+                <p>{client.dba}</p>
+                <p>{client.address}</p>
+                <p>{client.city}</p>
+                <p>{client.state + " " + client.zip}</p>
+                <p>{client.contact??""}</p>
             </div>
             <div className="seller-header">
 
@@ -80,11 +95,7 @@ function NewOrderForm() {
         <table className="cigarlist-table">
             <thead>
                 <tr>
-                <td>Name</td>
-                <td>Blend</td>
-                <td>Size</td>
-                <td>Price</td>
-                <td>Qty</td>
+                    <td>Name</td><td>Blend</td><td>Size</td><td>Price</td><td>Qty</td>
                 </tr>
             </thead>
             <tbody>
@@ -110,12 +121,7 @@ function NewOrderForm() {
         <table className="cigarlist-table">
             <thead>
                 <tr>
-                <td></td>
-                <td>Name</td>
-                <td>Blend</td>
-                <td>Size</td>
-                <td>Price</td>
-                <td>Qty</td>
+                    <td></td><td>Name</td><td>Blend</td><td>Size</td><td>Price</td><td>Qty</td>
                 </tr>
             </thead>
             <tbody>
@@ -142,6 +148,7 @@ function NewOrderForm() {
 
         <div className="payment">
             <h3>Payment Method</h3>
+            <hr />
             <div className="payment-type">
                 <span>
                     <input type="checkbox" id="cash" checked={isCash} onChange={e => setIsCash(e.target.checked)}/>
