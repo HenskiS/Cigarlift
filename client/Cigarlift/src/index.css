@@ -296,8 +296,20 @@ th, td {
   border: 1px solid lightgrey;
   padding: 8px;
 }
-.client-header {
+.order-client-header {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+}
+.client-header-buttons {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-evenly;
+  margin: 10px 0px;
+}
+.client-header-buttons button {
+  width: 40%;
+  color: blue;
+  border-radius: 10px;
 }

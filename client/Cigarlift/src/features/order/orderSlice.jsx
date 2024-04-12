@@ -4,27 +4,7 @@ const orderSlice = createSlice({
     name: 'order',
     initialState: { 
         cart: [],
-        client: {
-            _id: "65f233c0ee1c07dac4550465",
-            taxpayer: "3 BOB'S INC.",
-            dba: "BOB'S FOOD MART",
-            address: "1650 OCEAN PARK BLVD",
-            city: "SANTA MONICA",
-            state: "CA",
-            zip: "90405-4822",
-            contact: "",
-            isVisited: false,
-            notes: "",
-            phone: "",
-            license: 91204989,
-            website: "",
-            images: {
-                locationImage: "",
-                contractImage: "",
-                licenseImage: "",
-                humidorImage: ""
-            }
-        }
+        client: {}
     },
     reducers: {
         removeCigar: (state, action) => {
@@ -51,11 +31,14 @@ const orderSlice = createSlice({
                 }
                 else state.cart.push({ ...cigar, qty: parseInt(newQuantity) })
             }
+        },
+        setClient: (state, action) => {
+            state.client = action.payload
         }
     }
 })
 
-export const { removeCigar, addCigar, updateQuantity } = orderSlice.actions
+export const { removeCigar, addCigar, updateQuantity, setClient } = orderSlice.actions
 
 export default orderSlice.reducer
 

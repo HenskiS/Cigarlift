@@ -7,10 +7,13 @@ import { useNavigate, useParams } from 'react-router-dom'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import { useState } from 'react'
 import EditClientForm from './EditClientForm'
+import { setClient } from '../order/orderSlice'
+import { useDispatch } from 'react-redux'
 
 const Client = ({ cid, close }) => {
     useTitle('Cigarlift: Client')
     const navigate = useNavigate()
+    const dispatch = useDispatch()
     
     let id // id is set by param if it exists, or prop if it does not
 
@@ -46,6 +49,10 @@ const Client = ({ cid, close }) => {
         }
         const handleButtonEdit  = () => setIsClientEdit(!isClientEdit)
         const handleNavigateToDrive = () => navigate('/drive')
+        const handleStartOrder = () => {
+            dispatch(setClient(client))
+            navigate('/order')
+        }
 
         content = 
             <>
@@ -69,7 +76,10 @@ const Client = ({ cid, close }) => {
                             <h3>{client.taxpayer}</h3>
                         </div>
                     </div>
-                    <button onClick={handleDirections}>Get Directions</button>
+                    <div className='client-header-buttons'>
+                        <button className='b1' onClick={handleDirections}>Get Directions</button>
+                        <button className='b2' onClick={handleStartOrder}>Start Order</button>
+                    </div>
                     <table className='client-table'>
                         <tbody>
                         <tr>

@@ -109,9 +109,7 @@ const ClientsList = () => {
                     <Client cid={clientSelected} close={handleButtonClose} />
                 : null} 
                 <h1 hidden={clientSelected}>Client List</h1>
-                <div hidden={clientSelected} className="ag-theme-quartz" style={{width:"100%",height:"80%"}} >
-                    
-                    <div className="column--selectors">
+                <div className="column--selectors">
                         <input type="checkbox" name="company" id="company" defaultChecked={false} 
                             onChange={e => handleSetCols("taxpayer", e.target.checked)} />
                         <label htmlFor="company">Company</label>
@@ -128,6 +126,9 @@ const ClientsList = () => {
                             onChange={e => handleSetCols("city", e.target.checked)} />
                         <label htmlFor="city">City</label>
                     </div>
+                <div hidden={clientSelected} className="ag-theme-quartz" style={{width:"100%",height:"75vh",marginBottom:"56px"}} >
+                    
+                    
                     
                     <AgGridReact
                         

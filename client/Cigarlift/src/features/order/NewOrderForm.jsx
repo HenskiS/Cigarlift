@@ -59,9 +59,9 @@ function NewOrderForm() {
         if (p > t){
             return alert(`Payment: $${p.toFixed(2)} is greater than Total: $${t.toFixed(2)}`)
         }
-        const response = await addNewOrderMutation({ client: {name: "Client"}, cigars: cart, cigarStrings: "C1,C2,C3", total: t })
+        const response = await addNewOrderMutation({ client, cigars: cart, cigarStrings: "C1,C2,C3", total: t })
         if (response.data) {
-            alert(response.data.success ?? "success")
+            alert("Order added successfully") // response.data.success ?? "success")
             window.location.reload()
         }
         else if (response.error) alert(response.error.data.error ?? "error")
@@ -78,13 +78,17 @@ function NewOrderForm() {
     <div className="order cigar-list">
         <h1>New Order</h1>
         <div className="order-header">
-            <div className="client-header">
-                <p>{client.taxpayer}</p>
-                <p>{client.dba}</p>
-                <p>{client.address}</p>
-                <p>{client.city}</p>
-                <p>{client.state + " " + client.zip}</p>
-                <p>{client.contact??""}</p>
+            <div className="order-client-header">
+                {client.dba? 
+                <>
+                    <p>{client.taxpayer}</p>
+                    <p>{client.dba}</p>
+                    <p>{client.address}</p>
+                    <p>{client.city}</p>
+                    <p>{client.state + " " + client.zip}</p>
+                    <p>{client.contact??""}</p>
+                </>
+                : <p>No client selected...</p>}
             </div>
             <div className="seller-header">
 
