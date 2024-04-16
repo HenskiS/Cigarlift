@@ -1,3 +1,4 @@
+const { default: mongoose } = require('mongoose')
 const Order = require('../models/Order')
 
 // @desc Get all orders
@@ -15,11 +16,28 @@ const getAllOrders = async (req, res) => {
     res.json(orders)
 }
 
+// @desc Get one order by id
+// @route GET /orders/:id
+// @access Private
+const getOrderById = async (req, res) => {
+    const id = req.params.id
+    console.log(id)
+    //const mongoID = new mongoose.Types.ObjectId(id)
+    // Does the client exist?
+    const order = await Order.findById(id).exec()
+
+    if (!order) {
+        return res.status(400).json({ message: 'Order not found' })
+    }
+    res.status(200).json(order)
+}
+    
+
 // @desc Create new order
 // @route POST /orders
 // @access Private
 const createNewOrder = async (req, res) => {
-    const { client, cigars, cigarStrings, total } = req.body
+    const { client, cigars, cigarStrings, total, payed } = req.body
 
     // Confirm data
     if (!client || !cigars || !total) {
@@ -34,7 +52,7 @@ const createNewOrder = async (req, res) => {
     }*/
     let filename = "file"
 
-    const orderObject = { client, cigars, cigarStrings, total, filename }
+    const orderObject = { client, cigars, cigarStrings, total, payed, filename }
 
     // Create and store new order 
     const order = await Order.create(orderObject)
@@ -105,6 +123,7 @@ const deleteOrder = async (req, res) => {
 
 module.exports = {
     getAllOrders,
+    getOrderById,
     createNewOrder,
     updateOrder,
     deleteOrder

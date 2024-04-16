@@ -284,11 +284,17 @@ th, td {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  color: #1976d2;
+}
+.payment-amounts h4 {
+  margin: 0px;
 }
 .payment-amounts input{
   width: 50px;
   padding: 5px;
   margin-bottom: 3px;
+  border: 1px solid lightgray;
+  border-radius: 5px;
 }
 .submit-order {
   background-color: #1976d2;
@@ -312,4 +318,18 @@ th, td {
   width: 40%;
   color: blue;
   border-radius: 10px;
+}
+.toPDF {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 56px;
+  width: 100%;
+}
+.pdfwrapper {
+  width: 100%;
+  padding: 50px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }

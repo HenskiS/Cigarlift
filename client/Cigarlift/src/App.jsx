@@ -36,6 +36,7 @@ function App() {
         <Route index element={<Public />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/login" element={<Login />} />
+        <Route path="order/:id" element={<Order />} />
       
       {/* private routes */}
       <Route element={<PersistLogin />}>
@@ -53,7 +54,6 @@ function App() {
 
                 <Route path="order">
                   <Route index element={<NewOrderForm />} />
-                  <Route path=":id" element={<Order />} />
                   <Route path="new" element={<NewUserForm />} />
                 </Route>
 

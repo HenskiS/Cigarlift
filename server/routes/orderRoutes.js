@@ -10,5 +10,7 @@ router.route('/')
     .post(ordersController.createNewOrder)
     .patch(ordersController.updateOrder)
     .delete(ordersController.deleteOrder)
+router.route('/:id')
+    .get(ordersController.getOrderById)
 
 module.exports = router

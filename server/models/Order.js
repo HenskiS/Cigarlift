@@ -12,6 +12,13 @@ const orderSchema = new Schema({
         type: [String]
     },
     total: Number,
+    payed: {
+        type: {
+            cash: Number,
+            check: Number,
+            moneyorder: Number
+        }
+    },
     date: {
         type: Date,
         default: Date.now

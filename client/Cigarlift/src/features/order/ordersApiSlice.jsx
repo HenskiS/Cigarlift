@@ -33,6 +33,15 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
                 } else return [{ type: 'Order', id: 'LIST' }]
             }
         }),
+        getOrderById: builder.query({
+            query: (id) => ({
+                url: `/orders/${id}`,
+                validateStatus: (response, result) => {
+                    return response.status === 200 && !result.isError
+                },
+            }),
+            providesTags: ['Order']
+        }),
         addNewOrder: builder.mutation({
             query: initialOrderData => ({
                 url: '/orders',
@@ -72,6 +81,7 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
 
 export const {
     useGetOrdersQuery,
+    useGetOrderByIdQuery,
     useAddNewOrderMutation,
     useUpdateOrderMutation,
     useDeleteOrderMutation,

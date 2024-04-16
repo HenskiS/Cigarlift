@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
-import { useGetCigarsQuery } from "../cigars/cigarsApiSlice";
-import PulseLoader from 'react-spinners/PulseLoader';
-import { useDispatch, useSelector } from "react-redux";
-import { selectCart, updateQuantity, removeCigar, selectClient } from "./orderSlice";
-import DeleteIcon from '@mui/icons-material/Delete';
-import { useAddNewOrderMutation } from "./ordersApiSlice";
+import { useState, useEffect, useRef } from "react"
+import { useGetCigarsQuery } from "../cigars/cigarsApiSlice"
+import PulseLoader from 'react-spinners/PulseLoader'
+import { useDispatch, useSelector } from "react-redux"
+import { selectCart, updateQuantity, removeCigar, selectClient } from "./orderSlice"
+import DeleteIcon from '@mui/icons-material/Delete'
+import { useAddNewOrderMutation } from "./ordersApiSlice"
 
 
 function NewOrderForm() {
@@ -14,7 +14,7 @@ function NewOrderForm() {
       error, 
       isSuccess 
     } = useGetCigarsQuery()
-    
+
     const dispatch = useDispatch()
     const cart = useSelector(selectCart)
     const client = useSelector(selectClient)
@@ -51,6 +51,9 @@ function NewOrderForm() {
         if (!cart.length) {
             return alert('No cigars have been selected')
         }
+        if (!client.dba) {
+            return alert('No client has been selected')
+        }
         let p = (Math.ceil(payed*100)/100)
         let t = (Math.ceil(total*100)/100)
         if (p < t) {
@@ -59,9 +62,20 @@ function NewOrderForm() {
         if (p > t){
             return alert(`Payment: $${p.toFixed(2)} is greater than Total: $${t.toFixed(2)}`)
         }
-        const response = await addNewOrderMutation({ client, cigars: cart, cigarStrings: "C1,C2,C3", total: t })
+        const order = { 
+            client, 
+            cigars: cart, 
+            cigarStrings: "C1,C2,C3", 
+            total: t, 
+            payed: {cash: isCash? cash : 0, 
+                    check: isCheck? check : 0, 
+                    moneyorder: isMoneyorder? moneyorder : 0
+                } 
+            }
+            console.log(order)
+        const response = await addNewOrderMutation(order)
         if (response.data) {
-            alert("Order added successfully") // response.data.success ?? "success")
+            alert("Order added successfully")
             window.location.reload()
         }
         else if (response.error) alert(response.error.data.error ?? "error")
@@ -75,113 +89,112 @@ function NewOrderForm() {
     if (isSuccess) {
 
     content = (
-    <div className="order cigar-list">
-        <h1>New Order</h1>
-        <div className="order-header">
-            <div className="order-client-header">
-                {client.dba? 
-                <>
-                    <p>{client.taxpayer}</p>
-                    <p>{client.dba}</p>
-                    <p>{client.address}</p>
-                    <p>{client.city}</p>
-                    <p>{client.state + " " + client.zip}</p>
-                    <p>{client.contact??""}</p>
-                </>
-                : <p>No client selected...</p>}
+        <div className="order cigar-list">
+            <h1>New Order</h1>
+            <div className="order-header">
+                <div className="order-client-header">
+                    {client.dba? 
+                    <>
+                        <p>{client.taxpayer}</p>
+                        <p>{client.dba}</p>
+                        <p>{client.address}</p>
+                        <p>{client.city}</p>
+                        <p>{client.state + " " + client.zip}</p>
+                        <p>{client.contact??""}</p>
+                    </>
+                    : <p>No client selected...</p>}
+                </div>
+                <div className="seller-header">
+    
+                </div>
             </div>
-            <div className="seller-header">
-
-            </div>
-        </div>
-        <h3>Cigars</h3>
-        <hr />
-        <table className="cigarlist-table">
-            <thead>
-                <tr>
-                    <td>Name</td><td>Blend</td><td>Size</td><td>Price</td><td>Qty</td>
-                </tr>
-            </thead>
-            <tbody>
-                {data.map(cigar => (
-                    <tr key={cigar._id} className={ cart.find(oldCigar => oldCigar._id === cigar._id) ? "row-selected" : ""}>
-                    <td>{cigar.name}</td>
-                    <td>{cigar.blend}</td>
-                    <td>{cigar.size}</td>
-                    <td>${cigar.price.toFixed(2)}</td>
-                    <td>
-                        <input className='cigar-qty cigar-col' type="number" min={1} placeholder='Qty' 
-                            value={cart.find(oldCigar => oldCigar._id === cigar._id)?.qty ?? "" } 
-                            onChange={ (e) => dispatch(updateQuantity({cigar: cigar, qty: e.target.value})) } 
-                        />
-                    </td>
-                    </tr>
-                ))}
-            </tbody>
-        </table>
-        <br />
-        <h3>Summary</h3>
-        <hr />
-        <table className="cigarlist-table">
-            <thead>
-                <tr>
-                    <td></td><td>Name</td><td>Blend</td><td>Size</td><td>Price</td><td>Qty</td>
-                </tr>
-            </thead>
-            <tbody>
-                {cart?.map(cigar => (
-                    <tr key={cigar._id}>
-                    <td>
-                        <button className="remove-cigar-button"
-                        onClick={() => handleRemoveCigar(cigar._id)}>
-                        <DeleteIcon /></button>
-                    </td>
-                    <td>{cigar.name}</td>
-                    <td>{cigar.blend}</td>
-                    <td>{cigar.size}</td>
-                    <td>${cigar.price.toFixed(2)}</td>
-                    <td>{cigar.qty}</td>
-                    </tr>
-                ))}
-            </tbody>
-        </table>
-        <div className="order-totals">
-            <h4>Total</h4>
-            <p>${(Math.ceil(total*100)/100).toFixed(2)}</p>
-        </div>
-
-        <div className="payment">
-            <h3>Payment Method</h3>
+            <h3>Cigars</h3>
             <hr />
-            <div className="payment-type">
-                <span>
-                    <input type="checkbox" id="cash" checked={isCash} onChange={e => setIsCash(e.target.checked)}/>
-                    <label htmlFor="cash">Cash</label>
-                </span>
-                <span>
-                    <input type="checkbox" id="check" checked={isCheck} onChange={e => setIsCheck(e.target.checked)}/>
-                    <label htmlFor="check">Check</label>
-                </span>
-                <span>
-                    <input type="checkbox" id="moneyorder" checked={isMoneyorder} onChange={e => setIsMoneyorder(e.target.checked)}/>
-                    <label htmlFor="moneyorder">Money Order</label>
-                </span>
-            </div>
-            <div className="payment-amounts">
-                <input type="number" disabled={!isCash} value={isCash? cash ?? "" : ""} placeholder="$ Cash" onChange={e => setCash(e.target.value)}/>
-                <input type="number" disabled={!isCheck} value={isCheck? check ?? "" : ""} placeholder="$ Check" onChange={e => setCheck(e.target.value)}/>
-                <input type="number" disabled={!isMoneyorder} value={isMoneyorder? moneyorder ?? "" : ""} placeholder="$ MO" onChange={e => setMoneyorder(e.target.value)}/>
-            </div>
+            <table className="cigarlist-table">
+                <thead>
+                    <tr>
+                        <td>Name</td><td>Blend</td><td>Size</td><td>Price</td><td>Qty</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {data.map(cigar => (
+                        <tr key={cigar._id} className={ cart.find(oldCigar => oldCigar._id === cigar._id) ? "row-selected" : ""}>
+                        <td>{cigar.name}</td>
+                        <td>{cigar.blend}</td>
+                        <td>{cigar.size}</td>
+                        <td>${cigar.price.toFixed(2)}</td>
+                        <td>
+                            <input className='cigar-qty cigar-col' type="number" min={1} placeholder='Qty' 
+                                value={cart.find(oldCigar => oldCigar._id === cigar._id)?.qty ?? "" } 
+                                onChange={ (e) => dispatch(updateQuantity({cigar: cigar, qty: e.target.value})) } 
+                            />
+                        </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+            <br />
+            <h3>Summary</h3>
+            <hr />
+            <table className="cigarlist-table">
+                <thead>
+                    <tr>
+                        <td></td><td>Name</td><td>Blend</td><td>Size</td><td>Price</td><td>Qty</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {cart?.map(cigar => (
+                        <tr key={cigar._id}>
+                        <td>
+                            <DeleteIcon className="remove-cigar-button" onClick={() => handleRemoveCigar(cigar._id)}/>
+                        </td>
+                        <td>{cigar.name}</td>
+                        <td>{cigar.blend}</td>
+                        <td>{cigar.size}</td>
+                        <td>${cigar.price.toFixed(2)}</td>
+                        <td>{cigar.qty}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
             <div className="order-totals">
-                <h4>Payed</h4>
-                <p>${(Math.ceil(payed*100)/100).toFixed(2)}</p>
+                <h4>Total</h4>
+                <p>${(Math.ceil(total*100)/100).toFixed(2)}</p>
             </div>
-            <button className="submit-order" onClick={handleSubmit}>Submit Order</button>
-            <br />
-            <br />
-            <br />
+    
+            <div className="payment">
+                <h3>Payment Method</h3>
+                <hr />
+                <div className="payment-type">
+                    <span>
+                        <input type="checkbox" id="cash" checked={isCash} onChange={e => setIsCash(e.target.checked)}/>
+                        <label htmlFor="cash">Cash</label>
+                    </span>
+                    <span>
+                        <input type="checkbox" id="check" checked={isCheck} onChange={e => setIsCheck(e.target.checked)}/>
+                        <label htmlFor="check">Check</label>
+                    </span>
+                    <span>
+                        <input type="checkbox" id="moneyorder" checked={isMoneyorder} onChange={e => setIsMoneyorder(e.target.checked)}/>
+                        <label htmlFor="moneyorder">Money Order</label>
+                    </span>
+                </div>
+                <div className="payment-amounts">
+                    <input type="number" disabled={!isCash} value={isCash? cash ?? "" : ""} placeholder="$ Cash" onChange={e => setCash(e.target.value)}/>
+                    <input type="number" disabled={!isCheck} value={isCheck? check ?? "" : ""} placeholder="$ Check" onChange={e => setCheck(e.target.value)}/>
+                    <input type="number" disabled={!isMoneyorder} value={isMoneyorder? moneyorder ?? "" : ""} placeholder="$ MO" onChange={e => setMoneyorder(e.target.value)}/>
+                </div>
+                <div className="order-totals">
+                    <h4>Payed</h4>
+                    <p>${(Math.ceil(payed*100)/100).toFixed(2)}</p>
+                </div>
+                <button className="submit-order" onClick={handleSubmit}>Submit Order</button>
+                <br />
+                <br />
+                <br />
+            </div>
+            
         </div>
-    </div>
     )
     }
     
