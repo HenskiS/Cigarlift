@@ -1,5 +1,19 @@
 const { default: mongoose } = require('mongoose')
 const Order = require('../models/Order')
+const puppeteer = require("puppeteer");
+const sendEmail = require('../middleware/emailHandler');
+
+
+const generatePDF = async (filename, id) => {
+    const browser = await puppeteer.launch(); // launch a browser (chromium by default but you can chose another one)
+    const page = await browser.newPage(); // open a page in the browser
+    await page.goto(`http://localhost:5173/order/${id}`, {
+        waitUntil: "networkidle2",
+    }); // visit the printable version of your page
+    const pdf = await page.pdf({ format: "a4", path: `./orders/${filename}` }); // generate the PDF 🎉
+    await browser.close();
+    return pdf
+}
 
 // @desc Get all orders
 // @route GET /orders
@@ -50,7 +64,9 @@ const createNewOrder = async (req, res) => {
     if (duplicate) {
         return res.status(409).json({ message: 'Duplicate username' })
     }*/
-    let filename = "file"
+    let event = new Date()
+    let time = event.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }).replaceAll(":",".").replaceAll("/","-")
+    let filename = `Order ${time} ${client.dba}.pdf`
 
     const orderObject = { client, cigars, cigarStrings, total, payed, filename }
 
@@ -59,6 +75,10 @@ const createNewOrder = async (req, res) => {
 
     if (order) { //created 
         res.status(201).json({ success: `New order created: ${filename}` })
+        // generate PDF
+        const pdf = await generatePDF(filename, order._id)
+        sendEmail(order)
+
     } else {
         res.status(400).json({ error: 'Invalid order data received' })
     }
