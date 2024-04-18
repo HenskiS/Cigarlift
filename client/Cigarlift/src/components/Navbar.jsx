@@ -10,6 +10,7 @@ import FeedIcon from '@mui/icons-material/Feed';
 import ListIcon from '@mui/icons-material/List';
 import GroupIcon from '@mui/icons-material/Group';
 import LogoutIcon from '@mui/icons-material/Logout';
+import ScheduleIcon from '@mui/icons-material/Schedule';
 
 import { Paper } from '@mui/material';
 import useAuth from '../hooks/useAuth';
@@ -51,6 +52,13 @@ const Navbar = () => {
           component={Link}
           to="/dash"
         /> : null}
+        <BottomNavigationAction 
+          label="Appointments"
+          value="/appointments"
+          icon={<ScheduleIcon />}
+          component={Link}
+          to="/appointments"
+        />
         <BottomNavigationAction 
           label="Drive"
           value="/drive"

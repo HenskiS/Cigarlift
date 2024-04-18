@@ -8,13 +8,13 @@ import { useAddNewOrderMutation, useGetOrderByIdQuery } from "./ordersApiSlice"
 import { usePDF, Margin } from 'react-to-pdf'
 import { useNavigate, useParams } from "react-router-dom"
 import useTitle from "../../hooks/useTitle"
+import logo from "../../assets/cigarlift-logo-white.png"
 
 
 function NewOrderForm() {
     useTitle('Cigarlift: Order')
     const navigate = useNavigate
     
-    let id // id is set by param if it exists, or prop if it does not
     const {id: paramId} = useParams()
 
     const { data, 
@@ -31,21 +31,29 @@ function NewOrderForm() {
 
     if (isSuccess) {
       console.log(data)
-    content = (
-        <div className="pdfwrapper">
+        content = (
+        <div className="order-page">
+            <div className="order-pdf-header">
+                <img src={logo} alt="logo" className="order-logo" />
+            </div>
         <div className="toPDF">
-            <div className="order-client-header">
-                    {data.client.dba? 
-                    <>
-                        <p>{data.client.taxpayer}</p>
-                        <p>{data.client.dba}</p>
-                        <p>{data.client.address}</p>
-                        <p>{data.client.city}</p>
-                        <p>{data.client.state + " " + data.client.zip}</p>
-                        <p>{data.client.contact??""}</p>
-                    </>
-                    : <p>No client selected...</p>}
+            <div className="order-header">
+                <div className="seller-header">
+                    <p>Cigarlift.com</p>
+                    <p>(949) 796-2644</p>
+                    <p>(949) 796-2980</p>
                 </div>
+                <div className="order-client-header">
+                    <p>Bill to:</p>
+                    <p>{data.client.taxpayer}</p>
+                    <p>{data.client.dba}</p>
+                    <p>{data.client.address}</p>
+                    <p>{data.client.city}</p>
+                    <p>{data.client.state + " " + data.client.zip}</p>
+                    <p>{data.client.contact??""}</p>
+                </div>
+                
+            </div>
             <h3>Summary</h3>
             <div><hr /></div>
             <table className="cigarlist-table">

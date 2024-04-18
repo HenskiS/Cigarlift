@@ -74,15 +74,17 @@ const createNewClient = async (req, res) => {
 // @route PATCH /clients
 // @access Private
 const updateClient = async (req, res) => {
-    const { id, license, dba, taxpayer, address, city, state, contact, phone, website, notes, isVisited, images } = req.body
+    const { id, _id, license, dba, taxpayer, address, city, state, contact, phone, website, notes, isVisited, images } = req.body
 
     // Confirm data 
-    if ( !id || !dba ) {
-        return res.status(400).json({ message: 'DBA is required' })
+    if (!_id) {
+        if ( !id || !dba ) {
+            return res.status(400).json({ message: 'ID and DBA are required' })
+        }
     }
 
     // Does the client exist to update?
-    const client = await Client.findById(id).exec()
+    const client = await Client.findById( id ?? _id ).exec()
 
     if (!client) {
         return res.status(400).json({ message: 'Client not found' })

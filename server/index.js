@@ -32,6 +32,7 @@ app.use('/users', require('./routes/userRoutes'))
 app.use('/clients', require('./routes/clientRoutes'))
 app.use('/cigars', require('./routes/cigarRoutes'))
 app.use('/orders', require('./routes/orderRoutes'))
+app.use('/appointments', require('./routes/appointmentRoutes'))
 app.use('/itineraries', require('./routes/itineraryRoutes'))
 app.use('/images', require('./routes/imageRoutes'))
 

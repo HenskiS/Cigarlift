@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { selectCart, updateQuantity, removeCigar, selectClient } from "./orderSlice"
 import DeleteIcon from '@mui/icons-material/Delete'
 import { useAddNewOrderMutation } from "./ordersApiSlice"
+import { useUpdateClientMutation } from "../clients/clientsApiSlice"
 
 
 function NewOrderForm() {
@@ -19,7 +20,7 @@ function NewOrderForm() {
     const cart = useSelector(selectCart)
     const client = useSelector(selectClient)
     const [addNewOrderMutation] = useAddNewOrderMutation()
-
+    const [updateClientMutation] = useUpdateClientMutation()
     const [isCash, setIsCash] = useState(false)
     const [isCheck, setIsCheck] = useState(false)
     const [isMoneyorder, setIsMoneyorder] = useState(false)
@@ -28,6 +29,7 @@ function NewOrderForm() {
     const [cash, setCash] = useState()
     const [check, setCheck] = useState()
     const [moneyorder, setMoneyorder] = useState()
+    const [notes, setNotes] = useState(client.notes)
 
     useEffect(()=> {
         if (cart.length) {
@@ -76,10 +78,16 @@ function NewOrderForm() {
         const response = await addNewOrderMutation(order)
         if (response.data) {
             alert("Order added successfully")
-            window.location.reload()
         }
-        else if (response.error) alert(response.error.data.error ?? "error")
-        else alert('error')
+        else if (response.error) return alert(response.error.data.error ?? "error")
+        else return alert('error')
+        // update notes
+        if (notes !== client.notes) {
+            const response2 = await updateClientMutation({...client, notes: notes})
+            console.log(response2)
+        }
+        
+        window.location.reload()
     }
 
     let content
@@ -92,6 +100,11 @@ function NewOrderForm() {
         <div className="order cigar-list">
             <h1>New Order</h1>
             <div className="order-header">
+                <div className="seller-header">
+                    <p>Cigarlift.com</p>
+                    <p>(949) 796-2644</p>
+                    <p>(949) 796-2980</p>
+                </div>
                 <div className="order-client-header">
                     {client.dba? 
                     <>
@@ -103,9 +116,6 @@ function NewOrderForm() {
                         <p>{client.contact??""}</p>
                     </>
                     : <p>No client selected...</p>}
-                </div>
-                <div className="seller-header">
-    
                 </div>
             </div>
             <h3>Cigars</h3>
@@ -193,7 +203,13 @@ function NewOrderForm() {
                 <br />
                 <br />
             </div>
-            
+            <h3>Client Notes</h3>
+            <textarea 
+                className="client-notes"
+                placeholder="Client notes (optional)..." 
+                value={notes} 
+                onChange={e  => setNotes(e.target.value)}
+            />
         </div>
     )
     }

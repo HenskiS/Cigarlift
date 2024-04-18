@@ -58,12 +58,6 @@ const createNewOrder = async (req, res) => {
         return res.status(400).json({ error: 'Client, cigars, and total are required' })
     }
 
-    // Check for duplicate username
-    /*const duplicate = await Order.findOne({ username }).collation({ locale: 'en', strength: 2 }).lean().exec()
-
-    if (duplicate) {
-        return res.status(409).json({ message: 'Duplicate username' })
-    }*/
     let event = new Date()
     let time = event.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }).replaceAll(":",".").replaceAll("/","-")
     let filename = `Order ${time} ${client.dba}.pdf`

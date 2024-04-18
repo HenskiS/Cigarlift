@@ -25,6 +25,7 @@ import ClientsList from './features/clients/ClientsList.jsx';
 import EditClient from './features/clients/EditClient.jsx';
 import Client from './features/clients/Client.jsx';
 import NewOrderForm from './features/order/NewOrderForm.jsx';
+import Appointments from './features/appointments/Appointments.jsx';
 
 function App() {
   useTitle('Cigarlift')
@@ -45,6 +46,7 @@ function App() {
               <Route path='/*' element={<DashLayout />}>
 
                 <Route path="drive" element={<Drive />} />
+                <Route path="appointments" element={<Appointments />} />
 
                 <Route path="clients">
                   <Route index element={<ClientsList />} />
