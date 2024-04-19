@@ -19,23 +19,31 @@ function Appointments() {
 
     const { data, isLoading, isError, error, isSuccess } = useGetAppointmentsQuery()
     const [dateTime, setDateTime] = useState(dayjs(Date.now()))
+    const [notes, setNotes] = useState()
     const client = useSelector(selectClient)
     const [addNewAppointment] = useAddNewAppointmentMutation()
     const handleSubmit = async () => {
-        const response = await addNewAppointment({client, date: dateTime, notes: "Notes1"})
-        console.log(response)
+        const response = await addNewAppointment({client, date: dateTime, notes})
+        if (response.error?.data?.error) alert(response.error.data.error)
+        else {
+            setNotes("")
+            setDateTime(dayjs(Date.now()))
+        }
     }
 
     let content
 
     if (isLoading) content = <PulseLoader color="#CCC" />;
-    if (isError) content = <p>{error.data}</p>;
+    if (isError) content = <p style={{color: "gray"}}>{error.data.message}</p>;
 
     if (isSuccess) {
         content = (
             <div>
                 {data.map( (a) => (
-                    <p key={a._id}>{a.client.dba}: {dayjs(a.date).format("ddd, MMM DD, h:mma")}</p>
+                    <div key={a._id} className='appt-card'>
+                        <p>{dayjs(a.date).format("ddd, MMM DD, h:mma")}: {a.client.dba}</p>
+                        <p className='notes'>{a.notes}</p>
+                    </div>
                 ))}
             </div>
         )
@@ -45,15 +53,21 @@ function Appointments() {
         <div className='appointments'>
             <h1>Appointments</h1>
             <div className="new-appt">
-                <p>{client.dba}</p>
-                <LocalizationProvider dateAdapter={AdapterDayjs} timezone="America/Los_Angeles">
-                    <DateTimePicker
-                    label="Select Date and Time"
-                    value={dateTime}
-                    onChange={(newValue) => setDateTime(newValue)}
-                    />
-                </LocalizationProvider>
-                <button onClick={handleSubmit}>Add Appointment</button>
+                <div className='new-appt-placetime'>
+                    <p>{client.dba ?? "No client selected..."}</p>
+                    <LocalizationProvider dateAdapter={AdapterDayjs} timezone="America/Los_Angeles">
+                        <DateTimePicker
+                        label="Select Date and Time"
+                        value={dateTime}
+                        onChange={(newValue) => setDateTime(newValue)}
+                        />
+                    </LocalizationProvider>
+                    
+                </div>
+                <textarea className='new-appt-notes' value={notes} 
+                    placeholder='Appointment notes...' 
+                    onChange={e => setNotes(e.target.value)}/>
+                    <button className="add-new-appt" onClick={handleSubmit}>Add Appointment</button>
             </div>
             {content}
         </div>

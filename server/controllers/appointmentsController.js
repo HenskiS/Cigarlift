@@ -43,8 +43,8 @@ const createNewAppointment = async (req, res) => {
     const { client, date, notes } = req.body
 
     // Confirm data
-    if (!client || !date || !notes) {
-        return res.status(400).json({ error: 'Client, date, and notes are required' })
+    if (!client.dba || !date ) {
+        return res.status(400).json({ error: 'Client and date are required' })
     }
 
     let event = new Date()

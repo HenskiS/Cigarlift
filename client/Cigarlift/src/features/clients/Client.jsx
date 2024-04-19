@@ -53,6 +53,10 @@ const Client = ({ cid, close }) => {
             dispatch(setClient(client))
             navigate('/order')
         }
+        const handleSchedule = () => {
+            dispatch(setClient(client))
+            navigate('/appointments')
+        }
 
         content = 
             <>
@@ -79,6 +83,7 @@ const Client = ({ cid, close }) => {
                     <div className='client-header-buttons'>
                         <button className='b1' onClick={handleDirections}>Get Directions</button>
                         <button className='b2' onClick={handleStartOrder}>Start Order</button>
+                        <button className='b3' onClick={handleSchedule}>Schedule Appointment</button>
                     </div>
                     <table className='client-table'>
                         <tbody>

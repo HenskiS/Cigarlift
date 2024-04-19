@@ -318,6 +318,7 @@ th, td {
   width: 40%;
   color: blue;
   border-radius: 10px;
+  margin: 10px;
 }
 .toPDF {
   display: flex;
@@ -363,5 +364,36 @@ th, td {
 }
 .new-appt{
   display: flex;
+  flex-direction: column;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  padding: 10px;
+}
+.add-new-appt{
+  background-color: #1976d2;
+  color: white;
+}
+.new-appt-placetime {
+  display: flex;
   flex-direction: row;
+  align-items: center;
+}
+.new-appt-notes {
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 10px 0px;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+.new-appt p{
+  margin-right: 5px;
+}
+.appt-card {
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  margin: 15px 0px;
+  padding: 4px;
+}
+.appt-card .notes{
+  color: gray;
 }
