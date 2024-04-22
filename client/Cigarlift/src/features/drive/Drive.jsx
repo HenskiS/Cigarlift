@@ -34,7 +34,7 @@ function Drive() {
         isSuccess,
         isError,
         error
-    } = useGetItineraryQuery("20240327", {
+    } = useGetItineraryQuery("20240423", {
         pollingInterval: 60000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
@@ -43,12 +43,12 @@ function Drive() {
     const handleVisit = (locationID) => {
       console.log("visited " + locationID) 
       console.log(locationID) 
-      updateItinerary({ id: "20240327", stopId: locationID })
+      updateItinerary({ id: "20240423", stopId: locationID })
     }
 
     let content
 
-    if (isLoading) content = <PulseLoader color={"#FFF"} />
+    if (isLoading) content = <PulseLoader color={"#CCC"} />
 
     if (isError) {
       console.log("Error")

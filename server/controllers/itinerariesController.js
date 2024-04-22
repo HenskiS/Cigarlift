@@ -1,5 +1,6 @@
 const Itinerary = require('../models/Itinerary')
 const User = require('../models/User')
+const Config = require('../models/Config');
 const ClientModel = require('../models/Client')
 //const Note = require('../models/Note')
 const bcrypt = require('bcrypt')
@@ -8,8 +9,9 @@ const fs = require('fs');
 
 const {Client} = require("@googlemaps/google-maps-services-js");
 
-// @desc Get all users
-// @route GET /users
+
+// @desc Get itinerary
+// @route POST /itineraries/getByDate
 // @access Private
 const getItinerary = async (req, res) => {
     const { date } = req.body
@@ -24,18 +26,29 @@ const getItinerary = async (req, res) => {
     res.json(itin)
 }
 
-// @desc Create new user
-// @route POST /users
+// @desc Create new itinerary
+// @route POST /itineraries
 // @access Private
 const createNewItinerary = async (req, res) => {
     const { date } = req.body
 
-    const clients = await
-    ClientModel
-    .find({city: "SAN CLEMENTE", isVisited: false})
-    .limit(10)
-    .sort({zip: 1})
-    //.select('_id ')
+    let config = await Config.findOne()
+    
+    let clients = []
+    clients = await ClientModel
+                        .find({city: config.route.city1, isVisited: false})
+                        .limit(config.route.routeLength)
+                        .sort({zip: 1})
+    
+    // if not enough stops left in city1, look in city2
+    let clients2 = []
+    if (clients.length < config.route.routeLength) { 
+        clients2 = await ClientModel
+                        .find({city: config.route.city2, isVisited: false})
+                        .limit((config.route.routeLength - clients.length))// limit=routeLength-city1Stops
+                        .sort({zip: 1})
+    }
+    clients.concat(clients2)
 
     const params = {
         key: process.env.GOOGLE_MAPS_API_KEY,
@@ -49,6 +62,7 @@ const createNewItinerary = async (req, res) => {
     try {
         const response = await client.directions({ params,timeout: 1000, })
         const orderedClients = response.data.routes[0].waypoint_order.map(index => clients[index])
+        console.log(response.data.routes[0].waypoint_order)
         const itinObject = {
             date,
             cigarsStart: 200,

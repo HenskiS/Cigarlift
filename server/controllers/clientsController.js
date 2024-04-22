@@ -16,6 +16,20 @@ const getAllClients = async (req, res) => {
 
     res.json(clients)
 }
+// @desc Get all clients
+// @route GET /clients/cities
+// @access Private
+const getCities = async (req, res) => {
+    // Get all clients from MongoDB
+    const cities = await Client.find().distinct('city').lean()
+
+    // If no clients 
+    if (!cities?.length) {
+        return res.status(400).json({ message: 'No cities found' })
+    }
+
+    res.json(cities)
+}
 
 // @desc Get one client by id
 // @route GET /clients/:id
@@ -148,6 +162,7 @@ const deleteClient = async (req, res) => {
 
 module.exports = {
     getAllClients,
+    getCities,
     getClientById,
     createNewClient,
     updateClient,

@@ -57,6 +57,22 @@ export const itineraryApiSlice = apiSlice.injectEndpoints({
                 console.log('Fetching image:', `/itineraries/images/${queryArg}`);
             }
         }),
+        getConfig: builder.query({
+            query: ( ) => ({
+                url: "/config",
+                method: 'GET',
+                //responseHandler: (response) => response.text(),
+            }),
+            providesTags: ['Config']
+        }),
+        updateConfig: builder.mutation({
+            query: ( config ) => ({
+                url: '/config',
+                method: 'PATCH',
+                body: { config }
+            }),
+            invalidatesTags: ['Config']
+        }),
     }),
 })
 
@@ -66,6 +82,8 @@ export const {
     useUpdateItineraryMutation,
     useDeleteItineraryMutation,
     useGetItineraryImageQuery,
+    useGetConfigQuery,
+    useUpdateConfigMutation
 } = itineraryApiSlice
 
 // returns the query result object

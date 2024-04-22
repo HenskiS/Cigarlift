@@ -10,6 +10,7 @@ const generatePDF = async (filename, id) => {
     await page.goto(`http://localhost:5173/order/${id}`, {
         waitUntil: "networkidle2",
     }); // visit the printable version of your page
+    // wait for div? await page.waitForSelector("order-page")
     const pdf = await page.pdf({ format: "a4", path: `./orders/${filename}` }); // generate the PDF 🎉
     await browser.close();
     return pdf

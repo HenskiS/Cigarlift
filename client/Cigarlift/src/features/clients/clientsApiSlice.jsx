@@ -26,6 +26,15 @@ export const clientsApiSlice = apiSlice.injectEndpoints({
             },*/
             providesTags: { type: 'Client', id: 'LIST' },
         }),
+        getCities: builder.query({
+            query: () => ({
+                url: '/clients/cities',
+                validateStatus: (response, result) => {
+                    return response.status === 200 && !result.isError
+                },
+            }),
+            providesTags: { type: 'City', id: 'LIST' },
+        }),
         getClientById: builder.query({
             query: (id) => ({
                 url: `/clients/${id}`,
@@ -96,6 +105,7 @@ export const clientsApiSlice = apiSlice.injectEndpoints({
 
 export const {
     useGetClientsQuery,
+    useGetCitiesQuery,
     useGetClientByIdQuery,
     useAddNewClientMutation,
     useUpdateClientMutation,

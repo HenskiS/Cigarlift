@@ -10,6 +10,8 @@ router.route('/')
     .post(clientsController.createNewClient)
     .patch(clientsController.updateClient)
     .delete(clientsController.deleteClient)
+router.route('/cities')
+    .get(clientsController.getCities)
 router.route('/:id')
     .get(clientsController.getClientById)
 
