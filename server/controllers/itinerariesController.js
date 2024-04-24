@@ -43,12 +43,22 @@ const createNewItinerary = async (req, res) => {
     // if not enough stops left in city1, look in city2
     let clients2 = []
     if (clients.length < config.route.routeLength) { 
+        console.log("Not enough stops in City1")
+        console.log("routeLength - clients.length = " + (config.route.routeLength - clients.length))
         clients2 = await ClientModel
                         .find({city: config.route.city2, isVisited: false})
                         .limit((config.route.routeLength - clients.length))// limit=routeLength-city1Stops
                         .sort({zip: 1})
+        console.log("clients2.length = " + clients2.length)
+                        // set city1 to city2, and city2 to blank
+        config.route.city1 = config.route.city2
+        config.route.city2 = ""
+        console.log(config)
+        await Config.findOneAndUpdate({}, config)
     }
-    clients.concat(clients2)
+    clients = clients.concat(clients2)
+    console.log("clients.length = " + clients.length)
+    console.log(config)
 
     const params = {
         key: process.env.GOOGLE_MAPS_API_KEY,

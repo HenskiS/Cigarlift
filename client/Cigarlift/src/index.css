@@ -415,5 +415,12 @@ th, td {
   padding: 4px;
 }
 .city-select {
-  margin: 15px 0px;
+  margin: 10px 0px;
+}
+.info span > * {
+  margin: 0px 3px;
+}
+.info span {
+  display: flex;
+  justify-content: center;
 }
