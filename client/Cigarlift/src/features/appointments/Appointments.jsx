@@ -4,22 +4,23 @@ import PulseLoader from 'react-spinners/PulseLoader';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { useSelector } from "react-redux"
 import { selectClient } from '../order/orderSlice';
+import EditAppointment from './EditAppointment';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
-//dayjs.tz.setDefault("America/Los_Angeles")
 
 function Appointments() {
 
     const { data, isLoading, isError, error, isSuccess } = useGetAppointmentsQuery()
     const [dateTime, setDateTime] = useState(dayjs(Date.now()))
     const [notes, setNotes] = useState()
+    const [isEditAppt, setIsEditAppt] = useState(false)
+    const [editAppt, setEditAppt] = useState()
     const client = useSelector(selectClient)
     const [addNewAppointment] = useAddNewAppointmentMutation()
     const handleSubmit = async () => {
@@ -40,7 +41,12 @@ function Appointments() {
         content = (
             <div>
                 {data.map( (a) => (
-                    <div key={a._id} className='appt-card'>
+                    <div key={a._id} className='appt-card'
+                        onClick={() => {
+                            setEditAppt(a)
+                            setIsEditAppt(true)
+                        }}
+                    >
                         <p>{dayjs(a.date).format("ddd, MMM DD, h:mma")}: {a.client.dba}</p>
                         <p className='notes'>{a.notes}</p>
                     </div>
@@ -51,6 +57,7 @@ function Appointments() {
 
     return (
         <div className='appointments'>
+            {isEditAppt ? <EditAppointment appt={editAppt} close={()=>setIsEditAppt(false)} /> : null}
             <h1>Appointments</h1>
             <div className="new-appt">
                 <div className='new-appt-placetime'>
