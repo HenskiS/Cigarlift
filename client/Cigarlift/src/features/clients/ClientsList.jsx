@@ -98,6 +98,9 @@ const ClientsList = () => {
             setClientSelected(e.data._id)//navigate(`/clients/${e.data._id}`)
             console.log(e.data._id)
         }
+        const handleNewClient = () => {
+            navigate("/clients/new")
+        }
         const handleButtonClose = () => {
             setClientSelected(false)
             setIsClientEdit(false)
@@ -108,39 +111,42 @@ const ClientsList = () => {
                 {clientSelected? 
                     <Client cid={clientSelected} close={handleButtonClose} />
                 : null} 
-                <h1 hidden={clientSelected}>Client List</h1>
-                <div className="column--selectors">
-                        <input type="checkbox" name="company" id="company" defaultChecked={false} 
-                            onChange={e => handleSetCols("taxpayer", e.target.checked)} />
-                        <label htmlFor="company">Company</label>
-    
-                        <input type="checkbox" name="name" id="name" defaultChecked={true} 
-                            onChange={e => handleSetCols("dba", e.target.checked)} />
-                        <label htmlFor="name">Name</label>
-    
-                        <input type="checkbox" name="address" id="address" defaultChecked={false} 
-                            onChange={e => handleSetCols("address", e.target.checked)} />
-                        <label htmlFor="address">Address</label>
-    
-                        <input type="checkbox" name="city" id="city" defaultChecked={true} 
-                            onChange={e => handleSetCols("city", e.target.checked)} />
-                        <label htmlFor="city">City</label>
-                    </div>
-                <div hidden={clientSelected} className="ag-theme-quartz" style={{width:"100%",height:"75vh",marginBottom:"56px"}} >
-                    
-                    
-                    
-                    <AgGridReact
+                <div hidden={clientSelected}>
+                    <h1>Client List</h1>
+                    <button onClick={handleNewClient}>New Client</button>
+                    <div className="column--selectors">
+                            <input type="checkbox" name="company" id="company" defaultChecked={false} 
+                                onChange={e => handleSetCols("taxpayer", e.target.checked)} />
+                            <label htmlFor="company">Company</label>
+        
+                            <input type="checkbox" name="name" id="name" defaultChecked={true} 
+                                onChange={e => handleSetCols("dba", e.target.checked)} />
+                            <label htmlFor="name">Name</label>
+        
+                            <input type="checkbox" name="address" id="address" defaultChecked={false} 
+                                onChange={e => handleSetCols("address", e.target.checked)} />
+                            <label htmlFor="address">Address</label>
+        
+                            <input type="checkbox" name="city" id="city" defaultChecked={true} 
+                                onChange={e => handleSetCols("city", e.target.checked)} />
+                            <label htmlFor="city">City</label>
+                        </div>
+                    <div className="ag-theme-quartz" style={{width:"100%",height:"75vh",marginBottom:"56px"}} >
                         
-                        rowData={clients}
-                        columnDefs={colDefs}
-                        pagination={pagination}
-                        paginationPageSize={paginationPageSize}
-                        paginationPageSizeSelector={paginationPageSizeSelector}
-                        gridOptions={gridOptions}
-                        onRowClicked={(e) => handleClick(e)}
-                        //onPaginationChanged={handlePagination}
-                    />
+                        
+                        
+                        <AgGridReact
+                            
+                            rowData={clients}
+                            columnDefs={colDefs}
+                            pagination={pagination}
+                            paginationPageSize={paginationPageSize}
+                            paginationPageSizeSelector={paginationPageSizeSelector}
+                            gridOptions={gridOptions}
+                            onRowClicked={(e) => handleClick(e)}
+                            //onPaginationChanged={handlePagination}
+                        />
+                    </div>
                 </div>
                 {/*<ClientsNearby />*/}
             </>

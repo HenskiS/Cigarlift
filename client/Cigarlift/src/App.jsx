@@ -26,6 +26,7 @@ import EditClient from './features/clients/EditClient.jsx';
 import Client from './features/clients/Client.jsx';
 import NewOrderForm from './features/order/NewOrderForm.jsx';
 import Appointments from './features/appointments/Appointments.jsx';
+import NewClientForm from './features/clients/NewClientForm.jsx';
 
 function App() {
   useTitle('Cigarlift')
@@ -51,7 +52,7 @@ function App() {
                 <Route path="clients">
                   <Route index element={<ClientsList />} />
                   <Route path=":id" element={<Client />} />
-                  <Route path="new" element={<NewUserForm />} />
+                  <Route path="new" element={<NewClientForm />} />
                 </Route>
 
                 <Route path="order">

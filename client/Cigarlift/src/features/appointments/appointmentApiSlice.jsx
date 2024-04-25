@@ -25,10 +25,10 @@ export const appointmentsApiSlice = apiSlice.injectEndpoints({
                 return appointmentsAdapter.setAll(initialState, loadedAppointments)
             },*/
             providesTags: (result, error, arg) => {
-                if (result?.ids) {
+                if (result) {
                     return [
                         { type: 'Appointment', id: 'LIST' },
-                        ...result.ids.map(id => ({ type: 'Appointment', id }))
+                        ...result.map(appt => ({ type: 'Appointment', id: appt._id }))
                     ]
                 } else return [{ type: 'Appointment', id: 'LIST' }]
             }
@@ -63,7 +63,7 @@ export const appointmentsApiSlice = apiSlice.injectEndpoints({
                 }
             }),
             invalidatesTags: (result, error, arg) => [
-                { type: 'Appointment', id: arg.id }
+                { type: 'Appointment', id: arg._id }
             ]
         }),
         deleteAppointment: builder.mutation({

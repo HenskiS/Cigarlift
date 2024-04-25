@@ -53,32 +53,33 @@ const getClientById = async (req, res) => {
 // @route POST /clients
 // @access Private
 const createNewClient = async (req, res) => {
-    const { username, password, roles } = req.body
+    const { license, dba, taxpayer, address, city, state, contact, phone, website, notes, isVisited, images } = req.body
 
-    // Confirm data
-    if (!username || !password) {
-        return res.status(400).json({ message: 'All fields are required' })
+    // Confirm data 
+    if (!dba ) {
+        return res.status(400).json({ message: 'DBA is required' })
     }
 
-    // Check for duplicate username
-    const duplicate = await Client.findOne({ username }).collation({ locale: 'en', strength: 2 }).lean().exec()
-
-    if (duplicate) {
-        return res.status(409).json({ message: 'Duplicate username' })
-    }
-
-    // Hash password 
-    const hashedPwd = await bcrypt.hash(password, 10) // salt rounds
-
-    const clientObject = (!Array.isArray(roles) || !roles.length)
-        ? { username, "password": hashedPwd }
-        : { username, "password": hashedPwd, roles }
+    let clientObject = {dba: dba}
+    
+    clientObject.dba = dba
+    clientObject.license = license
+    clientObject.taxpayer = taxpayer
+    clientObject.address = address
+    clientObject.city = city
+    clientObject.state = state
+    clientObject.contact = contact
+    clientObject.phone = phone
+    clientObject.website = website
+    clientObject.notes = notes
+    clientObject.isVisited = isVisited
+    clientObject.images = images
 
     // Create and store new client 
     const client = await Client.create(clientObject)
 
     if (client) { //created 
-        res.status(201).json({ message: `New client ${username} created` })
+        res.status(201).json({ message: `New client ${dba} created` })
     } else {
         res.status(400).json({ message: 'Invalid client data received' })
     }

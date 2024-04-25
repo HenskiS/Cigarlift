@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import {useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux';
 import { useAddNewAppointmentMutation, useGetAppointmentsQuery } from './appointmentApiSlice'
 import PulseLoader from 'react-spinners/PulseLoader';
 import dayjs from 'dayjs';
@@ -8,7 +10,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { useSelector } from "react-redux"
-import { selectClient } from '../order/orderSlice';
+import { selectClient, setClient } from '../order/orderSlice';
 import EditAppointment from './EditAppointment';
 
 dayjs.extend(utc);
@@ -16,19 +18,31 @@ dayjs.extend(timezone);
 
 function Appointments() {
 
-    const { data, isLoading, isError, error, isSuccess } = useGetAppointmentsQuery()
+    const { data: appointments, isLoading, isError, error, isSuccess } = useGetAppointmentsQuery()
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
     const [dateTime, setDateTime] = useState(dayjs(Date.now()))
     const [notes, setNotes] = useState()
     const [isEditAppt, setIsEditAppt] = useState(false)
     const [editAppt, setEditAppt] = useState()
+    const [newClientName, setNewClientName] = useState("")
     const client = useSelector(selectClient)
     const [addNewAppointment] = useAddNewAppointmentMutation()
     const handleSubmit = async () => {
-        const response = await addNewAppointment({client, date: dateTime, notes})
+        let response
+        if (newClientName) {
+            response = await addNewAppointment({client: {dba: newClientName}, date: dateTime, notes})
+        } else {
+            response = await addNewAppointment({client, date: dateTime, notes})
+        }
         if (response.error?.data?.error) alert(response.error.data.error)
         else {
             setNotes("")
             setDateTime(dayjs(Date.now()))
+            if (newClientName) {
+                dispatch(setClient({dba: newClientName}))
+                navigate("/clients/new")
+            }
         }
     }
 
@@ -38,9 +52,10 @@ function Appointments() {
     if (isError) content = <p style={{color: "gray"}}>{error.data.message}</p>;
 
     if (isSuccess) {
+        const sorted = [...appointments].sort((a,b)=>new Date(a.date) - new Date(b.date))
         content = (
             <div>
-                {data.map( (a) => (
+                {sorted.map( (a) => (
                     <div key={a._id} className='appt-card'
                         onClick={() => {
                             setEditAppt(a)
@@ -61,7 +76,15 @@ function Appointments() {
             <h1>Appointments</h1>
             <div className="new-appt">
                 <div className='new-appt-placetime'>
-                    <p>{client.dba ?? "No client selected..."}</p>
+                    <div style={{display: "flex", flexDirection: "column"}}>
+                        <p>{client.dba ?? "Select a client..."}</p>
+                        <p>-or-</p>
+                        <input type="text" className='new-client-input'
+                            placeholder='New Client' 
+                            value={newClientName}
+                            onChange={e => setNewClientName(e.target.value)}
+                        />
+                    </div>
                     <LocalizationProvider dateAdapter={AdapterDayjs} timezone="America/Los_Angeles">
                         <DateTimePicker
                         label="Select Date and Time"
