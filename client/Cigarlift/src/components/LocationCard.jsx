@@ -1,4 +1,4 @@
-import { memo, useState } from 'react'
+import { Fragment, memo, useState } from 'react'
 import './LocationCard.css'; // Import CSS file for styling
 import { useGetItineraryImageQuery } from '../features/drive/itineraryApiSlice';
 import { useGetClientByIdQuery, useGetClientImageQuery } from '../features/clients/clientsApiSlice'
@@ -43,11 +43,13 @@ const LocationCard = memo(function LocationCard({ location, onVisit }) {
 
         content = (
           <div className="card">
-            <ClientImage src={client.images.locationImage} />
-            <div className="details" onClick={handleClick}>
-              <h3 className="name">{client.dba}</h3>
-              <p className="address">{client.address}</p>
-            </div>
+              <div onClick={handleClick} className='card-clickable'>
+                <ClientImage src={client.images.locationImage} />
+                <div className="details" >
+                  <h3 className="name">{client.dba}</h3>
+                  <p className="address">{client.address}</p>
+                </div>
+              </div>
             <div className="location-buttons">
               { onVisit? 
                 <button className='visit' variant='outlined' onClick={handleVisitClick}>{client.isVisited? "Unvisit" : "Visit"}</button> 

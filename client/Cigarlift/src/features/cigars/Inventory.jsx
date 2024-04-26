@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useAddNewCigarMutation, useGetCigarsQuery, useUpdateCigarMutation } from './cigarsApiSlice';
+import { useAddNewCigarMutation, useDeleteCigarMutation, useGetCigarsQuery, useUpdateCigarMutation } from './cigarsApiSlice';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
@@ -9,6 +9,7 @@ function Inventory() {
     const [cigars, setCigars] = useState([]);
     const [updateCigarMutation] = useUpdateCigarMutation();
     const [addNewCigarMutation] = useAddNewCigarMutation()
+    const [deleteCigarMutation] = useDeleteCigarMutation()
 
     const [name, setName] = useState();
     const [blend, setBlend] = useState();
@@ -20,12 +21,15 @@ function Inventory() {
     const colDefs = [
         { field: "name", filter: true, floatingFilter: true, flex: 2, editable: true },
         { field: "blend", filter: true, floatingFilter: true, flex: 1, editable: true },
-        { field: "size", filter: true, floatingFilter: true, flex: 1, editable: true },
+        { field: "size", filter: true, floatingFilter: true, flex: 1.5, editable: true },
         { field: "price", filter: true, floatingFilter: true, flex: 1, editable: true },
-        { field: "quantity", filter: true, floatingFilter: true, flex: 1, editable: true },
+        { field: "quantity", filter: true, floatingFilter: true, flex: 1.5, editable: true },
     ]
 
-    const { data, isLoading, isError, error, isSuccess } = useGetCigarsQuery()
+    const { data, isLoading, isError, error, isSuccess } = useGetCigarsQuery({
+        pollingInterval: 60000,
+        refetchOnMountOrArgChange: true
+    })
 
     useEffect(() => {
         if (isSuccess) setCigars(data)
@@ -40,28 +44,35 @@ function Inventory() {
         const handleCellValueChanged = async (params) => {
             console.log("updating...")
             const { data: updatedCigar, colDef, newValue } = params;
-            // Prepare the updated cigar object
-            const updatedCigarData = {
-                _id: updatedCigar._id,
-                [colDef.field]: newValue,
-            };
-            try {
-                // Send the mutation request to update the cigar
-                const response = await updateCigarMutation(updatedCigarData)
-                if (response.data) {
-                    // Update the local state with the updated data
-                    setCigars((prevCigars) =>
-                        prevCigars.map((cigar) =>
-                            cigar._id === updatedCigar._id ? response.data : cigar
-                        )
-                    );
-                } else {
-                    console.error('Failed to update cigar:', response.error);
-                }
-            } catch (error) {
-                console.error('Failed to update cigar:', error);
+
+            if (colDef.field === "name" && !newValue) {
+                console.log("delete cigar")
+                await deleteCigarMutation({id: updatedCigar._id})
             }
-            console.log("updated cigar")
+            else {
+                // Prepare the updated cigar object
+                const updatedCigarData = {
+                    _id: updatedCigar._id,
+                    [colDef.field]: newValue,
+                };
+                try {
+                    // Send the mutation request to update the cigar
+                    const response = await updateCigarMutation(updatedCigarData)
+                    if (response.data) {
+                        // Update the local state with the updated data
+                        setCigars((prevCigars) =>
+                            prevCigars.map((cigar) =>
+                                cigar._id === updatedCigar._id ? response.data : cigar
+                            )
+                        );
+                    } else {
+                        console.error('Failed to update cigar:', response.error);
+                    }
+                } catch (error) {
+                    console.error('Failed to update cigar:', error);
+                }
+                console.log("updated cigar")
+            }
         };
         const handleSubmit = async () => {
             const cigar = {name, blend, size, price, quantity}
@@ -79,7 +90,10 @@ function Inventory() {
         const paginationPageSizeSelector = [ 20, 50, 100 ];
         const gridOptions = {
             readOnlyEdit: true,
-            onCellEditRequest: handleCellValueChanged
+            onCellEditRequest: handleCellValueChanged,
+            autoSizeStrategy: {
+                type: 'fitCellContents'
+            },
         }
     
         return (

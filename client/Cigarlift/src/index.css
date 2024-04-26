@@ -118,9 +118,12 @@ section {
   flex-direction: column;
   justify-content: flex-start;
   padding: 1rem;
+  align-items: center;
   /*background-color: rgba(0,0,0,0.4);*/
 }
-
+.public-h1 {
+  margin-top: 10px;
+}
 form {
   display: flex;
   flex-direction: column;
@@ -457,4 +460,12 @@ th, td {
   border-radius: 5px;
   margin-right: 5px;
   padding: 5px;
+}
+.public-logo {
+  max-width: 100%;
+}
+.card-clickable {
+  display: flex;
+  margin: 0px;
+  align-items: center;
 }

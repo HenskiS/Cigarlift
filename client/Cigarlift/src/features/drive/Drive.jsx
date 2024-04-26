@@ -5,6 +5,7 @@ import { useGetItineraryQuery, useUpdateItineraryMutation } from "./itineraryApi
 //import User from './User'
 import useTitle from "../../hooks/useTitle"
 import PulseLoader from 'react-spinners/PulseLoader'
+import dayjs from 'dayjs'
 
 import { Tabs, Tab, Box } from '@mui/material/';
 import Navbar from '../../components/Navbar'
@@ -14,19 +15,24 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 
 function Drive() {
-  useTitle('Cigarlift: Drive')
 
-  const [currentTab, setCurrentTab] = useState(0)
-  const [clientSelected, setClientSelected] = useState(false);
-  const [isClientEdit, setIsClientEdit] = useState(false);
+    useTitle('Cigarlift: Drive')
 
-  const [updateItinerary, {
-    data,
-    isLoading: isUpdateLoading,
-    isSuccess: isUpdateSuccess,
-    isError: isUpdateError,
-    error: updateError
-}] = useUpdateItineraryMutation()
+    const date = dayjs().tz('America/Los_Angeles');
+    const today = date.format('YYYYMMDD');
+    console.log(today)
+
+    const [currentTab, setCurrentTab] = useState(0)
+    const [clientSelected, setClientSelected] = useState(false);
+    const [isClientEdit, setIsClientEdit] = useState(false);
+
+    const [updateItinerary, {
+        data,
+        isLoading: isUpdateLoading,
+        isSuccess: isUpdateSuccess,
+        isError: isUpdateError,
+        error: updateError
+    }] = useUpdateItineraryMutation()
 
     const {
         data: itinerary,
@@ -34,16 +40,16 @@ function Drive() {
         isSuccess,
         isError,
         error
-    } = useGetItineraryQuery("20240423", {
+    } = useGetItineraryQuery(today, {
         pollingInterval: 60000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })
 
     const handleVisit = (locationID) => {
-      console.log("visited " + locationID) 
-      console.log(locationID) 
-      updateItinerary({ id: "20240423", stopId: locationID })
+        console.log("visited " + locationID) 
+        console.log(locationID) 
+        updateItinerary({ id: today, stopId: locationID })
     }
 
     let content
@@ -51,8 +57,8 @@ function Drive() {
     if (isLoading) content = <PulseLoader color={"#CCC"} />
 
     if (isError) {
-      console.log("Error")
-      console.log(error)
+        console.log("Error")
+        console.log(error)
         content = <p className="errmsg">{error?.originalStatus}</p>
     }
 

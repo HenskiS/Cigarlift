@@ -1,18 +1,20 @@
 import { Link } from 'react-router-dom'
+import img1 from '../assets/cigarlift-logo-white.png'
 
 const Public = () => {
     const content = (
         <section className="public">
             <header>
-                <h1>Welcome to <span className="nowrap">Cigarlift!</span></h1>
+                <img src={img1} alt="Cigarlift Logo" className='public-logo' />
+                <h1 className='public-h1'>Welcome to <span className="nowrap">Cigarlift!</span></h1>
             </header>
             <main className="public__main">
-                <p>Located in Beautiful Foo City, Cigarlift provides a trained staff ready to meet your cigar needs.</p>
+                <p>Located in Southern California, Cigarlift provides a trained staff ready to meet your cigar needs.</p>
                 <address className="public__addr">
-                    Cigarlift<br />
+                    {/*Cigarlift<br />
                     555 Foo Drive<br />
-                    Foo City, CA 12345<br />
-                    <a href="tel:+15555555555">(555) 555-5555</a>
+                    Foo City, CA 12345<br />*/}
+                    <a href="tel:+19497962644">(949) 796-2644</a>
                 </address>
                 <br />
             </main>

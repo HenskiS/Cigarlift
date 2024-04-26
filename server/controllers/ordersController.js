@@ -2,6 +2,7 @@ const { default: mongoose } = require('mongoose')
 const Order = require('../models/Order')
 const puppeteer = require("puppeteer");
 const sendEmail = require('../middleware/emailHandler');
+const Cigar = require('../models/Cigar');
 
 
 const generatePDF = async (filename, id) => {
@@ -68,14 +69,25 @@ const createNewOrder = async (req, res) => {
     // Create and store new order 
     const order = await Order.create(orderObject)
 
-    if (order) { //created 
-        res.status(201).json({ success: `New order created: ${filename}` })
-        // generate PDF
-        const pdf = await generatePDF(filename, order._id)
-        sendEmail(order)
-
-    } else {
+    // not created
+    if (!order) {
         res.status(400).json({ error: 'Invalid order data received' })
+        return
+    }
+    // created 
+    res.status(201).json({ success: `New order created: ${filename}` })
+    // generate PDF
+    const pdf = await generatePDF(filename, order._id)
+    sendEmail(order)
+    // update Inventory
+    let i = 0
+    for (i; i<cigars.length; i++) {
+        let c = cigars[i]
+        const cigarObject = await Cigar.findById(c._id)
+        if (cigarObject) {
+            cigarObject.quantity = cigarObject.quantity - c.qty
+            await Cigar.findByIdAndUpdate(cigarObject._id, cigarObject)
+        }
     }
 }
 

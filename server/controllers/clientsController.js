@@ -36,8 +36,6 @@ const getCities = async (req, res) => {
 // @access Private
 const getClientById = async (req, res) => {
     const id = req.params.id
-    console.log("id:")
-    console.log(id)
 
     // Does the client exist?
     const client = await Client.findById(id).exec()
@@ -45,7 +43,6 @@ const getClientById = async (req, res) => {
     if (!client) {
         return res.status(400).json({ message: 'Client not found' })
     }
-    console.log("---found client---")
     res.json(client)
 }
 

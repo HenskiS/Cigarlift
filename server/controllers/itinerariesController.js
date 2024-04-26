@@ -20,10 +20,10 @@ const getItinerary = async (req, res) => {
 
     // If no users 
     if (!itin) {
-        return res.status(400).json({ message: 'No users found' })
-    }
-
-    res.json(itin)
+        //return res.status(400).json({ message: 'No itineraries found' })
+        console.log("Creating new itinerary")
+        createNewItinerary(req, res)
+    } else res.json(itin)
 }
 
 // @desc Create new itinerary

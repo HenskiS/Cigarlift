@@ -70,13 +70,6 @@ function App() {
                   
                 </Route>
 
-                {/* Not using notes
-                <Route path="notes">
-                  <Route index element={<NotesList />} />
-                  <Route path=":id" element={<EditNote />} />
-                  <Route path="new" element={<NewNote />} />
-                </Route>*/}
-
               </Route>{/* End Dash */}
             </Route>
           </Route>
