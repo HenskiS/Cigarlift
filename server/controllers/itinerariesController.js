@@ -121,6 +121,10 @@ const updateItinerary = async (req, res) => {
 
     const updatedItin = await itin.save()
 
+    let clientObject = await ClientModel.findById(stopId)
+    clientObject.isVisited = !clientObject.isVisited
+    const updatedClient = await clientObject.save()
+
     res.json({ message: `${updatedItin.date} updated`, updatedItin })
 }
 

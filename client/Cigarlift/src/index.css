@@ -220,7 +220,7 @@ th, td {
 }
 .new-cigar input{
   border: 1px solid rgb(176, 176, 176);
-  height: 39px;
+  height: 35px;
   width: 10%;
   border-radius: 4px;
   margin: 5px;
@@ -235,6 +235,8 @@ th, td {
 }
 .new-cigar-submit {
   height: 39px;
+  color: white;
+  background-color: #1976d2;
 }
 .order {
   width: 100%;
@@ -401,7 +403,7 @@ th, td {
   color: gray;
 }
 .routeconfig {
-  margin-top: 20px;
+  margin-top: 0px;/*20px;*/
 }
 .routeconfig .info {
   display: flex;

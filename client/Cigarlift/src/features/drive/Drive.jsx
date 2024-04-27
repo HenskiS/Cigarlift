@@ -12,6 +12,7 @@ import Navbar from '../../components/Navbar'
 import Client from '../clients/Client'
 import EditClient from '../clients/EditClient'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { useUpdateClientMutation } from '../clients/clientsApiSlice'
 
 
 function Drive() {
@@ -46,10 +47,10 @@ function Drive() {
         refetchOnMountOrArgChange: true
     })
 
-    const handleVisit = (locationID) => {
+    const handleVisit = async (locationID) => {
         console.log("visited " + locationID) 
         console.log(locationID) 
-        updateItinerary({ id: today, stopId: locationID })
+        await updateItinerary({ id: today, stopId: locationID })
     }
 
     let content
