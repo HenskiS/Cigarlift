@@ -469,3 +469,9 @@ th, td {
   margin: 0px;
   align-items: center;
 }
+.react-multi-email {
+  width: 90%;
+}
+.react-multi-email > span[data-placeholder] {
+  padding: 0px;
+}

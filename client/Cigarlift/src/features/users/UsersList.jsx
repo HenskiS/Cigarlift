@@ -36,6 +36,7 @@ const UsersList = () => {
 
         content = (
             <>
+                <h2>Users</h2>
                 <table className="table table--users">
                     <thead className="table__thead">
                         <tr>

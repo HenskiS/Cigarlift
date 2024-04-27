@@ -1,6 +1,7 @@
 const nodemailer = require("nodemailer")
 require('dotenv').config()
 const fs = require('fs');
+const Config = require("../models/Config");
 
 const config = {
     service: "gmail",
@@ -27,10 +28,11 @@ const send = (data) => {
     })
 }
 
-const sendEmail = (order) => {
+const sendEmail = async (order) => {
     console.log("----SEND EMAIL----")
 
-    let cc = ["henryschreiner@mac.com"]
+    let config = await Config.findOne({ })
+    let cc = config.emails ?? ["henryschreiner@mac.com"]
     if (order.client.email && order.client.email !== "") {
         cc.push(order.client.email)
     }
@@ -41,7 +43,7 @@ const sendEmail = (order) => {
     const data = 
     {
         "from": "Cigarlift <cigarliftapp@gmail.com>",
-        "to": cc[0], //"henryschreiner@mac.com",
+        "to": cc[0],
         "cc": cc.slice(1),
         "subject": `Order for ${order.client.dba}`,
         "text": "Attached is a PDF of your order.",
