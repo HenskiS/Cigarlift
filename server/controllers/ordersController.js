@@ -6,9 +6,9 @@ const Cigar = require('../models/Cigar');
 
 
 const generatePDF = async (filename, id) => {
-    const browser = await puppeteer.launch(); // launch a browser (chromium by default but you can chose another one)
+    const browser = await puppeteer.launch({args: ['--no-sandbox']}); // launch a browser (chromium by default but you can chose another one)
     const page = await browser.newPage(); // open a page in the browser
-    await page.goto(`http://localhost:5173/order/${id}`, {
+    await page.goto(`https://cigarlift.work/order/${id}`, {
         waitUntil: "networkidle2",
     }); // visit the printable version of your page
     // wait for div? await page.waitForSelector("order-page")
