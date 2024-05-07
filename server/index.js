@@ -16,6 +16,7 @@ console.log(process.env.NODE_ENV)
 
 connectDB()
 
+app.set('trust proxy', 'loopback')
 app.use(logger)
 
 app.use(cors(corsOptions))
