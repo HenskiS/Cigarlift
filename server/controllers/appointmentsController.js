@@ -54,6 +54,9 @@ const getUpcomingAppointment = async (req, res) => {
     .limit(1)
     .exec();
 
+    console.log("appointments:")
+    console.log(appointments)
+
     if (!appointments || appointments.length === 0) {
         appointments = [{none: "No upcoming appointments"}]//return res.status(404).json({ message: 'No upcoming appointment within the next hour' });
     }
