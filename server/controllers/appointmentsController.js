@@ -34,7 +34,7 @@ const getAppointmentById = async (req, res) => {
     }
     res.status(200).json(appointment)
 }
-// @desc Get appointment within two hours
+// @desc Get appointment within one hour
 // @route GET /appointments/upcoming
 // @access Private
 const getUpcomingAppointment = async (req, res) => {
