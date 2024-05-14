@@ -38,11 +38,8 @@ const getAppointmentById = async (req, res) => {
 // @route GET /appointments/upcoming
 // @access Private
 const getUpcomingAppointment = async (req, res) => {
-    const now = new Date()//.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' });
+    const now = new Date() //.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' });
     const oneHourFromNow = new Date(new Date(now).getTime() + 60 * 60 * 1000);
-
-    console.log("now: " + now)
-    console.log("oneHourFromNow: " + oneHourFromNow)
 
     let appointments = await Appointment.find({
         date: {
@@ -53,9 +50,6 @@ const getUpcomingAppointment = async (req, res) => {
     .sort({ date: 1 }) // Sort by appointment date in ascending order
     .limit(1)
     .exec();
-
-    console.log("appointments:")
-    console.log(appointments)
 
     if (!appointments || appointments.length === 0) {
         appointments = [{none: "No upcoming appointments"}]//return res.status(404).json({ message: 'No upcoming appointment within the next hour' });
