@@ -42,6 +42,11 @@ export const appointmentsApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['Appointment']
         }),
+        getUpcomingAppointment: builder.query({
+            query: () => ({
+                url: `/appointments/upcoming`,
+            }),
+        }),
         addNewAppointment: builder.mutation({
             query: initialAppointmentData => ({
                 url: '/appointments',
@@ -81,6 +86,7 @@ export const appointmentsApiSlice = apiSlice.injectEndpoints({
 
 export const {
     useGetAppointmentsQuery,
+    useGetUpcomingAppointmentQuery,
     useGetAppointmentByIdQuery,
     useAddNewAppointmentMutation,
     useUpdateAppointmentMutation,

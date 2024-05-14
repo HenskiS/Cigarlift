@@ -6,7 +6,8 @@ import PulseLoader from 'react-spinners/PulseLoader'
 
 
 const EmailSelect = () => {
-    const [emails, setEmails] = useState([])    
+    const [emails, setEmails] = useState([])
+    const [emailsHaveChanged, setEmailsHaveChanged] = useState(false)
     const {data, isSuccess, isLoading, isError, error} = useGetConfigQuery()
     const [updateConfigMutation] = useUpdateConfigMutation()
     
@@ -14,7 +15,7 @@ const EmailSelect = () => {
         if (isSuccess) setEmails(data.emails)
     }, [isSuccess, data])
     useEffect(()=>{
-        if (emails && isSuccess && emails.length != data?.email?.length) {
+        if (emailsHaveChanged && emails && isSuccess && emails.length != data?.emails?.length) {
             console.log("Updating emails")
             console.log({...data, emails})
             updateConfigMutation({...data, emails})
@@ -28,7 +29,7 @@ const EmailSelect = () => {
         <ReactMultiEmail 
             placeholder='Input email address(es)'
             emails={emails}
-            onChange={(emails) => {setEmails(emails)}}
+            onChange={(emails) => {setEmailsHaveChanged(true); setEmails(emails);}}
             getLabel={(email, index, removeEmail) => (
                 <div data-tag key={index}>
                 <div data-tag-item>{email}</div>

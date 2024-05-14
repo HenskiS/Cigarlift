@@ -477,3 +477,12 @@ th, td {
 .react-multi-email > span[data-placeholder] {
   padding: 0px;
 }
+.marquee {
+  background-color: yellow;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 5;
+}

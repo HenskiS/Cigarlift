@@ -15,6 +15,7 @@ import ScheduleIcon from '@mui/icons-material/Schedule';
 import { Paper } from '@mui/material';
 import useAuth from '../hooks/useAuth';
 import { useSendLogoutMutation } from '../features/auth/authApiSlice'
+import ApptMarquee from './ApptMarquee';
 
 const Navbar = () => {
   const { isAdmin } = useAuth();
@@ -36,59 +37,62 @@ const Navbar = () => {
   }
 
   return (
-    <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 10  }} elevation={3}>
-
-      <BottomNavigation 
-        value={location.pathname} 
-        showLabels
-        className='navbar'
-      >
-
-        {isAdmin
-        ? <BottomNavigationAction 
-          label="Dashboard"
-          value="/dash"
-          icon={<DashboardIcon />}
-          component={Link}
-          to="/dash"
-        /> : null}
-        <BottomNavigationAction 
-          label="Appointments"
-          value="/appointments"
-          icon={<ScheduleIcon />}
-          component={Link}
-          to="/appointments"
-        />
-        <BottomNavigationAction 
-          label="Drive"
-          value="/drive"
-          icon={<DeliveryDiningIcon />}
-          component={Link}
-          to="/drive"
-        />
-        <BottomNavigationAction 
-          label="Order"
-          value="/order"
-          icon={<FeedIcon />} 
-          component={Link}
-          to="/order"
-        />
-        <BottomNavigationAction 
-          label="Clients"
-          value="/clients"
-          icon={<GroupIcon />} 
-          component={Link}
-          to="/clients"
-        />
-        <BottomNavigationAction 
-          label="Logout"
-          value="/logout"
-          icon={<LogoutIcon />}
-          onClick={logout}
-        />
-      </BottomNavigation>
-
-    </Paper>
+    <>
+      <ApptMarquee />
+      <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 10  }} elevation={3}>
+  
+        <BottomNavigation 
+          value={location.pathname} 
+          showLabels
+          className='navbar'
+        >
+  
+          {isAdmin
+          ? <BottomNavigationAction 
+            label="Dashboard"
+            value="/dash"
+            icon={<DashboardIcon />}
+            component={Link}
+            to="/dash"
+          /> : null}
+          <BottomNavigationAction 
+            label="Appointments"
+            value="/appointments"
+            icon={<ScheduleIcon />}
+            component={Link}
+            to="/appointments"
+          />
+          <BottomNavigationAction 
+            label="Drive"
+            value="/drive"
+            icon={<DeliveryDiningIcon />}
+            component={Link}
+            to="/drive"
+          />
+          <BottomNavigationAction 
+            label="Order"
+            value="/order"
+            icon={<FeedIcon />} 
+            component={Link}
+            to="/order"
+          />
+          <BottomNavigationAction 
+            label="Clients"
+            value="/clients"
+            icon={<GroupIcon />} 
+            component={Link}
+            to="/clients"
+          />
+          <BottomNavigationAction 
+            label="Logout"
+            value="/logout"
+            icon={<LogoutIcon />}
+            onClick={logout}
+          />
+        </BottomNavigation>
+  
+      </Paper>
+    </>
   );
 };
 
