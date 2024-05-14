@@ -46,7 +46,7 @@ const getUpcomingAppointment = async (req, res) => {
 
     let appointments = await Appointment.find({
         date: {
-            $gte: new Date(now),
+            $gte: now,
             $lt: oneHourFromNow
         }
     })
