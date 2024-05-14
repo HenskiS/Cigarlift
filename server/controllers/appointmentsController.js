@@ -41,6 +41,9 @@ const getUpcomingAppointment = async (req, res) => {
     const now = new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' });
     const oneHourFromNow = new Date(new Date(now).getTime() + 60 * 60 * 1000);
 
+    console.log("now: " + now)
+    console.log("oneHourFromNow: " + oneHourFromNow)
+
     let appointments = await Appointment.find({
         date: {
             $gte: new Date(now),
