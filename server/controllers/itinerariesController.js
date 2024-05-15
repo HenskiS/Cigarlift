@@ -102,6 +102,7 @@ const createNewItinerary = async (req, res) => {
 const updateItinerary = async (req, res) => {
     const id = req.body.id.id
     const stopId = req.body.id.stopId
+    const time = Date.now()
 
     // Does the itin exist to update?
     const itin = await Itinerary.findOne({ date: id }).exec()
@@ -114,7 +115,7 @@ const updateItinerary = async (req, res) => {
     if (locIndex !== -1) {
         const visited = itin.stops[locIndex].isVisited
         console.log("Visiting location " + locIndex)
-        itin.stops.set(locIndex, { ...itin.stops[locIndex], isVisited: !visited });
+        itin.stops.set(locIndex, { ...itin.stops[locIndex], isVisited: !visited, visitTime: time });
 
         console.log("isVisited: " + itin.stops[locIndex].isVisited)
     }
