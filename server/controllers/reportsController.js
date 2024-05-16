@@ -1,5 +1,12 @@
 const Order = require('../models/Order')
 const Itinerary = require('../models/Itinerary')
+const Appointment = require('../models/Appointment')
+const dayjs = require('dayjs')
+const utc = require('dayjs/plugin/utc')
+const timezone = require('dayjs/plugin/timezone')
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 // @desc Get all reports
 // @route GET /reports
@@ -20,7 +27,8 @@ const getAllReports = async (req, res) => {
 // @route GET /reports/:id
 // @access Private
 const getReportById = async (req, res) => {
-    const id = req.params.id
+    const YYYYMMDD = req.params.id
+    const date = dayjs.tz(YYYYMMDD, 'YYYYMMDD', 'America/Los_Angeles')
 
     // Generate report
     
@@ -31,15 +39,60 @@ const getReportById = async (req, res) => {
 
     // Get that day's itinerary
     //   - if no itinerary, no stops were made
-    const itin = await Itinerary.find({date: today})
-
+    //   - look @ visitTime for... the time visited
+    const itin = await Itinerary.findOne({date: YYYYMMDD}).exec()
+    
+    let stops = []
+    if (itin) {
+        stops = itin.stops.filter(stop => stop.isVisited)
+    }
+    
     // Get orders submitted that day
+    const orders = await Order.find({
+        date: {
+            $gte: date.startOf('day').toDate(),
+            $lt: date.endOf('day').toDate()
+        }
+    }).exec();
 
     // Get total cigars sold, total income
+    let totalCigars = 0
+    let totalCharged = 0
+    let totalPayed = 0
+    let totalCashPayed = 0
+    let totalCheckPayed = 0
+    let totalMOPayed = 0
+    if (orders) {
+        for (let i = 0; i < orders.length; i++) {
+            const order = orders[i]
+            const payed = order.payed
+            totalCharged += order.total
+            totalPayed += payed.cash + payed.check + payed.moneyorder
+            totalCashPayed += payed.cash
+            totalCheckPayed += payed.check
+            totalMOPayed += payed.moneyorder
+            for (let j = 0; j < order.cigars.length; j++) {
+                totalCigars += order.cigars[j].qty // qty is quantity ordered, "quantity" is inventory
+            }
+        }
+    }
 
     // Get appointments made that day (look @ dateAdded)
+    const appts = await Appointment.find({
+        dateAdded: {
+            $gte: date.startOf('day').toDate(),
+            $lt: date.endOf('day').toDate()
+        }
+    }).exec();
 
-    res.json(itin)
+    // return
+
+    res.json({totalCigars,
+         totalCharged,
+         totalPayed,
+         totalCashPayed,
+         totalCheckPayed ,
+         totalMOPayed,})
 }
 
 // @desc Create new report
