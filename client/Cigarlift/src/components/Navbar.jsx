@@ -43,7 +43,7 @@ const Navbar = () => {
   
         <BottomNavigation 
           value={location.pathname} 
-          showLabels
+          showLabels={window.innerWidth > 444}
           className='navbar'
         >
   

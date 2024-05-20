@@ -201,7 +201,7 @@ th, td {
 }
 
 .inventory {
-  margin-bottom: 56px;
+  margin-bottom: 24px;
   width: 100%;
 }
 
@@ -491,4 +491,32 @@ th, td {
 }
 .reports h4{
   margin: 5px 0px;
+}
+.reports h2{
+  margin: 24px 0px;
+}
+.stopcard {
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid lightgray;
+  padding: 5px;
+  border-radius: 5px;
+}
+.stopcard .l{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-right: 10px;
+}
+.stopcard .l p{
+  margin: 0px;
+}
+.stopcard .r{
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.navbar .MuiButtonBase-root{
+  min-width: 15%;
+  max-width: 25%;
 }

@@ -1,20 +1,24 @@
-import React from 'react'
+import { Fragment, useState } from 'react'
 import { useGetReportByIdQuery } from './reportsApiSlice'
 import PulseLoader from 'react-spinners/PulseLoader'
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import { useNavigate } from 'react-router-dom';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
 const Reports = () => {
     const navigate = useNavigate()
+    const [date, setDate] = useState(dayjs())
 
     const { data: report, isLoading, 
             isSuccess, isError, error
-    } = useGetReportByIdQuery("20240514")
+    } = useGetReportByIdQuery(date.format('YYYYMMDD'))
 
     let content
     if (isLoading) content = <PulseLoader color={"#CCC"} />
@@ -24,12 +28,20 @@ const Reports = () => {
         const { stops, orders, sales, appts } = report
         content = (
             <div className="report">
+                <LocalizationProvider dateAdapter={AdapterDayjs} timezone="America/Los_Angeles">
+                    <DatePicker value={date} onChange={(newValue)=>setDate(newValue)}/>
+                </LocalizationProvider>
                 <h4>Stops</h4>
                 {stops.length? stops.map(stop => (
-                    <>
-                        <p>{stop.dba}</p>
-                        <p>{stop.taxpayer}</p>
-                    </>
+                    <div className='stopcard' key={stop._id}>
+                        <div className='l'>
+                            <p>{stop.dba}</p>
+                            <p>{stop.taxpayer}</p>
+                        </div>
+                        <div className="r">
+                            <p>{dayjs(stop.visitTime).format('h:mmA')}</p>
+                        </div>
+                    </div>
                 )) : <p><i>No stops made...</i></p>}
                 <h4>Orders</h4>
                 {orders.length? orders.map(order => (
@@ -55,7 +67,7 @@ const Reports = () => {
 
     return (
         <div className='reports'>
-            <h3>Reports</h3>
+            <h2>Reports</h2>
             {content}
         </div>
     )
