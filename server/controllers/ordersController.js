@@ -8,6 +8,7 @@ const Cigar = require('../models/Cigar');
 const generatePDF = async (filename, id) => {
     const browser = await puppeteer.launch({args: ['--no-sandbox']}); // launch a browser (chromium by default but you can chose another one)
     const page = await browser.newPage(); // open a page in the browser
+    //await page.goto(`http://localhost:5173/order/${id}`, {
     await page.goto(`https://cigarlift.work/order/${id}`, {
         waitUntil: "networkidle2",
     }); // visit the printable version of your page
@@ -53,7 +54,7 @@ const getOrderById = async (req, res) => {
 // @route POST /orders
 // @access Private
 const createNewOrder = async (req, res) => {
-    const { client, cigars, cigarStrings, total, payed } = req.body
+    const { client, cigars, total, payed } = req.body
 
     // Confirm data
     if (!client || !cigars || !total) {
@@ -64,7 +65,7 @@ const createNewOrder = async (req, res) => {
     let time = event.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }).replaceAll(":",".").replaceAll("/","-")
     let filename = `Order ${time} ${client.dba}.pdf`
 
-    const orderObject = { client, cigars, cigarStrings, total, payed, filename }
+    const orderObject = { client, cigars, total, payed, filename }
 
     // Create and store new order 
     const order = await Order.create(orderObject)

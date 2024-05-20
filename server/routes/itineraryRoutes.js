@@ -3,7 +3,7 @@ const router = express.Router()
 const itinerariesController = require('../controllers/itinerariesController')
 const verifyJWT = require('../middleware/verifyJWT')
 
-//router.use(verifyJWT)
+router.use(verifyJWT)
 
 router.route('/')
     .post(itinerariesController.createNewItinerary)

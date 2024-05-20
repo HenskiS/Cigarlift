@@ -4,7 +4,8 @@ import { setCredentials } from '../../features/auth/authSlice'
 const baseQuery = fetchBaseQuery({
     //baseUrl: 'http://127.0.0.1:3500', // can't use 192..., idk why
     //baseUrl: 'http://192.168.1.138:3500',
-    baseUrl: 'https://cigarlift.work/api/',
+    //baseUrl: 'http://localhost:3500/api',
+    baseUrl: 'https://cigarlift.work/api',
     credentials: 'include',
     prepareHeaders: (headers, { getState }) => {
         const token = getState().auth.token
@@ -51,6 +52,6 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 
 export const apiSlice = createApi({
     baseQuery: baseQueryWithReauth,
-    tagTypes: ['Stop', 'User', 'Cigar', 'Order', 'City', 'Config', 'Appointment'],
+    tagTypes: ['Stop', 'User', 'Cigar', 'Order', 'City', 'Config', 'Appointment', 'Report'],
     endpoints: builder => ({})
 })
