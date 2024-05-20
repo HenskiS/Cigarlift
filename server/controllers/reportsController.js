@@ -76,6 +76,7 @@ const getReportById = async (req, res) => {
             }
         }
     }
+    const sales = {totalCigars, totalCharged, totalPayed, totalCashPayed, totalCheckPayed, totalMOPayed}
 
     // Get appointments made that day (look @ dateAdded)
     const appts = await Appointment.find({
@@ -87,12 +88,10 @@ const getReportById = async (req, res) => {
 
     // return
 
-    res.json({totalCigars,
-         totalCharged,
-         totalPayed,
-         totalCashPayed,
-         totalCheckPayed ,
-         totalMOPayed,})
+    res.json({stops,
+         orders,
+         sales,
+         appts})
 }
 
 // @desc Create new report

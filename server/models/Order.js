@@ -8,9 +8,6 @@ const orderSchema = new Schema({
     cigars: {
         type: [{}]
     },
-    cigarStrings: {
-        type: [String]
-    },
     total: Number,
     payed: {
         type: {

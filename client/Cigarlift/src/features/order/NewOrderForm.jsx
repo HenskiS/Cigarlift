@@ -67,7 +67,6 @@ function NewOrderForm() {
         const order = { 
             client, 
             cigars: cart, 
-            cigarStrings: "C1,C2,C3", 
             total: t, 
             payed: {cash: isCash? cash : 0, 
                     check: isCheck? check : 0, 

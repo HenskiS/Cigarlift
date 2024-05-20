@@ -486,3 +486,9 @@ th, td {
   width: 100%;
   z-index: 5;
 }
+.reports {
+  margin-bottom: 56px;
+}
+.reports h4{
+  margin: 5px 0px;
+}

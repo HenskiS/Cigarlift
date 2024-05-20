@@ -107,7 +107,7 @@ function Inventory() {
                     <input type="number" id="quantity" placeholder='quantity' value={quantity?? ""} onChange={(e)=>setQuantity(e.target.value)} />
                     <button className="new-cigar-submit" onClick={handleSubmit}>Add Cigar</button>
                 </div>
-                <div className="ag-theme-quartz" style={{ height: 500, width: '100%', marginBottom: "100px" }}>
+                <div className="ag-theme-quartz" style={{ height: 500, width: '100%' }}>
                     <AgGridReact 
                         rowData={cigars}
                         columnDefs={colDefs}
