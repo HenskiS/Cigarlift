@@ -1,11 +1,11 @@
 import PulseLoader from 'react-spinners/PulseLoader'
-import { useGetOrderByIdQuery } from "./ordersApiSlice"
+import { useGetPrintOrderByIdQuery } from "./ordersApiSlice"
 import { useParams } from "react-router-dom"
 import useTitle from "../../hooks/useTitle"
 import logo from "../../assets/cigarlift-logo-white.png"
 
 
-function Order() {
+function PrintOrder() {
     useTitle('Cigarlift: Order')
         
     const {id: paramId} = useParams()
@@ -15,12 +15,12 @@ function Order() {
       isError, 
       error, 
       isSuccess 
-    } = useGetOrderByIdQuery(paramId)
+    } = useGetPrintOrderByIdQuery(paramId)
 
     let content
     if (isLoading) content = <PulseLoader color={"#CCC"} />
 
-    if (isError) content = <p>{error.data}</p>
+    if (isError) content = <p>{error.data.message ?? error.data}</p>
 
     if (isSuccess) {
       console.log(data)
@@ -91,5 +91,5 @@ function Order() {
     return content
   } 
   
-  export default Order
+  export default PrintOrder
   

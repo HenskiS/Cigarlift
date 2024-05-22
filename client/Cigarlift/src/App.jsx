@@ -27,6 +27,7 @@ import Client from './features/clients/Client.jsx';
 import NewOrderForm from './features/order/NewOrderForm.jsx';
 import Appointments from './features/appointments/Appointments.jsx';
 import NewClientForm from './features/clients/NewClientForm.jsx';
+import PrintOrder from './features/order/PrintOrder.jsx';
 
 function App() {
   useTitle('Cigarlift')
@@ -38,7 +39,7 @@ function App() {
         <Route index element={<Public />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/login" element={<Login />} />
-        <Route path="order/:id" element={<Order />} />
+        <Route path="order/print/:id" element={<PrintOrder />} />
       
       {/* private routes */}
       <Route element={<PersistLogin />}>
@@ -58,6 +59,7 @@ function App() {
                 <Route path="order">
                   <Route index element={<NewOrderForm />} />
                   <Route path="new" element={<NewUserForm />} />
+                  <Route path=":id" element={<Order />} />
                 </Route>
 
                 <Route element={<RequireAuth allowedRoles={[ROLES.Manager, ROLES.Admin]} />}>
