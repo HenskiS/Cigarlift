@@ -1,7 +1,7 @@
 const { default: mongoose } = require('mongoose')
 const Appointment = require('../models/Appointment')
 const puppeteer = require("puppeteer");
-const sendEmail = require('../middleware/emailHandler');
+const emailHandler = require('../middleware/emailHandler');
 
 
 // @desc Get all appointments
@@ -81,6 +81,7 @@ const createNewAppointment = async (req, res) => {
 
     if (appointment) { //created 
         res.status(201).json({ success: `New appointment created: ${client.dba}` })
+        emailHandler.sendApptEmail(appointment)
     } else {
         res.status(400).json({ error: 'Invalid appointment data received' })
     }

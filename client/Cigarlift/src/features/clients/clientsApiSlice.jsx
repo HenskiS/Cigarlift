@@ -68,6 +68,18 @@ export const clientsApiSlice = apiSlice.injectEndpoints({
                 'Client'//{ type: 'Client', id: arg.id }
             ]
         }),
+        updateNotes: builder.mutation({
+            query: ({ id, newNotes, updatedBy }) => ({
+                url: `/clients/update-notes/${id}`,
+                method: 'PATCH',
+                body: {
+                    newNotes, updatedBy
+                }
+            }),
+            invalidatesTags: (result, error, arg) => [
+                'Client'//{ type: 'Client', id: arg.id }
+            ]
+        }),
         deleteClient: builder.mutation({
             query: ({ id }) => ({
                 url: `/clients`,
@@ -109,6 +121,7 @@ export const {
     useGetClientByIdQuery,
     useAddNewClientMutation,
     useUpdateClientMutation,
+    useUpdateNotesMutation,
     useDeleteClientMutation,
     useGetClientImageQuery,
     useUploadClientImageMutation,

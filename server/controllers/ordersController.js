@@ -1,15 +1,15 @@
 const { default: mongoose } = require('mongoose')
 const Order = require('../models/Order')
 const puppeteer = require("puppeteer");
-const sendEmail = require('../middleware/emailHandler');
+const emailHandler = require('../middleware/emailHandler');
 const Cigar = require('../models/Cigar');
 
 
 const generatePDF = async (filename, id) => {
     const browser = await puppeteer.launch({args: ['--no-sandbox']}); // launch a browser (chromium by default but you can chose another one)
     const page = await browser.newPage(); // open a page in the browser
-    //await page.goto(`http://localhost:5173/order/${id}`, {
-    await page.goto(`https://cigarlift.work/order/${id}`, {
+    await page.goto(`http://localhost:5173/order/print/${id}`, {
+    //await page.goto(`https://cigarlift.work/order/${id}`, {
         waitUntil: "networkidle2",
     }); // visit the printable version of your page
     // wait for div? await page.waitForSelector("order-page")
@@ -48,6 +48,29 @@ const getOrderById = async (req, res) => {
     }
     res.status(200).json(order)
 }
+
+// @desc Get one order by id
+// @route GET /orders/print/:id
+// @access Public
+const getPrintOrderById = async (req, res) => {
+    const id = req.params.id
+    console.log(id)
+    
+    const order = await Order.findById(id).exec()
+
+    if (!order) {
+        return res.status(400).json({ message: 'Order not found' })
+    }
+
+    const now = Date.now()
+    const diff = now - order.date
+    const minutes = Math.floor((diff/1000)/60);
+    if (minutes < 10) {
+        res.status(200).json(order)
+    } else {
+        res.status(400).json({ message: 'Unauthorized: Order Timeout (10 minutes from submission)' })
+    }
+}
     
 
 // @desc Create new order
@@ -79,7 +102,7 @@ const createNewOrder = async (req, res) => {
     res.status(201).json({ success: `New order created: ${filename}` })
     // generate PDF
     const pdf = await generatePDF(filename, order._id)
-    sendEmail(order)
+    emailHandler.sendEmail(order)
     // update Inventory
     let i = 0
     for (i; i<cigars.length; i++) {
@@ -152,6 +175,7 @@ const deleteOrder = async (req, res) => {
 module.exports = {
     getAllOrders,
     getOrderById,
+    getPrintOrderById,
     createNewOrder,
     updateOrder,
     deleteOrder

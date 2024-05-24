@@ -82,6 +82,33 @@ const createNewClient = async (req, res) => {
     }
 }
 
+// @desc Update a client's notes
+// @route PATCH /clients/update-notes/:id
+// @access Private
+const updateNotes = async (req, res) => {
+    const clientId = req.params.id;
+    console.log(req.body)
+    const { newNotes, updatedBy } = req.body;
+
+    // Does the client exist to update?
+    const client = await Client.findById( clientId ).exec()
+
+    if (!client) {
+        return res.status(400).json({ message: 'Client not found' })
+    }
+
+    client.noteHistory.push({
+        note: client.notes,
+        updatedBy,
+        updatedAt: new Date(),
+    })
+
+    client.notes = newNotes
+
+    const updatedClient = await client.save()
+
+    res.json({ message: `${updatedClient.dba} updated`, client: updatedClient })
+}
 // @desc Update a client
 // @route PATCH /clients
 // @access Private
@@ -164,5 +191,6 @@ module.exports = {
     getClientById,
     createNewClient,
     updateClient,
+    updateNotes,
     deleteClient
 }

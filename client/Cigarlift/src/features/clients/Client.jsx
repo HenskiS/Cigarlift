@@ -1,14 +1,15 @@
-import { useGetClientByIdQuery, useGetClientImageQuery } from './clientsApiSlice'
+import { useGetClientByIdQuery, useUpdateNotesMutation } from './clientsApiSlice'
 import PulseLoader from 'react-spinners/PulseLoader'
 import useTitle from '../../hooks/useTitle'
 import './Client.css'
 import ClientImage, { NoImage } from './ClientImage'
 import { useNavigate, useParams } from 'react-router-dom'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import EditClientForm from './EditClientForm'
 import { setClient } from '../order/orderSlice'
 import { useDispatch } from 'react-redux'
+import useAuth from '../../hooks/useAuth';
 
 const Client = ({ cid, close }) => {
     useTitle('Cigarlift: Client')
@@ -23,8 +24,10 @@ const Client = ({ cid, close }) => {
         id = paramId
     } else id = cid
 
-    const [clientSelected, setClientSelected] = useState(false);
+    const { isAdmin, username } = useAuth();
     const [isClientEdit, setIsClientEdit] = useState(false);
+    const [updateNotes] = useUpdateNotesMutation()
+    const [notes, setNotes] = useState("")
 
     const { data: client, 
         isLoading, 
@@ -33,14 +36,20 @@ const Client = ({ cid, close }) => {
         isSuccess 
     } = useGetClientByIdQuery(id)
 
+    useEffect(()=>{
+        if (client)
+            setNotes(client.notes)
+    }, [isSuccess])
+
     let content
     if (isLoading) content = <PulseLoader color={"#CCC"} />
 
-    if (isError) content = <p>error</p>
+    if (isError) content = <p>{error.data}</p>
 
     if (isSuccess) {
-        
+
         console.log(client)
+
         const handleDirections = () => {
             window.open("https://www.google.com/maps/dir/?api=1&destination="+encodeURI(`${client.address} ${client.city} ${client.state}`))
         };
@@ -56,6 +65,14 @@ const Client = ({ cid, close }) => {
         const handleSchedule = () => {
             dispatch(setClient(client))
             navigate('/appointments')
+        }
+        const handleNotesSave = async () => {
+            const newClient = await updateNotes({
+                id: client._id, 
+                newNotes: notes, 
+                updatedBy: username
+            })
+            dispatch(setClient(newClient))
         }
 
         content = 
@@ -87,6 +104,17 @@ const Client = ({ cid, close }) => {
                     </div>
                     <table className='client-table'>
                         <tbody>
+                        <tr>
+                            <td className='label'><label htmlFor='notes'>Notes: </label></td>
+                            <td>
+                                <div style={{display: "flex", alignItems: "center"}}>
+                                    <textarea rows={3} id='notes' value={notes} 
+                                    onChange={(e)=>setNotes(e.target.value)} />
+                                    <button style={{height: "25px", color: "blue"}} onClick={handleNotesSave}>
+                                        Save</button>
+                                </div>
+                            </td>
+                        </tr>
                         <tr>
                             <td className='label'><label>License: </label></td>
                             <td><p>{client.license}</p></td>
@@ -122,10 +150,10 @@ const Client = ({ cid, close }) => {
                             <td><p>{client.website}</p></td>
                         </tr>
                         
-                        <tr>
+                        {/*<tr>
                             <td className='label'><label>Notes: </label></td>
                             <td><p>{client.notes}</p></td>
-                        </tr>
+                        </tr>*/}
                         
                         <tr>
                             <td className='label'><label>Visited: </label></td>

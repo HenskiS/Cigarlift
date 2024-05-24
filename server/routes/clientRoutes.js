@@ -14,5 +14,7 @@ router.route('/cities')
     .get(clientsController.getCities)
 router.route('/:id')
     .get(clientsController.getClientById)
+router.route('/update-notes/:id')
+    .patch(clientsController.updateNotes)
 
 module.exports = router

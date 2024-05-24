@@ -161,10 +161,10 @@ const EditClientForm = ({ client, close }) => {
                     <td><input id='website' value={website} onChange={onWebsiteChanged} /></td>
                 </tr>
                 
-                <tr>
+                {/*<tr>
                     <td className='label'><label htmlFor='notes'>Notes: </label></td>
                     <td><textarea rows={3} id='notes' value={notes} onChange={onNotesChanged} /></td>
-                </tr>
+                </tr>*/}
                 
                 <tr>
                     <td className='label'><label htmlFor='isVisited'>Visited: </label></td>
