@@ -97,6 +97,10 @@ const updateNotes = async (req, res) => {
         return res.status(400).json({ message: 'Client not found' })
     }
 
+    if (client.notes === newNotes) {
+        return res.status(200).json({ message: 'Notes not updated' })
+    }
+
     client.noteHistory.push({
         note: client.notes,
         updatedBy,

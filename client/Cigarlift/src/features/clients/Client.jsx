@@ -10,6 +10,13 @@ import EditClientForm from './EditClientForm'
 import { setClient } from '../order/orderSlice'
 import { useDispatch } from 'react-redux'
 import useAuth from '../../hooks/useAuth';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 
 const Client = ({ cid, close }) => {
     useTitle('Cigarlift: Client')
@@ -28,6 +35,7 @@ const Client = ({ cid, close }) => {
     const [isClientEdit, setIsClientEdit] = useState(false);
     const [updateNotes] = useUpdateNotesMutation()
     const [notes, setNotes] = useState("")
+    const [noteHistory, setNoteHistory] = useState(false)
 
     const { data: client, 
         isLoading, 
@@ -112,6 +120,20 @@ const Client = ({ cid, close }) => {
                                     onChange={(e)=>setNotes(e.target.value)} />
                                     <button style={{height: "25px", color: "blue"}} onClick={handleNotesSave}>
                                         Save</button>
+                                </div>
+                                <div hidden={!isAdmin || !client.noteHistory?.length}>
+                                    <button onClick={() => setNoteHistory(!noteHistory)} style={{marginBottom: "5px"}}>
+                                        Note History</button>
+                                    <div hidden={!noteHistory}>
+                                        {client.noteHistory?.toReversed().map(note => {
+                                            return (
+                                                <div key={note._id} className="note-history">
+                                                    <p>{note.note ? note.note : <i style={{color: 'gray'}}>blank</i>}</p>
+                                                    <p>Updated By {note.updatedBy}: {dayjs(note.updatedAt).format("ddd, MMM DD, h:mma")}</p>
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
                                 </div>
                             </td>
                         </tr>
