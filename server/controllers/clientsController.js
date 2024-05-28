@@ -1,3 +1,4 @@
+const Appointment = require('../models/Appointment')
 const Client = require('../models/Client')
 //const Note = require('../models/Note')
 const bcrypt = require('bcrypt')
@@ -77,6 +78,15 @@ const createNewClient = async (req, res) => {
 
     if (client) { //created 
         res.status(201).json({ message: `New client ${dba} created` })
+        // In case the new client was made from Appt page "New Client" field,
+        //  get appts with the same dba and replace that client with the new client,
+        //  to fill in missing info. Otherwise appt will only have dba.
+        let appts = await Appointment.find({client: {dba: client.dba}})
+        for (let i = 0; i < appts.length; i++) {
+            appts[i].client = client
+            await appts[i].save()
+            console.log("Updated appointment info for " + appts[i].client.dba)
+        }
     } else {
         res.status(400).json({ message: 'Invalid client data received' })
     }
