@@ -163,6 +163,11 @@ const Client = ({ cid, close }) => {
                         </tr>
                         
                         <tr>
+                            <td className='label'><label>Email: </label></td>
+                            <td><p>{client.email}</p></td>
+                        </tr>
+                        
+                        <tr>
                             <td className='label'><label>Phone: </label></td>
                             <td><p>{client.phone}</p></td>
                         </tr>

@@ -31,6 +31,7 @@ const NewClientForm = () => {
     const [license, setLicense] = useState()
     const [taxpayer, setTaxpayer] = useState()
     const [dba, setDba] = useState(client.dba)
+    const [email, setEmail] = useState(client.email)
     const [address, setAddress] = useState()
     const [city, setCity] = useState()
     const [state, setState] = useState("CA")
@@ -70,6 +71,7 @@ const NewClientForm = () => {
             license, 
             dba, 
             taxpayer, 
+            email,
             images,
             address, city, state, 
             contact, phone, website, 
@@ -100,6 +102,7 @@ const NewClientForm = () => {
     }
 
     const onDbaChanged = e => setDba(e.target.value)
+    const onEmailChanged = e => setEmail(e.target.value)
     const onLicenseChanged = e => setLicense(e.target.value)
     const onTaxpayerChanged = e => setTaxpayer(e.target.value)
     const onAddressChanged = e => setAddress(e.target.value)
@@ -157,6 +160,10 @@ const NewClientForm = () => {
                     <td><input id='contact' value={contact} onChange={onContactChanged} /></td>
                 </tr>
                 
+                <tr>
+                    <td className='label'><label htmlFor='email'>Email: </label></td>
+                    <td><input id='email' value={email} onChange={onEmailChanged} /></td>
+                </tr>
                 <tr>
                     <td className='label'><label htmlFor='phone'>Phone: </label></td>
                     <td><input id='phone' value={phone} onChange={onPhoneChanged} /></td>

@@ -51,7 +51,7 @@ const getClientById = async (req, res) => {
 // @route POST /clients
 // @access Private
 const createNewClient = async (req, res) => {
-    const { license, dba, taxpayer, address, city, state, contact, phone, website, notes, isVisited, images } = req.body
+    const { license, dba, taxpayer, email, address, city, state, contact, phone, website, notes, isVisited, images } = req.body
 
     // Confirm data 
     if (!dba ) {
@@ -63,6 +63,7 @@ const createNewClient = async (req, res) => {
     clientObject.dba = dba
     clientObject.license = license
     clientObject.taxpayer = taxpayer
+    clientObject.email = email
     clientObject.address = address
     clientObject.city = city
     clientObject.state = state
@@ -127,7 +128,7 @@ const updateNotes = async (req, res) => {
 // @route PATCH /clients
 // @access Private
 const updateClient = async (req, res) => {
-    const { id, _id, license, dba, taxpayer, address, city, state, contact, phone, website, notes, isVisited, images } = req.body
+    const { id, _id, license, dba, email, taxpayer, address, city, state, contact, phone, website, notes, isVisited, images } = req.body
 
     // Confirm data 
     if (!_id) {
@@ -157,6 +158,7 @@ const updateClient = async (req, res) => {
     client.city = city
     client.state = state
     client.contact = contact
+    client.email = email
     client.phone = phone
     client.website = website
     client.notes = notes

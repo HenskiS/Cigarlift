@@ -19,6 +19,7 @@ const clientSchema = new Schema({
     state: String,
     zip: String,
     contact: String,
+    email: String,
     phone: String,
     website: String,
     notes: String,

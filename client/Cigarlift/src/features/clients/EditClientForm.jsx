@@ -29,6 +29,7 @@ const EditClientForm = ({ client, close }) => {
     const [city, setCity] = useState(client.city)
     const [state, setState] = useState(client.state)
     const [contact, setContact] = useState(client.contact)
+    const [email, setEmail] = useState(client.email)
     const [phone, setPhone] = useState(client.phone)
     const [website, setWebsite] = useState(client.website)
     const [notes, setNotes] = useState(client.notes)
@@ -64,7 +65,7 @@ const EditClientForm = ({ client, close }) => {
             license: client.license, 
             dba: client.dba, 
             taxpayer: client.taxpayer, 
-            images,
+            images, email,
             address, city, state, 
             contact, phone, website, 
             notes, isVisited })
@@ -101,6 +102,7 @@ const EditClientForm = ({ client, close }) => {
     const onContactChanged = e => setContact(e.target.value)
     const onPhoneChanged = e => setPhone(e.target.value)
     const onWebsiteChanged = e => setWebsite(e.target.value)
+    const onEmailChanged = e => setEmail(e.target.value)
     const onNotesChanged = e => setNotes(e.target.value)
     const onIsVisitedChanged = () => setIsVisited(!isVisited)
     const handleLocation = e => setLocationImage(e.target.files[0])
@@ -149,6 +151,11 @@ const EditClientForm = ({ client, close }) => {
                 <tr>
                     <td className='label'><label htmlFor='contact'>Contact: </label></td>
                     <td><input id='contact' value={contact} onChange={onContactChanged} /></td>
+                </tr>
+
+                <tr>
+                    <td className='label'><label htmlFor='email'>Email: </label></td>
+                    <td><input id='email' value={email} onChange={onEmailChanged} /></td>
                 </tr>
                 
                 <tr>
