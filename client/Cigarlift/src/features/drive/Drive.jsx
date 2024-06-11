@@ -47,10 +47,16 @@ function Drive() {
         refetchOnMountOrArgChange: true
     })
 
-    const handleVisit = async (locationID) => {
-        console.log("visited " + locationID) 
-        console.log(locationID) 
-        await updateItinerary({ id: today, stopId: locationID })
+    const handleVisit = async (client) => {
+        let updateData = {...itinerary, stops: itinerary.stops.map(c=>
+          {
+            if (c._id === client._id) return client
+            else return c
+          }
+        )}
+        console.log("visited " + client.dba) 
+        console.log(client) 
+        await updateItinerary(updateData)
     }
 
     let content

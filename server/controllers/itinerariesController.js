@@ -100,33 +100,30 @@ const createNewItinerary = async (req, res) => {
 // @route PATCH /users
 // @access Private
 const updateItinerary = async (req, res) => {
-    const id = req.body.id.id
-    const stopId = req.body.id.stopId
-    const time = Date.now()
+    try {
+        const updateData = req.body;
+        
+        // Check if the itinerary exists before updating
+        const itin = await Itinerary.findById(updateData._id);
+        if (!itin) {
+            return res.status(404).json({ message: 'Itinerary not found' });
+        }
 
-    // Does the itin exist to update?
-    const itin = await Itinerary.findOne({ date: id }).exec()
+        // Update the itinerary
+        const updatedItin = await Itinerary.findByIdAndUpdate(updateData._id, updateData, { new: true });
 
-    if (!itin) {
-        return res.status(400).json({ message: 'itin not found' })
+        // Return the updated itinerary in the response
+        res.status(200).json(updatedItin);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
     }
 
-    let locIndex = itin.stops.findIndex(loc => loc._id.toString() === stopId)
-    if (locIndex !== -1) {
-        const visited = itin.stops[locIndex].isVisited
-        console.log("Visiting location " + locIndex)
-        itin.stops.set(locIndex, { ...itin.stops[locIndex], isVisited: !visited, visitTime: time });
+    //let clientObject = await ClientModel.findById(stopId)
+    //clientObject.isVisited = !clientObject.isVisited
+    //const updatedClient = await clientObject.save()
 
-        console.log("isVisited: " + itin.stops[locIndex].isVisited)
-    }
-
-    const updatedItin = await itin.save()
-
-    let clientObject = await ClientModel.findById(stopId)
-    clientObject.isVisited = !clientObject.isVisited
-    const updatedClient = await clientObject.save()
-
-    res.json({ message: `${updatedItin.date} updated`, updatedItin })
+    res.json({ message: `${updatedItin?.date} updated`, updatedItin })
 }
 
 // @desc Delete a user

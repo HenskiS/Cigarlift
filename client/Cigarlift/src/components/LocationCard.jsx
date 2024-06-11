@@ -1,7 +1,7 @@
 import { Fragment, memo, useState } from 'react'
 import './LocationCard.css'; // Import CSS file for styling
 import { useGetItineraryImageQuery } from '../features/drive/itineraryApiSlice';
-import { useGetClientByIdQuery, useGetClientImageQuery } from '../features/clients/clientsApiSlice'
+import { useGetClientByIdQuery, useGetClientImageQuery, useUpdateClientMutation } from '../features/clients/clientsApiSlice'
 import { useNavigate } from 'react-router-dom';
 import ClientImage from '../features/clients/ClientImage';
 import PulseLoader from 'react-spinners/PulseLoader'
@@ -9,10 +9,12 @@ import { useDispatch } from 'react-redux';
 import { setClient } from '../features/order/orderSlice';
 
 const LocationCard = memo(function LocationCard({ location, onVisit }) {
+    const [updateClient] = useUpdateClientMutation()
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const handleVisitClick = () => {
-        onVisit(location._id);
+    const handleVisitClick = async () => {
+        await updateClient({...client, isVisited: !client.isVisited})
+        onVisit({...client, isVisited: !client.isVisited});
     };
     const handleDirections = () => {
         window.open("https://www.google.com/maps/dir/?api=1&destination="+encodeURI(`${location.address} ${location.city} ${location.state}`))

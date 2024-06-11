@@ -32,10 +32,10 @@ export const itineraryApiSlice = apiSlice.injectEndpoints({
             invalidatesTags: ['Itinerary']
         }),
         updateItinerary: builder.mutation({
-            query: (id, stopId) => ({
+            query: initialItineraryData => ({
                 url: '/itineraries',
                 method: 'PATCH',
-                body: { id, stopId }
+                body: { ...initialItineraryData }
             }),
             invalidatesTags: ['Itinerary']
         }),
