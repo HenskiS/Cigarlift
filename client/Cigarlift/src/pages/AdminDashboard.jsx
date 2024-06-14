@@ -1,6 +1,7 @@
 import EmailSelect from "../components/EmailSelect"
 import Inventory from "../features/cigars/Inventory"
 import RouteConfig from "../features/drive/RouteConfig"
+import RoutePlanner from "../features/drive/RoutePlanner"
 import Reports from "../features/reports/Reports"
 import UsersList from "../features/users/UsersList"
 import useTitle from "../hooks/useTitle"
@@ -14,6 +15,7 @@ function AdminDashboard() {
         <UsersList />
         <RouteConfig />
         <EmailSelect />
+        <RoutePlanner />
         <Inventory />
         <Reports />
         </>

@@ -9,19 +9,12 @@ import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional Theme applied to the grid
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import './Client.css'
-import EditClientForm from "./EditClientForm";
-import EditClient from "./EditClient";
-import { useDispatch, useSelector } from "react-redux";
-import { setPage, selectCurrentPage } from "./clientsSlice";
 import ClientsNearby from "./ClientsNearby";
 
 const ClientsList = () => {
     useTitle('Cigarlift: Clients List')
     
-    const dispatch = useDispatch()
-    const pageToNavigate = useSelector(selectCurrentPage)
     const navigate = useNavigate()
     const [clientSelected, setClientSelected] = useState(false);
     const [isClientEdit, setIsClientEdit] = useState(false);
