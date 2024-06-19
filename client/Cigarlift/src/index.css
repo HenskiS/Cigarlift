@@ -537,3 +537,16 @@ th, td {
 .hidden {
   display: none;
 }
+/*
+.routeplanner {
+  width: 80%;
+}
+*/
+.route-stop {
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  background-color: rgb(241, 241, 241);
+  margin: 5px;
+  padding: 3px;
+}
