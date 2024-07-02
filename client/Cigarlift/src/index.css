@@ -544,9 +544,13 @@ th, td {
 */
 .route-stop {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   border-radius: 5px;
   background-color: rgb(241, 241, 241);
   margin: 5px;
   padding: 3px;
+  justify-content: space-between;
+}
+.route-stop p{
+  padding: 0px 5px;
 }

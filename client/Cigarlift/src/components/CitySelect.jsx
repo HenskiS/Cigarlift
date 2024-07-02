@@ -24,7 +24,7 @@ export default function CitySelect({ config, city }) {
         <div className="city-select">
         <Autocomplete
             disablePortal
-            id="combo-box-demo"
+            id={"combo-box-demo"+city}
             value={city === 1 ? config.route.city1 : config.route.city2}
             options={options}
             sx={{ width: 300 }}

@@ -1,10 +1,11 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useGetItineraryQuery, useUpdateItineraryMutation } from "./itineraryApiSlice"
+import { useAddStopsMutation, useGetItineraryQuery, useUpdateItineraryMutation } from "./itineraryApiSlice"
 import PulseLoader from 'react-spinners/PulseLoader'
 import dayjs from 'dayjs'
 
 import { Tabs, Tab, Box } from '@mui/material/';
+import ClientSelect from '../clients/ClientSelect'
 
 
 function Route() {
@@ -16,6 +17,9 @@ function Route() {
     const [currentTab, setCurrentTab] = useState(0)
     const [clientSelected, setClientSelected] = useState(false);
     const [isClientEdit, setIsClientEdit] = useState(false);
+    const [isClientSelect, setIsClientSelect] = useState(false)
+    const [selection, setSelection] = useState([])
+    
 
     const [updateItinerary, {
         data,
@@ -24,6 +28,8 @@ function Route() {
         isError: isUpdateError,
         error: updateError
     }] = useUpdateItineraryMutation()
+
+    const [addStops] = useAddStopsMutation()
 
     const {
         data: itinerary,
@@ -37,16 +43,20 @@ function Route() {
         refetchOnMountOrArgChange: true
     })
 
+    useEffect(()=>{
+        async function addClients() {
+            await addStops({id: itinerary._id, stops: selection})
+            setSelection([])
+        }
+        if (selection?.length) {
+            addClients()
+        }
+    }, [addStops, itinerary?._id, selection])
 
     let content
 
     if (isLoading) content = <PulseLoader color={"#CCC"} />
-
-    if (isError) {
-        console.log("Error")
-        console.log(error)
-        content = <p className="errmsg">{error?.originalStatus}</p>
-    }
+    if (isError) content = <p className="errmsg">{error?.originalStatus}</p>
 
     if (isSuccess) {
 
@@ -60,7 +70,10 @@ function Route() {
 
         content = (
   
-              <div className="">
+            <div className="">
+
+                <button onClick={() => setIsClientSelect(true)}>Add Client(s)</button>
+                {isClientSelect? <ClientSelect close={()=>setIsClientSelect(false)} setSelection={setSelection} /> : null}
                 
                 <Tabs value={currentTab} onChange={handleTabChange} centered>
                   <Tab label="Schedule" />

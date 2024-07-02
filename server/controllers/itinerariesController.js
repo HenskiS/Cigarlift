@@ -126,6 +126,38 @@ const updateItinerary = async (req, res) => {
     res.json({ message: `${updatedItin?.date} updated`, updatedItin })
 }
 
+// @desc Update a user
+// @route POST /:id
+// @access Private
+const addStops = async (req, res) => {
+    try {
+        const id = req.params.id
+        const {stops} = req.body;
+        
+        // Check if the itinerary exists before updating
+        const itin = await Itinerary.findById(id);
+        if (!itin) {
+            return res.status(404).json({ message: 'Itinerary not found' });
+        }
+
+        // Update the itinerary
+        for (let i=0; i<stops.length;i++){
+            const client = await ClientModel.findById(stops[i]._id)
+            itin.stops.push(client)
+        }
+        //itin.stops.push(...stops)
+        const updatedItin = await itin.save();
+
+        // Return the updated itinerary in the response
+        res.status(200).json(updatedItin);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
+
+    res.json({ message: `${updatedItin?.date} updated`, updatedItin })
+}
+
 // @desc Delete a user
 // @route DELETE /users
 // @access Private
@@ -183,6 +215,7 @@ const getImage = async (req, res) => {
 
 module.exports = {
     getItinerary,
+    addStops,
     createNewItinerary,
     updateItinerary,
     deleteItinerary,

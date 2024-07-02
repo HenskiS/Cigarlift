@@ -31,6 +31,16 @@ export const itineraryApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['Itinerary']
         }),
+        addStops: builder.mutation({
+            query: ({id, stops}) => ({
+                url: `/itineraries/${id}`,
+                method: 'POST',
+                body: {
+                    stops,
+                }
+            }),
+            invalidatesTags: ['Itinerary']
+        }),
         updateItinerary: builder.mutation({
             query: initialItineraryData => ({
                 url: '/itineraries',
@@ -78,6 +88,7 @@ export const itineraryApiSlice = apiSlice.injectEndpoints({
 
 export const {
     useGetItineraryQuery,
+    useAddStopsMutation,
     useAddNewItineraryMutation,
     useUpdateItineraryMutation,
     useDeleteItineraryMutation,

@@ -13,5 +13,7 @@ router.route('/getByDate')
     .post(itinerariesController.getItinerary)
 router.route('/images/:imageName')
     .get(itinerariesController.getImage)
+router.route('/:id')
+    .post(itinerariesController.addStops)
 
 module.exports = router
