@@ -546,6 +546,15 @@ th, td {
   display: flex;
   flex-direction: row;
   border-radius: 5px;
+  background-color: rgb(198, 225, 255);
+  margin: 5px;
+  padding: 3px;
+  justify-content: space-between;
+}
+.route-stop-visited {
+  display: flex;
+  flex-direction: row;
+  border-radius: 5px;
   background-color: rgb(241, 241, 241);
   margin: 5px;
   padding: 3px;

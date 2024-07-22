@@ -1,118 +1,107 @@
-import { Fragment, useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { useAddStopsMutation, useGetItineraryQuery, useUpdateItineraryMutation } from "./itineraryApiSlice"
-import PulseLoader from 'react-spinners/PulseLoader'
-import dayjs from 'dayjs'
-
-import { Tabs, Tab, Box } from '@mui/material/';
-import ClientSelect from '../clients/ClientSelect'
-
+import React, { useEffect, useState } from 'react';
+import { useAddStopsMutation, useGetItineraryQuery, useUpdateItineraryMutation } from './itineraryApiSlice';
+import PulseLoader from 'react-spinners/PulseLoader';
+import dayjs from 'dayjs';
+import { Tabs, Tab } from '@mui/material/';
+import ClientSelect from '../clients/ClientSelect';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 function Route() {
+  const date = dayjs().tz('America/Los_Angeles');
+  const today = date.format('YYYYMMDD');
+  console.log(today);
 
-    const date = dayjs().tz('America/Los_Angeles');
-    const today = date.format('YYYYMMDD');
-    console.log(today)
+  const [currentTab, setCurrentTab] = useState(0);
+  const [isClientSelect, setIsClientSelect] = useState(false);
+  const [selection, setSelection] = useState([]);
 
-    const [currentTab, setCurrentTab] = useState(0)
-    const [clientSelected, setClientSelected] = useState(false);
-    const [isClientEdit, setIsClientEdit] = useState(false);
-    const [isClientSelect, setIsClientSelect] = useState(false)
-    const [selection, setSelection] = useState([])
-    
+  const [updateItinerary, { isLoading: isUpdateLoading, isSuccess: isUpdateSuccess, isError: isUpdateError, error: updateError }] = useUpdateItineraryMutation();
+  const [addStops] = useAddStopsMutation();
 
-    const [updateItinerary, {
-        data,
-        isLoading: isUpdateLoading,
-        isSuccess: isUpdateSuccess,
-        isError: isUpdateError,
-        error: updateError
-    }] = useUpdateItineraryMutation()
+  const { data: itinerary, isLoading, isSuccess, isError, error } = useGetItineraryQuery(today, {
+    pollingInterval: 60000,
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true,
+  });
 
-    const [addStops] = useAddStopsMutation()
-
-    const {
-        data: itinerary,
-        isLoading,
-        isSuccess,
-        isError,
-        error
-    } = useGetItineraryQuery(today, {
-        pollingInterval: 60000,
-        refetchOnFocus: true,
-        refetchOnMountOrArgChange: true
-    })
-
-    useEffect(()=>{
-        async function addClients() {
-            await addStops({id: itinerary._id, stops: selection})
-            setSelection([])
-        }
-        if (selection?.length) {
-            addClients()
-        }
-    }, [addStops, itinerary?._id, selection])
-
-    let content
-
-    if (isLoading) content = <PulseLoader color={"#CCC"} />
-    if (isError) content = <p className="errmsg">{error?.originalStatus}</p>
-
-    if (isSuccess) {
-
-        const { stops } = itinerary
-        const unvisited = stops.filter(stop => !stop.isVisited)
-        const visited = stops.filter(stop => stop.isVisited)
-
-        const handleTabChange = (e, tabIndex) => {
-          setCurrentTab(tabIndex);
-        };
-
-        content = (
-  
-            <div className="">
-
-                <button onClick={() => setIsClientSelect(true)}>Add Client(s)</button>
-                {isClientSelect? <ClientSelect close={()=>setIsClientSelect(false)} setSelection={setSelection} /> : null}
-                
-                <Tabs value={currentTab} onChange={handleTabChange} centered>
-                  <Tab label="Schedule" />
-                  <Tab label="Visited" />
-                </Tabs>
-                {currentTab === 0 && 
-                  <>
-                    {unvisited.length === 0 ?
-                        <p>All done for today...</p> 
-                        :
-                        unvisited.map((loc, index) => (
-                            <div className="route-stop" key={index}>
-                                <p>{loc.dba}</p>
-                                <p style={{color: "grey"}}>{loc.address}</p>
-                            </div>
-                        ))
-                    }
-                  </>
-                }
-                {currentTab === 1 && 
-                  <>
-                    {visited.length === 0 ?
-                        <p>No stops visited yet...</p> 
-                        :
-                        visited.map((loc, index) => (
-                            <div className="route-stop" key={index}>
-                                <p>{loc.dba}</p>
-                            </div>
-                        ))
-                    }
-                  </>
-                }
-          
-            </div>
-        )
+  useEffect(() => {
+    async function addClients() {
+      await addStops({ id: itinerary._id, stops: selection });
+      setSelection([]);
     }
+    if (selection?.length) {
+      addClients();
+    }
+  }, [addStops, itinerary?._id, selection]);
 
-    return content
+  const handleOnDragEnd = async (result) => {
+    if (!result.destination) return;
 
+    const reorderedStops = Array.from(itinerary.stops);
+    const [movedStop] = reorderedStops.splice(result.source.index, 1);
+    reorderedStops.splice(result.destination.index, 0, movedStop);
+
+    const updatedItinerary = { ...itinerary, stops: reorderedStops };
+    await updateItinerary(updatedItinerary);
+  };
+
+  const handleTabChange = (e, tabIndex) => {
+    setCurrentTab(tabIndex);
+  };
+
+  let content;
+
+  if (isLoading) content = <PulseLoader color={'#CCC'} />;
+  if (isError) content = <p className="errmsg">{error?.originalStatus}</p>;
+
+  if (isSuccess) {
+    const { stops } = itinerary;
+
+    content = (
+      <div className="">
+        <button style={{ marginBottom: '5px' }} onClick={() => setIsClientSelect(true)}>Add Stop(s)</button>
+        {isClientSelect ? <ClientSelect close={() => setIsClientSelect(false)} setSelection={setSelection} /> : null}
+
+        <DragDropContext onDragEnd={handleOnDragEnd}>
+          <Droppable droppableId="stops">
+            {(provided) => (
+              <div {...provided.droppableProps} ref={provided.innerRef}>
+                {stops.length === 0 ? (
+                  <p>No stops yet...</p>
+                ) : (
+                  stops.map((loc, index) => (
+                    <Draggable key={loc._id} draggableId={loc._id} index={index}>
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          className={loc.isVisited ? 'route-stop-visited' : 'route-stop'}
+                          style={{
+                            ...provided.draggableProps.style,
+                            margin: '8px 0',
+                            padding: '16px',
+                            border: '1px solid #ccc',
+                            borderRadius: '4px',
+                          }}
+                        >
+                          <p>{loc.dba}</p>
+                          <p style={{ color: 'grey' }}>{loc.address}</p>
+                        </div>
+                      )}
+                    </Draggable>
+                  ))
+                )}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+      </div>
+    );
+  }
+
+  return content;
 }
 
-export default Route
+export default Route;

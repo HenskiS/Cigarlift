@@ -8,7 +8,7 @@ const RoutePlanner = () => {
     return (
         <div className='routeplanner'>
 
-            <h2>Route</h2>
+            <h2>Today's Route</h2>
 
             
 
