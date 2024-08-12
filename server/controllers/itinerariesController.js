@@ -177,6 +177,35 @@ const regenerateItinerary = async (req, res) => {
         res.status(500).json({ message: "Error regenerating itinerary" });
     }
 }
+// @desc Reoptimize Route
+// @route POST /reoptimize
+// @access Private
+const reOptimizeItinerary = async (req, res) => {
+    const { itinerary } = req.body;
+
+    const params = {
+        key: process.env.GOOGLE_MAPS_API_KEY,
+        origin: '106 Avenida Miramar, San Clemente, CA',
+        destination: '106 Avenida Miramar, San Clemente, CA',
+        waypoints: itinerary.stops.map(stop => `${stop.address}, ${stop.city}, ${stop.state}`),
+        optimize: true
+    }
+    const client = new Client({});
+
+    try {
+        const response = await client.directions({ params, timeout: 1000 });
+        const orderedStops = response.data.routes[0].waypoint_order.map(index => itinerary.stops[index]);
+        
+        // Update the existing itinerary with reordered stops
+        itinerary.stops = orderedStops;
+        const updatedItinerary = await Itinerary.findByIdAndUpdate(itinerary._id, itinerary, { new: true });
+
+        res.json(updatedItinerary);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error re-optimizing itinerary" });
+    }
+}
 
 
 // @desc Update a user
@@ -184,8 +213,8 @@ const regenerateItinerary = async (req, res) => {
 // @access Private
 const addStops = async (req, res) => {
     try {
-        const id = req.params.id
-        const {stops} = req.body;
+        const id = req.params.id;
+        const { stops } = req.body;
         
         // Check if the itinerary exists before updating
         const itin = await Itinerary.findById(id);
@@ -194,11 +223,10 @@ const addStops = async (req, res) => {
         }
 
         // Update the itinerary
-        for (let i=0; i<stops.length;i++){
-            const client = await ClientModel.findById(stops[i]._id)
-            itin.stops.push(client)
+        for (let i = 0; i < stops.length; i++) {
+            const client = await ClientModel.findById(stops[i]._id);
+            itin.stops.push(client);
         }
-        //itin.stops.push(...stops)
         const updatedItin = await itin.save();
 
         // Return the updated itinerary in the response
@@ -207,8 +235,6 @@ const addStops = async (req, res) => {
         console.error(error);
         res.status(500).json({ message: 'Server error' });
     }
-
-    res.json({ message: `${updatedItin?.date} updated`, updatedItin })
 }
 
 // @desc Delete a user
@@ -273,5 +299,6 @@ module.exports = {
     updateItinerary,
     deleteItinerary,
     getImage,
-    regenerateItinerary
+    regenerateItinerary,
+    reOptimizeItinerary
 }

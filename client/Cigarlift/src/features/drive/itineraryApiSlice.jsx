@@ -57,6 +57,14 @@ export const itineraryApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['Itinerary']
         }),
+        reOptimizeItinerary: builder.mutation({
+            query: (itinerary) => ({
+                url: '/itineraries/reoptimize',
+                method: 'POST',
+                body: { itinerary }
+            }),
+            invalidatesTags: ['Itinerary']
+        }),
         deleteItinerary: builder.mutation({
             query: ({ id }) => ({
                 url: `/itineraries`,
@@ -103,7 +111,8 @@ export const {
     useGetItineraryImageQuery,
     useGetConfigQuery,
     useUpdateConfigMutation,
-    useRegenerateItineraryMutation
+    useRegenerateItineraryMutation,
+    useReOptimizeItineraryMutation
 } = itineraryApiSlice
 
 // returns the query result object
