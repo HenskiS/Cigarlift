@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useAddStopsMutation, useGetItineraryQuery, useUpdateItineraryMutation } from './itineraryApiSlice';
+import { useAddStopsMutation, useGetItineraryQuery, useRegenerateItineraryMutation, useUpdateItineraryMutation } from './itineraryApiSlice';
 import PulseLoader from 'react-spinners/PulseLoader';
 import dayjs from 'dayjs';
 import { Tabs, Tab } from '@mui/material/';
@@ -17,6 +17,7 @@ function Route() {
 
   const [updateItinerary, { isLoading: isUpdateLoading, isSuccess: isUpdateSuccess, isError: isUpdateError, error: updateError }] = useUpdateItineraryMutation();
   const [addStops] = useAddStopsMutation();
+  const [regenerateItinerary] = useRegenerateItineraryMutation();
 
   const { data: itinerary, isLoading, isSuccess, isError, error } = useGetItineraryQuery(today, {
     pollingInterval: 60000,
@@ -49,6 +50,12 @@ function Route() {
     setCurrentTab(tabIndex);
   };
 
+  const handleRegenerateItinerary = async () => {
+    if (itinerary) {
+      await regenerateItinerary(itinerary);
+    }
+  };
+
   let content;
 
   if (isLoading) content = <PulseLoader color={'#CCC'} />;
@@ -60,6 +67,7 @@ function Route() {
     content = (
       <div className="">
         <button style={{ marginBottom: '5px' }} onClick={() => setIsClientSelect(true)}>Add Stop(s)</button>
+        <button style={{ marginBottom: '5px', marginLeft: '10px' }} onClick={handleRegenerateItinerary}>Regenerate Itinerary</button>
         {isClientSelect ? <ClientSelect close={() => setIsClientSelect(false)} setSelection={setSelection} /> : null}
 
         <DragDropContext onDragEnd={handleOnDragEnd}>

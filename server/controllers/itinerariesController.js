@@ -126,6 +126,59 @@ const updateItinerary = async (req, res) => {
     res.json({ message: `${updatedItin?.date} updated`, updatedItin })
 }
 
+// @desc Regenerate Itinerary
+// @route POST /regenerate
+// @access Private
+const regenerateItinerary = async (req, res) => {
+    const { itinerary } = req.body;
+    const config = await Config.findOne();
+
+    let clients = await ClientModel
+        .find({city: config.route.city1, isVisited: false})
+        .limit(config.route.routeLength)
+        .sort({zip: 1});
+
+    // If not enough stops in city1, look in city2
+    if (clients.length < config.route.routeLength) {
+        console.log("Not enough stops in City1");
+        console.log("routeLength - clients.length = " + (config.route.routeLength - clients.length));
+        const clients2 = await ClientModel
+            .find({city: config.route.city2, isVisited: false})
+            .limit((config.route.routeLength - clients.length))
+            .sort({zip: 1});
+        console.log("clients2.length = " + clients2.length);
+        clients = clients.concat(clients2);
+
+        // Update config to set city2 to blank
+        config.route.city2 = "";
+        await Config.findOneAndUpdate({}, config);
+    }
+
+    const params = {
+        key: process.env.GOOGLE_MAPS_API_KEY,
+        origin: '106 Avenida Miramar, San Clemente, CA',
+        destination: '106 Avenida Miramar, San Clemente, CA',
+        waypoints: clients.map(c => `${c.address}, ${c.city}, ${c.state}`),
+        optimize: true
+    }
+    const client = new Client({});
+
+    try {
+        const response = await client.directions({ params, timeout: 1000 });
+        const orderedClients = response.data.routes[0].waypoint_order.map(index => clients[index]);
+        
+        // Update the existing itinerary with new stops
+        itinerary.stops = orderedClients;
+        const updatedItinerary = await Itinerary.findByIdAndUpdate(itinerary._id, itinerary, { new: true });
+
+        res.json(updatedItinerary);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error regenerating itinerary" });
+    }
+}
+
+
 // @desc Update a user
 // @route POST /:id
 // @access Private
@@ -219,5 +272,6 @@ module.exports = {
     createNewItinerary,
     updateItinerary,
     deleteItinerary,
-    getImage
+    getImage,
+    regenerateItinerary
 }
