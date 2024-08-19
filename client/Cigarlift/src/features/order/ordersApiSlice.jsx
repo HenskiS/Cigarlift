@@ -85,6 +85,10 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
                 { type: 'Order', id: arg.id }
             ]
         }),
+        getOrderedClients: builder.query({
+            query: () => '/orders/clients',
+            providesTags: ['OrderedClients']
+        }),
     }),
 })
 
@@ -95,6 +99,7 @@ export const {
     useAddNewOrderMutation,
     useUpdateOrderMutation,
     useDeleteOrderMutation,
+    useGetOrderedClientsQuery
 } = ordersApiSlice
 
 // returns the query result object

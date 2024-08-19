@@ -172,11 +172,44 @@ const deleteOrder = async (req, res) => {
     res.json(reply)
 }
 
+// @desc Get all unique clients who have placed orders
+// @route GET /orders/clients
+// @access Private
+const getOrderedClients = async (req, res) => {
+    try {
+        // Aggregate to get unique clients from orders
+        const orderedClients = await Order.aggregate([
+            { $group: {
+                _id: "$client._id",
+                clientData: { $first: "$client" },
+                orderCount: { $sum: 1 },
+                lastOrderDate: { $max: "$date" }
+            }},
+            { $project: {
+                _id: 0,
+                client: "$clientData",
+                orderCount: 1,
+                lastOrderDate: 1
+            }}
+        ]);
+
+        if (!orderedClients.length) {
+            return res.status(404).json({ message: 'No clients with orders found' });
+        }
+
+        res.json(orderedClients);
+    } catch (error) {
+        console.error('Error fetching ordered clients:', error);
+        res.status(500).json({ message: 'Server error while fetching ordered clients' });
+    }
+}
+
 module.exports = {
     getAllOrders,
     getOrderById,
     getPrintOrderById,
     createNewOrder,
     updateOrder,
-    deleteOrder
+    deleteOrder,
+    getOrderedClients
 }
