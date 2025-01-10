@@ -15,7 +15,7 @@ function AdminDashboard() {
         <Inventory />
         <UsersList />
         {/* <RouteConfig /> */}
-        {/* <EmailSelect /> */}
+        <EmailSelect />
         {/* <RoutePlanner /> */}
         {/* <Inventory /> */}
         {/* <Reports /> */}
