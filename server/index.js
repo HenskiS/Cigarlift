@@ -25,7 +25,7 @@ app.use(express.json())
 
 app.use(cookieParser())
 
-// API routes should come before static files
+// API routes
 app.use('/api/auth', require('./routes/authRoutes'))
 app.use('/api/users', require('./routes/userRoutes'))
 app.use('/api/clients', require('./routes/clientRoutes'))
@@ -37,12 +37,19 @@ app.use('/api/config', require('./routes/configRoutes'))
 app.use('/api/reports', require('./routes/reportRoutes'))
 app.use('/api/images', require('./routes/imageRoutes'))
 
-// Serve static files after API routes
-app.use(express.static(path.join(__dirname, '../client/Cigarlift/dist')))
+// Serve static files
+const staticPath = path.join(__dirname, '../client/Cigarlift/dist')
+console.log('Static files path:', staticPath)
+app.use(express.static(staticPath))
 
-// This should be the last route
+// SPA catch-all route - should be last
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/Cigarlift/dist/index.html'))
+    // Only handle HTML requests here
+    if (req.accepts('html')) {
+        res.sendFile(path.join(__dirname, '../client/Cigarlift/dist/index.html'))
+    } else {
+        res.status(404).json({ message: '404 Not Found' })
+    }
 })
 
 app.use(errorHandler)
