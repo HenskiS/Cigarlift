@@ -25,10 +25,7 @@ app.use(express.json())
 
 app.use(cookieParser())
 
-// Serve static files from the frontend build directory
-app.use(express.static(path.join(__dirname, '../client/Cigarlift/dist')))
-
-// API routes
+// API routes should come before static files
 app.use('/api/auth', require('./routes/authRoutes'))
 app.use('/api/users', require('./routes/userRoutes'))
 app.use('/api/clients', require('./routes/clientRoutes'))
@@ -40,7 +37,10 @@ app.use('/api/config', require('./routes/configRoutes'))
 app.use('/api/reports', require('./routes/reportRoutes'))
 app.use('/api/images', require('./routes/imageRoutes'))
 
-// Serve the frontend for any other routes
+// Serve static files after API routes
+app.use(express.static(path.join(__dirname, '../client/Cigarlift/dist')))
+
+// This should be the last route
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/Cigarlift/dist/index.html'))
 })
