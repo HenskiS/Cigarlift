@@ -40,7 +40,27 @@ app.use('/api/images', require('./routes/imageRoutes'))
 // Serve static files
 const staticPath = path.join(__dirname, '../client/Cigarlift/dist')
 console.log('Static files path:', staticPath)
+
+// Log the contents of the dist/assets directory
+const fs = require('fs')
+try {
+    console.log('Contents of assets directory:', 
+        fs.readdirSync(path.join(staticPath, 'assets')))
+} catch (err) {
+    console.log('Error reading assets directory:', err)
+}
+
 app.use(express.static(staticPath))
+
+// Debug middleware - add this right after static middleware
+app.use((req, res, next) => {
+    console.log('Request not handled by static middleware:', {
+        path: req.path,
+        method: req.method,
+        accepts: req.headers.accept
+    })
+    next()
+})
 
 // SPA catch-all route - should be last
 app.get('*', (req, res) => {
