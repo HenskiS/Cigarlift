@@ -1,5 +1,4 @@
 import PulseLoader from 'react-spinners/PulseLoader'
-import { useGetItineraryImageQuery } from '../drive/itineraryApiSlice'
 import './Client.css'
 import { memo } from 'react'
 import { useGetClientImageQuery } from './clientsApiSlice'

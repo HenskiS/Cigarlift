@@ -138,7 +138,7 @@ const ClientsList = () => {
             : mergedClients;
 
         content = (
-            <>
+            <div style={{width: '100%'}}>
                 {clientSelected ? 
                     <Client cid={clientSelected} close={handleButtonClose} />
                 : null} 
@@ -146,29 +146,36 @@ const ClientsList = () => {
                     <h1>Client List</h1>
                     <button onClick={handleNewClient}>New Client</button>
                     <div className="column--selectors">
-                        <input type="checkbox" name="company" id="company" defaultChecked={false} 
-                            onChange={e => handleSetCols("taxpayer", e.target.checked)} />
-                        <label htmlFor="company">Company</label>
-    
-                        <input type="checkbox" name="name" id="name" defaultChecked={true} 
-                            onChange={e => handleSetCols("dba", e.target.checked)} />
-                        <label htmlFor="name">Name</label>
-    
-                        <input type="checkbox" name="address" id="address" defaultChecked={false} 
-                            onChange={e => handleSetCols("address", e.target.checked)} />
-                        <label htmlFor="address">Address</label>
-    
-                        <input type="checkbox" name="city" id="city" defaultChecked={true} 
-                            onChange={e => handleSetCols("city", e.target.checked)} />
-                        <label htmlFor="city">City</label>
-                        
-                        <input type="checkbox" name="orderCount" id="orderCount" defaultChecked={false} 
-                            onChange={e => handleSetCols("orderCount", e.target.checked)} />
-                        <label htmlFor="orderCount">Order Count</label>
-                        
-                        <input type="checkbox" name="lastOrderDate" id="lastOrderDate" defaultChecked={false} 
-                            onChange={e => handleSetCols("lastOrderDate", e.target.checked)} />
-                        <label htmlFor="lastOrderDate">Last Order Date</label>
+                        <div className="checkbox-wrapper">
+                            <input type="checkbox" name="company" id="company" defaultChecked={false} 
+                                onChange={e => handleSetCols("taxpayer", e.target.checked)} />
+                            <label htmlFor="company">Company</label>
+                        </div>
+                        <div className="checkbox-wrapper">
+                            <input type="checkbox" name="name" id="name" defaultChecked={true} 
+                                onChange={e => handleSetCols("dba", e.target.checked)} />
+                            <label htmlFor="name">Name</label>
+                        </div>
+                        <div className="checkbox-wrapper">
+                            <input type="checkbox" name="address" id="address" defaultChecked={false} 
+                                onChange={e => handleSetCols("address", e.target.checked)} />
+                            <label htmlFor="address">Address</label>
+                        </div>
+                        <div className="checkbox-wrapper">
+                            <input type="checkbox" name="city" id="city" defaultChecked={true} 
+                                onChange={e => handleSetCols("city", e.target.checked)} />
+                            <label htmlFor="city">City</label>
+                        </div>
+                        <div className="checkbox-wrapper">
+                            <input type="checkbox" name="orderCount" id="orderCount" defaultChecked={false} 
+                                onChange={e => handleSetCols("orderCount", e.target.checked)} />
+                            <label htmlFor="orderCount">Order Count</label>
+                        </div>
+                        <div className="checkbox-wrapper">
+                            <input type="checkbox" name="lastOrderDate" id="lastOrderDate" defaultChecked={false} 
+                                onChange={e => handleSetCols("lastOrderDate", e.target.checked)} />
+                            <label htmlFor="lastOrderDate">Last Order Date</label>
+                        </div>
                     </div>
                     <div className="order-toggle">
                         <input
@@ -191,7 +198,7 @@ const ClientsList = () => {
                         />
                     </div>
                 </div>
-            </>
+            </div>
         )
     }
 

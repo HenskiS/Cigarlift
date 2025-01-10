@@ -199,6 +199,17 @@ th, td {
   margin: 2px;
   margin-right: 8px;
 }
+.column--selectors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
 
 .inventory {
   margin-bottom: 24px;

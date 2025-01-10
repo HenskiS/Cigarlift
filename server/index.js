@@ -25,9 +25,10 @@ app.use(express.json())
 
 app.use(cookieParser())
 
-app.use('/', express.static(path.join(__dirname, 'public')))
+// Serve static files from the frontend build directory
+app.use(express.static(path.join(__dirname, '../client/Cigarlift/dist')))
 
-app.use('/', require('./routes/root'))
+// API routes
 app.use('/api/auth', require('./routes/authRoutes'))
 app.use('/api/users', require('./routes/userRoutes'))
 app.use('/api/clients', require('./routes/clientRoutes'))
@@ -39,15 +40,9 @@ app.use('/api/config', require('./routes/configRoutes'))
 app.use('/api/reports', require('./routes/reportRoutes'))
 app.use('/api/images', require('./routes/imageRoutes'))
 
-app.all('*', (req, res) => {
-    res.status(404)
-    if (req.accepts('html')) {
-        res.sendFile(path.join(__dirname, 'views', '404.html'))
-    } else if (req.accepts('json')) {
-        res.json({ message: '404 Not Found' })
-    } else {
-        res.type('txt').send('404 Not Found')
-    }
+// Serve the frontend for any other routes
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/Cigarlift/dist/index.html'))
 })
 
 app.use(errorHandler)

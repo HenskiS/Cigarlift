@@ -55,6 +55,7 @@ const Navbar = () => {
             component={Link}
             to="/dash"
           /> : null}
+          { /*
           <BottomNavigationAction 
             label="Appointments"
             value="/appointments"
@@ -68,7 +69,7 @@ const Navbar = () => {
             icon={<DeliveryDiningIcon />}
             component={Link}
             to="/drive"
-          />
+          /> */}
           <BottomNavigationAction 
             label="Order"
             value="/order"

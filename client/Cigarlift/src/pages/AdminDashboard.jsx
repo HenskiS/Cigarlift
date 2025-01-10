@@ -12,12 +12,13 @@ function AdminDashboard() {
     return (
         <>
         <h1>Admin Dashboard</h1>
-        <UsersList />
-        <RouteConfig />
-        <EmailSelect />
-        <RoutePlanner />
         <Inventory />
-        <Reports />
+        <UsersList />
+        {/* <RouteConfig /> */}
+        {/* <EmailSelect /> */}
+        {/* <RoutePlanner /> */}
+        {/* <Inventory /> */}
+        {/* <Reports /> */}
         </>
     )
 }
