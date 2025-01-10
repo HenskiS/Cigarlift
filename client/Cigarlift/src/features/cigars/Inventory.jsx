@@ -37,7 +37,7 @@ function Inventory() {
   
 
     if (isLoading) return <PulseLoader color="#CCC" />;
-    if (isError) return <p>{error}</p>;
+    if (isError) return <p>{error.error}</p>;
 
     if (isSuccess) {
         //return <CigarTable data={data} />
