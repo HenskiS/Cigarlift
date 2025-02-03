@@ -204,9 +204,9 @@ const getOrderedClients = async (req, res) => {
             }}
         ]);
 
-        if (!orderedClients.length) {
+        /* if (!orderedClients.length) {
             return res.status(404).json({ message: 'No clients with orders found' });
-        }
+        } */
 
         res.json(orderedClients);
     } catch (error) {
