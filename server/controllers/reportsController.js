@@ -65,6 +65,7 @@ const getReportById = async (req, res) => {
     if (orders) {
         for (let i = 0; i < orders.length; i++) {
             const order = orders[i]
+            if (order?.isTestOrder === true) continue; // don't count sales in test orders
             const payed = order.payed
             totalCharged += order.total
             totalPayed += payed.cash + payed.check + payed.moneyorder

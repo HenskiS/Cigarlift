@@ -37,7 +37,7 @@ const Navbar = () => {
   }
 
   return (
-    <>
+    <div className='no-print'>
       <ApptMarquee />
       <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 10  }} elevation={3}>
   
@@ -93,7 +93,7 @@ const Navbar = () => {
         </BottomNavigation>
   
       </Paper>
-    </>
+    </div>
   );
 };
 

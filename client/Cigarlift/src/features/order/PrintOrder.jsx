@@ -38,12 +38,14 @@ function PrintOrder() {
                 </div>
                 <div className="order-client-header">
                     <p>Bill to:</p>
-                    <p>{data.client.taxpayer}</p>
-                    <p>{data.client.dba}</p>
-                    <p>{data.client.address}</p>
-                    <p>{data.client.city}</p>
-                    <p>{data.client.state + " " + data.client.zip}</p>
-                    <p>{data.client.contact??""}</p>
+                    {data.client.taxpayer && <p>{data.client.taxpayer}</p>}
+                    {data.client.dba && <p>{data.client.dba}</p>}
+                    {data.client.address && <p>{data.client.address}</p>}
+                    {data.client.city && <p>{data.client.city}</p>}
+                    {(data.client.state || data.client.zip) && (
+                        <p>{[data.client.state, data.client.zip].filter(Boolean).join(" ")}</p>
+                    )}
+                    {data.client.contact && <p>{data.client.contact}</p>}
                 </div>
                 
             </div>

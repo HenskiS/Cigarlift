@@ -1,21 +1,29 @@
 import PulseLoader from 'react-spinners/PulseLoader'
 import { useGetOrderByIdQuery } from "./ordersApiSlice"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import useTitle from "../../hooks/useTitle"
 import logo from "../../assets/cigarlift-logo-white.png"
 
-
-function Order() {
+function Order({ orderId='' }) {
     useTitle('Cigarlift: Order')
+    const navigate = useNavigate()
         
     const {id: paramId} = useParams()
+    const id = orderId || paramId
 
     const { data, 
       isLoading, 
       isError, 
       error, 
       isSuccess 
-    } = useGetOrderByIdQuery(paramId)
+    } = useGetOrderByIdQuery(id)
+
+    const handleCancel = () => {
+        navigate('/dash')
+    }
+    const handlePrint = () => {
+        window.print()
+    }
 
     let content
     if (isLoading) content = <PulseLoader color={"#CCC"} />
@@ -26,6 +34,14 @@ function Order() {
       console.log(data)
         content = (
         <div className="order-page">
+            <div className="print-controls no-print">
+                <button onClick={handleCancel} className="cancel-button">
+                    Cancel
+                </button>
+                <button onClick={handlePrint} className="print-button">
+                    Print
+                </button>
+            </div>
             <div className="order-pdf-header">
                 <img src={logo} alt="logo" className="order-logo" />
             </div>
@@ -38,14 +54,15 @@ function Order() {
                 </div>
                 <div className="order-client-header">
                     <p>Bill to:</p>
-                    <p>{data.client.taxpayer}</p>
-                    <p>{data.client.dba}</p>
-                    <p>{data.client.address}</p>
-                    <p>{data.client.city}</p>
-                    <p>{data.client.state + " " + data.client.zip}</p>
-                    <p>{data.client.contact??""}</p>
+                    {data.client.taxpayer && <p>{data.client.taxpayer}</p>}
+                    {data.client.dba && <p>{data.client.dba}</p>}
+                    {data.client.address && <p>{data.client.address}</p>}
+                    {data.client.city && <p>{data.client.city}</p>}
+                    {(data.client.state || data.client.zip) && (
+                        <p>{[data.client.state, data.client.zip].filter(Boolean).join(" ")}</p>
+                    )}
+                    {data.client.contact && <p>{data.client.contact}</p>}
                 </div>
-                
             </div>
             <h3>Summary</h3>
             <div><hr /></div>

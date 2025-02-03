@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { useGetCigarsQuery } from "../cigars/cigarsApiSlice"
 import PulseLoader from 'react-spinners/PulseLoader'
 import { useDispatch, useSelector } from "react-redux"
@@ -6,6 +6,7 @@ import { selectCart, updateQuantity, removeCigar, selectClient } from "./orderSl
 import DeleteIcon from '@mui/icons-material/Delete'
 import { useAddNewOrderMutation } from "./ordersApiSlice"
 import { useUpdateClientMutation } from "../clients/clientsApiSlice"
+import { useNavigate } from 'react-router-dom';
 
 
 function NewOrderForm() {
@@ -30,6 +31,9 @@ function NewOrderForm() {
     const [check, setCheck] = useState()
     const [moneyorder, setMoneyorder] = useState()
     const [notes, setNotes] = useState(client.notes)
+    const [isTestOrder, setIsTestOrder] = useState(client ? false : true)
+
+    const navigate = useNavigate()
 
     useEffect(()=> {
         if (cart.length) {
@@ -71,7 +75,8 @@ function NewOrderForm() {
             payed: {cash: isCash? cash : 0, 
                     check: isCheck? check : 0, 
                     moneyorder: isMoneyorder? moneyorder : 0
-                } 
+                },
+            isTestOrder
             }
             console.log(order)
         const response = await addNewOrderMutation(order)
@@ -107,14 +112,22 @@ function NewOrderForm() {
                 <div className="order-client-header">
                     {client.dba? 
                     <>
-                        <p>{client.taxpayer}</p>
-                        <p>{client.dba}</p>
-                        <p>{client.address}</p>
-                        <p>{client.city}</p>
-                        <p>{client.state + " " + client.zip}</p>
-                        <p>{client.contact??""}</p>
+                        {client.taxpayer && <p>{client.taxpayer}</p>}
+                        {client.dba && <p>{client.dba}</p>}
+                        {client.address && <p>{client.address}</p>}
+                        {client.city && <p>{client.city}</p>}
+                        {(client.state || client.zip) && (
+                            <p>{[client.state, client.zip].filter(Boolean).join(" ")}</p>
+                        )}
+                        {client.contact && <p>{client.contact}</p>}
                     </>
-                    : <p>No client selected...</p>}
+                    :
+                    <button style={{ padding: '8px', border: '1px solid lightgray', 
+                                     backgroundColor: '#1976d2', color: 'white' }}
+                            onClick={()=>navigate('/clients')}>
+                        Select Client
+                    </button>
+                    }
                 </div>
             </div>
             <h3>Cigars</h3>
@@ -197,7 +210,13 @@ function NewOrderForm() {
                     <h4>Payed</h4>
                     <p>${(Math.ceil(payed*100)/100).toFixed(2)}</p>
                 </div>
-                <button className="submit-order" onClick={handleSubmit}>Submit Order</button>
+                <div style={{ display: 'flex', flexDirection: 'column', width: '160px', margin: 'auto' }}>
+                    <span style={{ marginBottom: '10px' }}>
+                        <input type="checkbox" id="testOrder" checked={isTestOrder} onChange={e => setIsTestOrder(e.target.checked)}/>
+                        <label htmlFor="testOrder">Test Order</label>
+                    </span>
+                    <button className="submit-order" onClick={handleSubmit}>{isTestOrder ? 'Submit Test Order':'Submit Order'}</button>
+                </div>
                 <br />
                 <br />
                 <br />

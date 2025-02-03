@@ -18,7 +18,7 @@ function AdminDashboard() {
         <EmailSelect />
         {/* <RoutePlanner /> */}
         {/* <Inventory /> */}
-        {/* <Reports /> */}
+        <Reports />
         </>
     )
 }

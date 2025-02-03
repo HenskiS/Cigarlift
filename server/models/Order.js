@@ -22,6 +22,10 @@ const orderSchema = new Schema({
     },
     filename: {
         type: String
+    },
+    isTestOrder: {
+        type: Boolean,
+        default: false
     }
 });
 

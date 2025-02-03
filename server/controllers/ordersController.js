@@ -77,7 +77,7 @@ const getPrintOrderById = async (req, res) => {
 // @route POST /orders
 // @access Private
 const createNewOrder = async (req, res) => {
-    const { client, cigars, total, payed } = req.body
+    const { client, cigars, total, payed, isTestOrder } = req.body
 
     // Confirm data
     if (!client || !cigars || !total) {
@@ -88,7 +88,7 @@ const createNewOrder = async (req, res) => {
     let time = event.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }).replaceAll(":",".").replaceAll("/","-")
     let filename = `Order ${time} ${client.dba}.pdf`
 
-    const orderObject = { client, cigars, total, payed, filename }
+    const orderObject = { client, cigars, total, payed, filename, isTestOrder }
 
     // Create and store new order 
     const order = await Order.create(orderObject)
@@ -103,16 +103,21 @@ const createNewOrder = async (req, res) => {
     // generate PDF
     const pdf = await generatePDF(filename, order._id)
     emailHandler.sendEmail(order)
-    // update Inventory
-    let i = 0
-    for (i; i<cigars.length; i++) {
-        let c = cigars[i]
-        const cigarObject = await Cigar.findById(c._id)
-        if (cigarObject) {
-            cigarObject.quantity = cigarObject.quantity - c.qty
-            await Cigar.findByIdAndUpdate(cigarObject._id, cigarObject)
+    // update Inventory (if not test order)
+    if (!isTestOrder) {
+        try {
+            for (const c of cigars) {
+                await Cigar.findByIdAndUpdate(
+                    c._id,
+                    { $inc: { quantity: -c.qty } },
+                    { new: true }
+                );
+            }
+        } catch (error) {
+            console.error('Error updating inventory:', error);
+            throw error;
         }
-    }
+    }    
 }
 
 // @desc Update a order
@@ -179,6 +184,12 @@ const getOrderedClients = async (req, res) => {
     try {
         // Aggregate to get unique clients from orders
         const orderedClients = await Order.aggregate([
+            { $match: {
+                $or: [
+                    { isTestOrder: { $exists: false } },
+                    { isTestOrder: false }
+                ]
+            }},
             { $group: {
                 _id: "$client._id",
                 clientData: { $first: "$client" },

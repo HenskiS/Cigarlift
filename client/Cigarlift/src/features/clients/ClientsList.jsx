@@ -19,7 +19,7 @@ const ClientsList = () => {
     const navigate = useNavigate()
     const [clientSelected, setClientSelected] = useState(false);
     const [isClientEdit, setIsClientEdit] = useState(false);
-    const [showOnlyOrdered, setShowOnlyOrdered] = useState(false);
+    const [showOnlyOrdered, setShowOnlyOrdered] = useState(true);
     
     const [colDefs, setColDefs] = useState([
         { headerName: "Company", 

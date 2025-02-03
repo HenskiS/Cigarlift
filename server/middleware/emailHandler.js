@@ -55,7 +55,7 @@ const sendEmail = async (order) => {
 
     let config = await Config.findOne({ })
     let cc = config.emails ?? ["henryschreiner@mac.com"]
-    if (order.client.email && order.client.email !== "") {
+    if (!order.isTestOrder && order.client.email && order.client.email !== "") {
         cc.push(order.client.email)
     }
     if (order.emails && order.emails.length > 0) {
@@ -68,7 +68,7 @@ const sendEmail = async (order) => {
         "to": cc[0],
         "cc": cc.slice(1),
         "subject": `Order for ${order.client.dba}`,
-        "text": "Attached is a PDF of your order.",
+        "text": `Attached is a PDF of your${order.isTestOrder?' test':''} order.`,
         "attachments": [
         {
             "filename": `${order.filename}`,

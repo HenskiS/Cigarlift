@@ -24,29 +24,21 @@ const PersistLogin = () => {
 
 
     useEffect(() => {
-
-        if (effectRan.current === true || process.env.NODE_ENV !== 'development') { // React 18 Strict Mode
-
-            const verifyRefreshToken = async () => {
-                console.log('verifying refresh token')
-                try {
-                    //const response = 
-                    await refresh()
-                    //const { accessToken } = response.data
-                    setTrueSuccess(true)
-                }
-                catch (err) {
-                    console.error(err)
-                }
+        const verifyRefreshToken = async () => {
+            console.log('verifying refresh token')
+            try {
+                await refresh()
+                setTrueSuccess(true)
             }
-
-            if (!token && persist) verifyRefreshToken()
+            catch (err) {
+                console.error(err)
+            }
         }
-
-        return () => effectRan.current = true
-
-        // eslint-disable-next-line
-    }, [])
+    
+        // Remove the effectRan check and verify refresh token if we have no token but want to persist
+        if (!token && persist) verifyRefreshToken()
+    
+    }, [token, persist]) // Add dependencies
 
 
     let content
