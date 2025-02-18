@@ -39,7 +39,20 @@ router.get("/:imageName", async (req, res) => {
     }
 });
 router.post("/", upload.single('file'), (req, res) => {
-    res.json(req.file)
+    if (!req.file) {
+        console.log('No file received in upload request');
+        return res.status(400).json({ message: 'No file uploaded' });
+    }
+    
+    console.log('File upload received:', {
+        originalName: req.file.originalname,
+        savedAs: req.file.filename,
+        size: req.file.size,
+        mimeType: req.file.mimetype,
+        destination: req.file.destination
+    });
+    
+    res.json(req.file);
 });
 router.patch("/", async (req, res) => {
     

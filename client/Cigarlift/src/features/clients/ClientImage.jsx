@@ -27,7 +27,8 @@ const ClientImage = ({
     isError,
     error, 
     isLoading, 
-    isSuccess 
+    isSuccess,
+    refetch 
   } = useGetClientImageQuery(src, {
     skip: !src
   });
@@ -43,15 +44,20 @@ const ClientImage = ({
 
   const handleUpload = async (event) => {
     const file = event.target.files[0];
+    console.log('File selected:', file); // Debug log
+
     if (file && client?.license) {
       const extension = file.name.substring(file.name.lastIndexOf('.') + 1);
       const newFileName = `${client.license}${type.charAt(0).toUpperCase() + type.slice(1)}.${extension}`;
+      console.log('New filename:', newFileName); // Debug log
       
       const formData = new FormData();
       formData.append("file", file, newFileName);
       
       try {
-        await uploadImage(formData);
+        console.log('Attempting upload...'); // Debug log
+        const uploadResult = await uploadImage(formData);
+        console.log('Upload result:', uploadResult); // Debug log
         
         // Update client with new filename in the images object
         await updateClient({
@@ -61,6 +67,8 @@ const ClientImage = ({
             [`${type}Image`]: newFileName
           }
         });
+
+        refetch();
       } catch (error) {
         console.error('Upload or update failed:', error);
       }
@@ -95,6 +103,7 @@ const ClientImage = ({
             style={{ display: 'none' }}
             accept="image/*"
             onChange={handleUpload}
+            capture="environment"
           />
           <Button
             variant="outlined"

@@ -273,16 +273,6 @@ const getImage = async (req, res) => {
     const imageName = req.params.imageName
     const imagePath = path.join(__dirname, '../images', imageName)
     if (fs.existsSync(imagePath)) {
-        // Set the appropriate content type for the response
-        //res.setHeader('Content-Type', 'image/jpeg'); // Adjust the content type based on the image type (e.g., jpeg, png)
-        
-        //console.log("Sending image at location:")
-        //console.log(imagePath)
-        
-        // Read the image file and stream it back as the response
-        //const stream = fs.createReadStream(imagePath);
-        //stream.pipe(res);
-        //res.sendFile(imagePath)
         imageToBase64(imagePath).then(response => res.send(response))
       } 
     else {
