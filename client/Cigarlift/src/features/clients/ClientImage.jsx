@@ -1,47 +1,228 @@
-import PulseLoader from 'react-spinners/PulseLoader'
-import './Client.css'
-import { memo } from 'react'
-import { useGetClientImageQuery } from './clientsApiSlice'
+import React, { useState } from 'react';
+import { useGetClientImageQuery, useUpdateClientMutation, useUploadClientImageMutation } from './clientsApiSlice';
+import { PulseLoader } from 'react-spinners';
+import { 
+  Dialog, 
+  DialogTitle, 
+  DialogContent,
+  Button,
+  IconButton
+} from '@mui/material';
+import { 
+  ZoomIn as ZoomInIcon,
+  Upload as UploadIcon,
+  Close as CloseIcon 
+} from '@mui/icons-material';
 
-const ClientImage = memo(function ClientImage({ src }) {
-    let content 
-    
-    const { data: imageData, 
-        isError,
-        error, 
-        isLoading, 
-        isSuccess 
-    } = useGetClientImageQuery(src)
+const ClientImage = ({ 
+  src, 
+  type = 'location', // location, license, contract, or humidor
+  client 
+}) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [scale, setScale] = useState(1);
+  
+  const { 
+    data: imageData, 
+    isError,
+    error, 
+    isLoading, 
+    isSuccess 
+  } = useGetClientImageQuery(src, {
+    skip: !src
+  });
 
-    if (isLoading) content = <PulseLoader color={"#CCC"} />
+  const [uploadImage, {
+    isLoading: uploadIsLoading,
+    isSuccess: uploadIsSuccess,
+    isError: uploadIsError,
+    error: uploadError
+  }] = useUploadClientImageMutation();
 
-    if (isError) content =  <p>error</p>
+  const [updateClient] = useUpdateClientMutation();
 
-    if (isSuccess) {
-
-        content = 
-            <div className='image-container'>
-            {isLoading? <p>loading image...</p> :
-            isError? <p>image error</p> :
-            isSuccess? 
-                <img src={`data:image/jpeg;base64,${imageData}`} alt="Location" className="location-image" />
-                : <p>no image</p>
-            }
-            </div>
+  const handleUpload = async (event) => {
+    const file = event.target.files[0];
+    if (file && client?.license) {
+      const extension = file.name.substring(file.name.lastIndexOf('.') + 1);
+      const newFileName = `${client.license}${type.charAt(0).toUpperCase() + type.slice(1)}.${extension}`;
+      
+      const formData = new FormData();
+      formData.append("file", file, newFileName);
+      
+      try {
+        await uploadImage(formData);
+        
+        // Update client with new filename in the images object
+        await updateClient({
+          id: client._id,
+          images: {
+            ...client.images,
+            [`${type}Image`]: newFileName
+          }
+        });
+      } catch (error) {
+        console.error('Upload or update failed:', error);
+      }
     }
+  };
 
-    return content
-})
-export default ClientImage
+  const handleZoom = () => {
+    setScale(prev => prev === 1 ? 2 : 1);
+  };
 
-export const NoImage = () => {
+  if (isLoading) return <PulseLoader color={"#CCC"} />;
+  if (isError) return <p style={{ color: '#ff0000' }}>Error loading image</p>;
 
+  if (!imageData) {
     return (
-        <div className='image-container' 
-            style={{ backgroundColor: "lightgrey", 
-                    borderRadius:"50%",
-                    flexDirection: 'column'}}>
-            <p>no image...</p>
+      <div style={{
+        height: '200px',
+        width: '100%',
+        backgroundColor: '#f5f5f5',
+        borderRadius: '4px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <div style={{ marginBottom: '16px', color: '#666' }}>
+          No {type} image
         </div>
-    )
-}
+        <label>
+          <input
+            type="file"
+            style={{ display: 'none' }}
+            accept="image/*"
+            onChange={handleUpload}
+          />
+          <Button
+            variant="outlined"
+            component="span"
+            startIcon={uploadIsLoading ? null : <UploadIcon />}
+            disabled={uploadIsLoading}
+          >
+            {uploadIsLoading ? 'Uploading...' : 'Upload Image'}
+          </Button>
+          {uploadIsError && (
+            <p style={{ color: '#ff0000', marginTop: '8px' }}>
+              Upload failed: {uploadError?.data?.message || 'Unknown error'}
+            </p>
+          )}
+        </label>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div 
+        onClick={() => setIsExpanded(true)}
+        style={{
+          position: 'relative',
+          width: '100%',
+          height: '200px',
+          overflow: 'hidden',
+          borderRadius: '4px',
+          cursor: 'pointer'
+        }}
+      >
+        <img
+          src={`data:image/jpeg;base64,${imageData}`}
+          alt={`${type} image`}
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover'
+          }}
+        />
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundColor: 'rgba(0,0,0,0)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'background-color 0.2s',
+          ':hover': {
+            backgroundColor: 'rgba(0,0,0,0.3)'
+          }
+        }}>
+          <ZoomInIcon style={{
+            color: 'white',
+            opacity: 0,
+            transition: 'opacity 0.2s',
+            ':hover': {
+              opacity: 1
+            }
+          }} />
+        </div>
+      </div>
+
+      <Dialog
+        open={isExpanded}
+        onClose={() => setIsExpanded(false)}
+        maxWidth="lg"
+        fullWidth
+      >
+        <DialogTitle style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '16px'
+        }}>
+          <span style={{ textTransform: 'capitalize' }}>{type} Image</span>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <label>
+              <input
+                type="file"
+                style={{ display: 'none' }}
+                accept="image/*"
+                onChange={handleUpload}
+              />
+              <Button
+                variant="outlined"
+                component="span"
+                size="small"
+                startIcon={uploadIsLoading ? null : <UploadIcon />}
+                disabled={uploadIsLoading}
+              >
+                {uploadIsLoading ? 'Uploading...' : 'Upload New'}
+              </Button>
+              {uploadIsError && (
+                <p style={{ color: '#ff0000', marginTop: '8px' }}>
+                  Upload failed: {uploadError?.data?.message || 'Unknown error'}
+                </p>
+              )}
+            </label>
+            <IconButton onClick={handleZoom} size="small">
+              <ZoomInIcon />
+            </IconButton>
+            <IconButton onClick={() => setIsExpanded(false)} size="small">
+              <CloseIcon />
+            </IconButton>
+          </div>
+        </DialogTitle>
+        <DialogContent style={{
+          height: '600px',
+          overflow: 'auto',
+          padding: '16px'
+        }}>
+          <img
+            src={`data:image/jpeg;base64,${imageData}`}
+            alt={`${type} image`}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'contain',
+              transform: `scale(${scale})`,
+              transition: 'transform 0.2s'
+            }}
+          />
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};
+
+export default ClientImage;

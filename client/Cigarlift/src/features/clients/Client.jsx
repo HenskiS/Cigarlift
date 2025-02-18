@@ -2,7 +2,7 @@ import { useGetClientByIdQuery, useUpdateNotesMutation } from './clientsApiSlice
 import PulseLoader from 'react-spinners/PulseLoader'
 import useTitle from '../../hooks/useTitle'
 import './Client.css'
-import ClientImage, { NoImage } from './ClientImage'
+import ClientImage from './ClientImage'
 import { useNavigate, useParams } from 'react-router-dom'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import { useEffect, useState } from 'react'
@@ -95,13 +95,12 @@ const Client = ({ cid, close }) => {
                 <div hidden={isClientEdit} className='client'>
                     
                     <div className='client-header'>
-                        { client.images.locationImage?
-                            <ClientImage src={client.images.locationImage} />
-                            :
-                            <NoImage />
-                        }
+                        <ClientImage src={client.images.locationImage}
+                            type='location'
+                            client={client} 
+                        />
                         <div className='client-name'>
-                            <h1>{client.dba}</h1>
+                            <h2>{client.dba}</h2>
                             <h3>{client.taxpayer}</h3>
                         </div>
                     </div>
@@ -188,27 +187,30 @@ const Client = ({ cid, close }) => {
                         </tr>
                         </tbody>
                     </table>
-                    <div className="images-header">
-                        <p>Contract</p>
-                        <p>License</p>
-                        <p>Humidor</p>
-                    </div>
-                    <div className='images'>
-                        { client.images.contractImage?
-                            <ClientImage src={client.images.contractImage} />
-                            :
-                            <NoImage />
-                        }
-                        { client.images.licenseImage?
-                            <ClientImage src={client.images.licenseImage} />
-                            :
-                            <NoImage />
-                        }
-                        { client.images.humidorImage?
-                            <ClientImage src={client.images.humidorImage} />
-                            :
-                            <NoImage />
-                        }
+                    <div className="images">
+                        <div className="image-section">
+                            <p>Contract</p>
+                            <ClientImage src={client.images.contractImage}
+                                type='contract'
+                                client={client} 
+                            />
+                        </div>
+                        
+                        <div className="image-section">
+                            <p>License</p>
+                            <ClientImage src={client.images.licenseImage}
+                                type='license'
+                                client={client} 
+                            />
+                        </div>
+                        
+                        <div className="image-section">
+                            <p>Humidor</p>
+                            <ClientImage src={client.images.humidorImage}
+                                type='humidor'
+                                client={client} 
+                            />
+                        </div>
                     </div>
                 </div>}
             </>

@@ -91,26 +91,31 @@ export const clientsApiSlice = apiSlice.injectEndpoints({
             ]
         }),
         getClientImage: builder.query({
-            query: ( imageName ) => ({
+            query: (imageName) => ({
                 url: `/images/${imageName}`,
                 method: 'GET',
                 responseHandler: (response) => response.text(),
             }),
+            providesTags: (result, error, imageName) => [
+                { type: 'ClientImage', id: imageName }
+            ],
             async onQueryStarted(queryArg) {
                 console.log('Fetching image:', `/images/${queryArg}`);
             }
         }),
         uploadClientImage: builder.mutation({
-            query: ( formData ) => ({
-                
+            query: (formData) => ({
                 url: `/images/`,
                 method: 'POST',
                 body: formData
             }),
             async onQueryStarted(queryArg) {
-                console.log('Postin image');
+                console.log('Posting image');
             },
-            invalidatesTags: ['Client']
+            invalidatesTags: (result, error, formData) => [
+                'Client',
+                { type: 'ClientImage', id: formData.get('file').name }
+            ]
         }),
     }),
 })

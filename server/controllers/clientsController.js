@@ -127,48 +127,39 @@ const updateNotes = async (req, res) => {
 // @desc Update a client
 // @route PATCH /clients
 // @access Private
+// THis seems like way too much code for an update endpoint.Do we even need to destructure it all, can't we just update whatever fields are sent?
 const updateClient = async (req, res) => {
-    const { id, _id, license, dba, email, taxpayer, address, city, state, contact, phone, website, notes, isVisited, images } = req.body
+    const { id, _id } = req.body;
+    const clientId = id || _id;
 
-    // Confirm data 
-    if (!_id) {
-        if ( !id || !dba ) {
-            return res.status(400).json({ message: 'ID and DBA are required' })
+    if (!clientId) {
+        return res.status(400).json({ message: 'Client ID is required' });
+    }
+
+    try {
+        const updatedClient = await Client.findByIdAndUpdate(
+            clientId,
+            { $set: req.body },
+            { new: true }
+        );
+
+        if (!updatedClient) {
+            return res.status(404).json({ message: 'Client not found' });
         }
+
+        res.json({ message: `${updatedClient.dba} updated` });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
     }
-
-    // Does the client exist to update?
-    const client = await Client.findById( id ?? _id ).exec()
-
-    if (!client) {
-        return res.status(400).json({ message: 'Client not found' })
-    }
-
-    // Check for duplicate 
-    //const duplicate = await Client.findOne({ username }).collation({ locale: 'en', strength: 2 }).lean().exec()
-
-    // Allow updates to the original client 
-    /*if (duplicate && duplicate?._id.toString() !== id) {
-        return res.status(409).json({ message: 'Duplicate username' })
-    }*/
-    
-    client.dba = dba
-    client.taxpayer = taxpayer
-    client.address = address
-    client.city = city
-    client.state = state
-    client.contact = contact
-    client.email = email
-    client.phone = phone
-    client.website = website
-    client.notes = notes
-    client.isVisited = isVisited
-    client.images = images
-
-    const updatedClient = await client.save()
-
-    res.json({ message: `${updatedClient.dba} updated` })
 }
+
+// This version:
+// 1. Only requires an ID
+// 2. Uses findByIdAndUpdate with $set to update only the fields present in req.body
+// 3. Returns the updated document with {new: true}
+// 4. Includes error handling
+// 5. Is much shorter while maintaining functionality
+
 
 // @desc Delete a client
 // @route DELETE /clients

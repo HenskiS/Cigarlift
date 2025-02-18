@@ -2,7 +2,7 @@ import { useAddNewClientMutation, useUpdateClientMutation, useUploadClientImageM
 import PulseLoader from 'react-spinners/PulseLoader'
 import useTitle from '../../hooks/useTitle'
 import './Client.css'
-import ClientImage, { NoImage } from './ClientImage'
+import ClientImage from './ClientImage'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { selectClient } from '../order/orderSlice'
@@ -185,7 +185,7 @@ const NewClientForm = () => {
                 </tr>
                 </tbody>
             </table>
-            <div className='image-upload'>
+            {/* <div className='image-upload'>
                 <p>Upload Images</p>
                 <span>
                     <label className='image-upload-label' htmlFor="location">Location Image: </label>
@@ -203,7 +203,7 @@ const NewClientForm = () => {
                     <label htmlFor="humidor">Humidor Image: </label>
                     <input type="file" id="humidor" onChange={handleHumidor}/>
                 </span>
-            </div>
+            </div> */}
             <button style={{marginBottom: '10px'}} className='client-button' onClick={onSaveClientClicked}>Save</button>
         </form>
             

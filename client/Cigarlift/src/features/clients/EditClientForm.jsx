@@ -2,7 +2,7 @@ import { useUpdateClientMutation, useUploadClientImageMutation } from './clients
 import PulseLoader from 'react-spinners/PulseLoader'
 import useTitle from '../../hooks/useTitle'
 import './Client.css'
-import ClientImage, { NoImage } from './ClientImage'
+import ClientImage from './ClientImage'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -116,11 +116,7 @@ const EditClientForm = ({ client, close }) => {
         <div className='client'>
         <form className="form" onSubmit={e => e.preventDefault()}>
             <div className='client-header'>
-                { client.images.locationImage?
-                    <ClientImage src={client.images.locationImage} />
-                    :
-                    <NoImage />
-                }
+                <ClientImage src={client.images.locationImage} />
                 <div className='client-name'>
                     <h1>{client.dba}</h1>
                     <h3>{client.taxpayer}</h3>
@@ -179,7 +175,7 @@ const EditClientForm = ({ client, close }) => {
                 </tr>
                 </tbody>
             </table>
-            <div className='image-upload'>
+            {/* <div className='image-upload'>
                 <p>Upload Images</p>
                 <span>
                     <label className='image-upload-label' htmlFor="location">Location Image: </label>
@@ -197,7 +193,7 @@ const EditClientForm = ({ client, close }) => {
                     <label htmlFor="humidor">Humidor Image: </label>
                     <input type="file" id="humidor" onChange={handleHumidor}/>
                 </span>
-            </div>
+            </div> */}
             <button style={{marginBottom: '10px'}} className='client-button' onClick={onSaveClientClicked}>Save</button>
         </form>
             
