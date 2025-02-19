@@ -30,10 +30,10 @@ const compressImage = async (buffer, targetSizeMB = 2) => {
         // Calculate current size in MB
         const sizeMB = buffer.length / (1024 * 1024);
         
-        // Create new pipeline with rotation and EXIF removal
+        // Create new pipeline with proper metadata handling
         image = sharp(buffer, { failOnError: false })
             .rotate()
-            .removeExif();
+            .withMetadata(false);  // This removes EXIF data
 
         // If image is very large, resize while maintaining aspect ratio
         if (metadata.width > 4000 || metadata.height > 4000) {
