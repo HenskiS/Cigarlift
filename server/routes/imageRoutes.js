@@ -7,9 +7,6 @@ const fs = require('fs');
 const sharp = require('sharp');
 const multer = require('multer');
 
-// Disable all automatic rotation in Sharp
-sharp.cache(false);
-
 // Use memory storage for compression
 const upload = multer({
     storage: multer.memoryStorage(),
@@ -25,17 +22,20 @@ const compressImage = async (buffer, targetSizeMB = 2) => {
         return buffer;
     }
 
-    const metadata = await sharp(buffer).metadata();
-
     try {
-        // Create base pipeline with ALL rotation disabled
-        const pipeline = sharp(buffer, {
+        // First pass: Extract image data while removing EXIF
+        const rawImage = await sharp(buffer)
+            .rotate() // Apply EXIF orientation once
+            .removeExif() // Remove EXIF data
+            .toBuffer();
+
+        // Get metadata to check format
+        const metadata = await sharp(rawImage).metadata();
+
+        // Second pass: Compress with all orientation handling disabled
+        const pipeline = sharp(rawImage, {
             failOnError: false,
-            animated: false,
             rotate: false,
-            limitInputPixels: false
-        }).withMetadata({
-            orientation: 1  // Force orientation to normal
         });
 
         // Size-based quality setting
@@ -44,7 +44,6 @@ const compressImage = async (buffer, targetSizeMB = 2) => {
 
         if (metadata.format === 'png' && metadata.hasAlpha) {
             return await pipeline
-                .withMetadata({ orientation: 1 })
                 .png({
                     quality,
                     compressionLevel: 9
@@ -52,7 +51,6 @@ const compressImage = async (buffer, targetSizeMB = 2) => {
                 .toBuffer();
         } else {
             return await pipeline
-                .withMetadata({ orientation: 1 })
                 .jpeg({
                     quality,
                     chromaSubsampling: '4:4:4'
@@ -65,6 +63,7 @@ const compressImage = async (buffer, targetSizeMB = 2) => {
     }
 };
 
+// Rest of your routes remain the same
 router.use(verifyJWT);
 
 router.get("/", async (req, res) => {
