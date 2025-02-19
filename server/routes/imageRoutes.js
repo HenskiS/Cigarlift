@@ -23,35 +23,56 @@ const compressImage = async (buffer, targetSizeMB = 2) => {
     }
 
     try {
-        // Create single Sharp instance and chain operations
+        // Initialize sharp with the input buffer
         const pipeline = sharp(buffer, {
             failOnError: false
-        })
-        .rotate() // Auto-rotate based on EXIF
-        .removeExif(); // Remove EXIF data including orientation
+        });
 
-        // Get metadata to check format
+        // Get metadata first
         const metadata = await pipeline.metadata();
-
-        // Size-based quality setting
+        
+        // Calculate current size in MB
         const sizeMB = buffer.length / (1024 * 1024);
-        const quality = sizeMB > 5 ? 60 : 75;
+        
+        // Base pipeline operations
+        pipeline.rotate() // Auto-rotate based on EXIF
+               .removeExif(); // Remove EXIF data
 
-        // Format-specific compression
-        if (metadata.format === 'png' && metadata.hasAlpha) {
+        // If image is very large, resize while maintaining aspect ratio
+        if (metadata.width > 4000 || metadata.height > 4000) {
+            pipeline.resize(4000, 4000, {
+                fit: 'inside',
+                withoutEnlargement: true
+            });
+        }
+
+        // Maintain original format but with optimized compression
+        if (metadata.format === 'png') {
             return await pipeline
                 .png({
-                    quality,
-                    compressionLevel: 9
+                    compressionLevel: 9,
+                    effort: 10, // Maximum compression effort
+                    quality: Math.min(80, Math.max(50, Math.floor(100 - (sizeMB * 8))))
+                })
+                .toBuffer();
+        } else if (metadata.format === 'jpeg' || metadata.format === 'jpg') {
+            return await pipeline
+                .jpeg({
+                    quality: Math.min(80, Math.max(50, Math.floor(100 - (sizeMB * 8)))),
+                    chromaSubsampling: '4:2:0',
+                    mozjpeg: true
+                })
+                .toBuffer();
+        } else if (metadata.format === 'webp') {
+            return await pipeline
+                .webp({
+                    quality: Math.min(80, Math.max(50, Math.floor(100 - (sizeMB * 8)))),
+                    effort: 6
                 })
                 .toBuffer();
         } else {
-            return await pipeline
-                .jpeg({
-                    quality,
-                    chromaSubsampling: '4:4:4'
-                })
-                .toBuffer();
+            // For any other format, maintain original format with default compression
+            return await pipeline.toBuffer();
         }
     } catch (error) {
         console.error('Compression error:', error);
