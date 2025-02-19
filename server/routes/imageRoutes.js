@@ -7,6 +7,9 @@ const fs = require('fs');
 const sharp = require('sharp');
 const multer = require('multer');
 
+// Disable all automatic rotation in Sharp
+sharp.cache(false);
+
 // Use memory storage for compression
 const upload = multer({
     storage: multer.memoryStorage(),
@@ -18,46 +21,47 @@ const upload = multer({
 const compressImage = async (buffer, targetSizeMB = 2) => {
     const targetSize = targetSizeMB * 1024 * 1024;
     
-    // If image is already smaller than target, return as is
     if (buffer.length <= targetSize) {
         return buffer;
     }
 
-    // Get metadata to check format
     const metadata = await sharp(buffer).metadata();
 
-    // Create a pipeline that preserves orientation
-    const pipeline = sharp(buffer, {
-        failOnError: false, // Don't fail on corrupted images
-        rotate: false      // Don't auto-rotate based on EXIF
-    });
-
-    // If it's significantly over target size, we'll do a more aggressive compression
-    const sizeMB = buffer.length / (1024 * 1024);
-    const quality = sizeMB > 5 ? 60 : 75;  // More aggressive for very large files
-
     try {
+        // Create base pipeline with ALL rotation disabled
+        const pipeline = sharp(buffer, {
+            failOnError: false,
+            animated: false,
+            rotate: false,
+            limitInputPixels: false
+        }).withMetadata({
+            orientation: 1  // Force orientation to normal
+        });
+
+        // Size-based quality setting
+        const sizeMB = buffer.length / (1024 * 1024);
+        const quality = sizeMB > 5 ? 60 : 75;
+
         if (metadata.format === 'png' && metadata.hasAlpha) {
-            // For PNGs with transparency, use PNG compression
             return await pipeline
+                .withMetadata({ orientation: 1 })
                 .png({
                     quality,
                     compressionLevel: 9
                 })
                 .toBuffer();
         } else {
-            // For all other images, convert to JPEG
-            // Not using mozjpeg for speed
             return await pipeline
+                .withMetadata({ orientation: 1 })
                 .jpeg({
                     quality,
-                    chromaSubsampling: '4:4:4' // Better quality for text
+                    chromaSubsampling: '4:4:4'
                 })
                 .toBuffer();
         }
     } catch (error) {
         console.error('Compression error:', error);
-        return buffer; // Return original if compression fails
+        return buffer;
     }
 };
 
@@ -93,21 +97,17 @@ router.post("/", upload.single('file'), async (req, res) => {
     try {
         const startTime = Date.now();
         
-        // Get file extension
         const extension = path.extname(req.file.originalname);
         const newExtension = extension.toLowerCase() === '.png' ? '.png' : '.jpg';
         const filename = path.basename(req.file.originalname, extension) + newExtension;
         
-        // Compress the image
         const compressedBuffer = await compressImage(req.file.buffer, 2);
         
-        // Save the compressed image
         const savePath = path.join(__dirname, '../images', filename);
         await fs.promises.writeFile(savePath, compressedBuffer);
 
         const endTime = Date.now();
         
-        // Log the results
         console.log('File processed and saved:', {
             originalName: req.file.originalname,
             savedAs: filename,
