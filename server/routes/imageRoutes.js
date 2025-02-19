@@ -23,25 +23,21 @@ const compressImage = async (buffer, targetSizeMB = 2) => {
     }
 
     try {
-        // First pass: Extract image data while removing EXIF
-        const rawImage = await sharp(buffer)
-            .rotate() // Apply EXIF orientation once
-            .removeExif() // Remove EXIF data
-            .toBuffer();
+        // Create single Sharp instance and chain operations
+        const pipeline = sharp(buffer, {
+            failOnError: false
+        })
+        .rotate() // Auto-rotate based on EXIF
+        .removeExif(); // Remove EXIF data including orientation
 
         // Get metadata to check format
-        const metadata = await sharp(rawImage).metadata();
-
-        // Second pass: Compress with all orientation handling disabled
-        const pipeline = sharp(rawImage, {
-            failOnError: false,
-            rotate: false,
-        });
+        const metadata = await pipeline.metadata();
 
         // Size-based quality setting
         const sizeMB = buffer.length / (1024 * 1024);
         const quality = sizeMB > 5 ? 60 : 75;
 
+        // Format-specific compression
         if (metadata.format === 'png' && metadata.hasAlpha) {
             return await pipeline
                 .png({
