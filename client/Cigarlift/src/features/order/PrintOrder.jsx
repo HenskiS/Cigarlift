@@ -37,6 +37,7 @@ function PrintOrder() {
                     <p>(949) 796-2980</p>
                 </div>
                 <div className="order-client-header">
+                    {data.invoiceNum && <p>Invoice No. {data.isTestOrder ? "TEST" : data.invoiceNum}</p>}
                     <p>Bill to:</p>
                     {data.client.taxpayer && <p>{data.client.taxpayer}</p>}
                     {data.client.dba && <p>{data.client.dba}</p>}
