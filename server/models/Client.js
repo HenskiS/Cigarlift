@@ -30,7 +30,8 @@ const clientSchema = new Schema({
         contractImage: String,
         licenseImage: String,
         humidorImage: String,
-    }
+    },
+    orders: Number
 });
 
 module.exports = mongoose.model('Client', clientSchema);

@@ -3,13 +3,13 @@ const Order = require('../models/Order')
 const puppeteer = require("puppeteer");
 const emailHandler = require('../middleware/emailHandler');
 const Cigar = require('../models/Cigar');
-
+const Client = require('../models/Client');
 
 const generatePDF = async (filename, id) => {
     const browser = await puppeteer.launch({args: ['--no-sandbox']}); // launch a browser (chromium by default but you can chose another one)
     const page = await browser.newPage(); // open a page in the browser
-    //await page.goto(`http://localhost:5173/order/print/${id}`, {
-    await page.goto(`https://cigarlift.work/order/print/${id}`, {
+    await page.goto(`http://localhost:5173/order/print/${id}`, {
+    //await page.goto(`https://cigarlift.work/order/print/${id}`, {
         waitUntil: "networkidle2",
     }); // visit the printable version of your page
     // wait for div? await page.waitForSelector("order-page")
@@ -87,8 +87,16 @@ const createNewOrder = async (req, res) => {
     let event = new Date()
     let time = event.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }).replaceAll(":",".").replaceAll("/","-")
     let filename = `Order ${time} ${client.dba}.pdf`
+    
+    let invoiceNum;
+    try {
+        invoiceNum = isTestOrder ? -1 : client.orders + 1;
+    } catch (error) {
+        console.error('Error generating invoice number:', error.message);
+        invoiceNum = -1;
+    }
 
-    const orderObject = { client, cigars, total, payed, filename, isTestOrder }
+    const orderObject = { client, cigars, total, payed, filename, isTestOrder, invoiceNum }
 
     // Create and store new order 
     const order = await Order.create(orderObject)
@@ -103,6 +111,7 @@ const createNewOrder = async (req, res) => {
     // generate PDF
     const pdf = await generatePDF(filename, order._id)
     emailHandler.sendEmail(order)
+
     // update Inventory (if not test order)
     if (!isTestOrder) {
         try {
@@ -113,11 +122,17 @@ const createNewOrder = async (req, res) => {
                     { new: true }
                 );
             }
+            // Update client's order count
+            await Client.findByIdAndUpdate(
+                client._id,
+                { $inc: { orders: 1 } },
+                { new: true }
+            );
         } catch (error) {
             console.error('Error updating inventory:', error);
             throw error;
         }
-    }    
+    }
 }
 
 // @desc Update a order

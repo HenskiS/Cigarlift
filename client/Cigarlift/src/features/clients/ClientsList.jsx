@@ -1,5 +1,4 @@
 import { useGetClientsQuery } from "./clientsApiSlice"
-import { useGetOrderedClientsQuery } from "../order/ordersApiSlice"  // New import
 import Client from './Client'
 import useTitle from "../../hooks/useTitle"
 import PulseLoader from 'react-spinners/PulseLoader'
@@ -8,7 +7,7 @@ import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import './Client.css'
 import ClientsNearby from "./ClientsNearby";
@@ -31,7 +30,7 @@ const ClientsList = () => {
         { headerName: "City", 
             field: "city", filter: true, floatingFilter: true, flex: 2, hide: false },
         { headerName: "Order Count", 
-            field: "orderCount", filter: true, floatingFilter: true, flex: 1, hide: true },
+            field: "orders", filter: true, floatingFilter: true, flex: 1, hide: true },
         { headerName: "Last Order Date", 
             field: "lastOrderDate", filter: true, floatingFilter: true, flex: 2, hide: true,
             valueFormatter: params => {
@@ -43,53 +42,26 @@ const ClientsList = () => {
     ])
 
     const {
-        data: allClients,
-        isLoading: isAllClientsLoading,
-        isSuccess: isAllClientsSuccess,
-        isError: isAllClientsError,
-        error: allClientsError
+        data: clients,
+        isLoading,
+        isSuccess,
+        isError,
+        error
     } = useGetClientsQuery('clientsList', {
         pollingInterval: 60000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })
 
-    const {
-        data: orderedClients,
-        isLoading: isOrderedClientsLoading,
-        isSuccess: isOrderedClientsSuccess,
-        isError: isOrderedClientsError,
-        error: orderedClientsError
-    } = useGetOrderedClientsQuery(undefined, {
-        pollingInterval: 60000,
-        refetchOnFocus: true,
-        refetchOnMountOrArgChange: true
-    })
-
-    const mergedClients = useMemo(() => {
-        if (!isAllClientsSuccess || !isOrderedClientsSuccess) return [];
-        
-        const orderedClientsMap = new Map(orderedClients.map(client => [client.client._id, client]));
-        
-        return allClients.map(client => {
-            const orderedClientData = orderedClientsMap.get(client._id);
-            return {
-                ...client,
-                orderCount: orderedClientData ? orderedClientData.orderCount : 0,
-                lastOrderDate: orderedClientData && orderedClientData.lastOrderDate ? orderedClientData.lastOrderDate : null
-            };
-        });
-    }, [allClients, orderedClients, isAllClientsSuccess, isOrderedClientsSuccess]);
-
     let content
 
-    if (isAllClientsLoading || isOrderedClientsLoading) content = <PulseLoader color={"#CCC"} />
+    if (isLoading) content = <PulseLoader color={"#CCC"} />
 
-    if (isAllClientsError || isOrderedClientsError) {
-        content = <p className="errmsg">{allClientsError?.data?.message || orderedClientsError?.data?.message}</p>
+    if (isError) {
+        content = <p className="errmsg">{error?.data?.message}</p>
     }
 
-    if (isAllClientsSuccess && isOrderedClientsSuccess) {
+    if (isSuccess) {
         const pagination = true;
         const paginationPageSize = 20;
         const paginationPageSizeSelector = [20, 50, 100, 200];
@@ -134,8 +106,8 @@ const ClientsList = () => {
         }
 
         const filteredClients = showOnlyOrdered
-            ? mergedClients.filter(client => client.orderCount > 0)
-            : mergedClients;
+            ? clients.filter(client => client.orders > 0)
+            : clients;
 
         content = (
             <div style={{width: '100%'}}>
@@ -168,7 +140,7 @@ const ClientsList = () => {
                         </div>
                         <div className="checkbox-wrapper">
                             <input type="checkbox" name="orderCount" id="orderCount" defaultChecked={false} 
-                                onChange={e => handleSetCols("orderCount", e.target.checked)} />
+                                onChange={e => handleSetCols("orders", e.target.checked)} />
                             <label htmlFor="orderCount">Order Count</label>
                         </div>
                         <div className="checkbox-wrapper">
@@ -184,7 +156,7 @@ const ClientsList = () => {
                             checked={showOnlyOrdered}
                             onChange={handleToggleOrdered}
                         />
-                        <label htmlFor="showOnlyOrdered">Show only clients with orders</label>
+                        <label htmlFor="showOnlyOrdered">Our accounts</label>
                     </div>
                     <div className="ag-theme-quartz" style={{width:"100%",height:"75vh",marginBottom:"56px"}} >
                         <AgGridReact

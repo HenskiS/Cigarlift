@@ -26,6 +26,10 @@ const orderSchema = new Schema({
     isTestOrder: {
         type: Boolean,
         default: false
+    },
+    invoiceNum: {
+        type: Number,
+        default: -1
     }
 });
 
