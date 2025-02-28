@@ -90,7 +90,17 @@ const createNewOrder = async (req, res) => {
     
     let invoiceNum;
     try {
-        invoiceNum = isTestOrder ? -1 : client.orders + 1;
+        if (isTestOrder) {
+            invoiceNum = -1;
+        } else {
+            // Find the order with the highest invoice number
+            const lastOrder = await Order.findOne({ isTestOrder: false })
+                .sort({ invoiceNum: -1 })
+                .limit(1);
+                
+            // If there are no previous orders, start with 1, otherwise increment the last invoice number
+            invoiceNum = lastOrder ? lastOrder.invoiceNum + 1 : 1;
+        }
     } catch (error) {
         console.error('Error generating invoice number:', error.message);
         invoiceNum = -1;
