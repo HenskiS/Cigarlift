@@ -48,9 +48,9 @@ function Order({ orderId='' }) {
         <div className="toPDF">
             <div className="order-header">
                 <div className="seller-header">
+                    <p>Cigarlift Delivery</p>
                     <p>Cigarlift.com</p>
-                    <p>(949) 796-2644</p>
-                    <p>(949) 796-2980</p>
+                    <p>(562) 228-5096</p>
                 </div>
                 <div className="order-client-header">
                     {data.invoiceNum && <p>Invoice No. {data.isTestOrder ? "TEST" : data.invoiceNum}</p>}
