@@ -1,4 +1,4 @@
-import { useGetClientByIdQuery, useUpdateNotesMutation } from './clientsApiSlice'
+import { useGetClientByIdQuery, useUpdateNotesMutation, useDeleteClientMutation } from './clientsApiSlice'
 import PulseLoader from 'react-spinners/PulseLoader'
 import useTitle from '../../hooks/useTitle'
 import './Client.css'
@@ -36,6 +36,9 @@ const Client = ({ cid, close }) => {
     const [updateNotes] = useUpdateNotesMutation()
     const [notes, setNotes] = useState("")
     const [noteHistory, setNoteHistory] = useState(false)
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+    
+    const [deleteClient, { isLoading: isDeleting }] = useDeleteClientMutation()
 
     const { data: client, 
         isLoading, 
@@ -58,6 +61,22 @@ const Client = ({ cid, close }) => {
 
         console.log(client)
 
+        const handleDeleteClient = async () => {
+            if (window.confirm(`Are you sure you want to delete ${client.dba}? This action cannot be undone.`)) {
+                try {
+                    await deleteClient({ id: client._id }).unwrap()
+                    // Navigate back after successful deletion
+                    if (close) {
+                        close() // If opened as modal/popup
+                    } else {
+                        navigate('/drive') // If opened as separate page
+                    }
+                } catch (error) {
+                    console.error('Failed to delete client:', error)
+                    alert('Failed to delete client. Please try again.')
+                }
+            }
+        }
         const handleDirections = () => {
             window.open("https://www.google.com/maps/dir/?api=1&destination="+encodeURI(`${client.address} ${client.city} ${client.state}`))
         };
@@ -88,8 +107,21 @@ const Client = ({ cid, close }) => {
                 <div className="client-button-header">
                     <button className="client-button" 
                         onClick={close ? handleButtonClose : handleNavigateToDrive}>
-                            <ArrowBackIosIcon /> Back</button>
-                    <button className="client-button" onClick={handleButtonEdit}>{isClientEdit? "Cancel":"Edit"}</button>
+                            <ArrowBackIosIcon /> Back
+                    </button>
+                    <button className="client-button" onClick={handleButtonEdit}>
+                        {isClientEdit? "Cancel":"Edit"}
+                    </button>
+                    {isAdmin && (
+                        <button 
+                            className="client-button delete-button" 
+                            onClick={handleDeleteClient}
+                            disabled={isDeleting}
+                            style={{backgroundColor: '#dc3545', color: 'white'}}
+                        >
+                            {isDeleting ? 'Deleting...' : 'Delete'}
+                        </button>
+                    )}
                 </div>
                 {isClientEdit? <EditClientForm client={client} close={handleButtonEdit} /> : 
                 <div hidden={isClientEdit} className='client'>

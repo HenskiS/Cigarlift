@@ -162,3 +162,16 @@
 .image-container {
     width: 100%;
 }
+.delete-button {
+    background-color: #dc3545 !important;
+    color: white !important;
+}
+
+.delete-button:hover {
+    background-color: #c82333 !important;
+}
+
+.delete-button:disabled {
+    background-color: #6c757d !important;
+    cursor: not-allowed;
+}

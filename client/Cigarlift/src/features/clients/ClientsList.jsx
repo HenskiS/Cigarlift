@@ -106,7 +106,7 @@ const ClientsList = () => {
         }
 
         const filteredClients = showOnlyOrdered
-            ? clients.filter(client => client.orders > 0)
+            ? clients.filter(client => client.orders > 0 || client.isManuallyAdded)
             : clients;
 
         content = (

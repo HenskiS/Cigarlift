@@ -8,7 +8,7 @@ const bcrypt = require('bcrypt')
 // @access Private
 const getAllClients = async (req, res) => {
     // Get all clients from MongoDB
-    const clients = await Client.find().select('dba taxpayer address city orders').lean()
+    const clients = await Client.find().select('dba taxpayer address city orders isManuallyAdded').lean()
 
     // If no clients 
     if (!clients?.length) {
@@ -73,6 +73,7 @@ const createNewClient = async (req, res) => {
     clientObject.notes = notes
     clientObject.isVisited = isVisited
     clientObject.images = images
+    clientObject.isManuallyAdded = true
 
     // Create and store new client 
     const client = await Client.create(clientObject)

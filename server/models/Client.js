@@ -31,7 +31,8 @@ const clientSchema = new Schema({
         licenseImage: String,
         humidorImage: String,
     },
-    orders: Number
+    orders: Number,
+    isManuallyAdded: Boolean
 });
 
 module.exports = mongoose.model('Client', clientSchema);
