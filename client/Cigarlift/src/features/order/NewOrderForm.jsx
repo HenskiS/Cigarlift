@@ -105,9 +105,9 @@ function NewOrderForm() {
             <h1>New Order</h1>
             <div className="order-header">
                 <div className="seller-header">
-                    <p>Cigarlift.com</p>
-                    <p>(949) 796-2644</p>
-                    <p>(949) 796-2980</p>
+                    <p>Cigarliftdelivery.com</p>
+                    <p>Info@cigarliftdelivery.com</p>
+                    <p>(562) 228-5096</p>
                 </div>
                 <div className="order-client-header">
                     {client.dba? 

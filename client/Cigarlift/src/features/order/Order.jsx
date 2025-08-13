@@ -2,7 +2,8 @@ import PulseLoader from 'react-spinners/PulseLoader'
 import { useGetOrderByIdQuery } from "./ordersApiSlice"
 import { useNavigate, useParams } from "react-router-dom"
 import useTitle from "../../hooks/useTitle"
-import logo from "../../assets/cigarlift-logo-white.png"
+//import logo from "../../assets/cigarlift-logo-white.png"
+import logo from "../../assets/logo.png"
 
 function Order({ orderId='' }) {
     useTitle('Cigarlift: Order')
@@ -43,13 +44,14 @@ function Order({ orderId='' }) {
                 </button>
             </div>
             <div className="order-pdf-header">
-                <img src={logo} alt="logo" className="order-logo" />
+                <img src={logo} alt="logo" className="order-logo logo" />
             </div>
         <div className="toPDF">
             <div className="order-header">
                 <div className="seller-header">
                     <p>Cigarlift Delivery</p>
-                    <p>Cigarlift.com</p>
+                    <p>Cigarliftdelivery.com</p>
+                    <p>Info@cigarliftdelivery.com</p>
                     <p>(562) 228-5096</p>
                 </div>
                 <div className="order-client-header">

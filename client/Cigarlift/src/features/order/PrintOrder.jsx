@@ -2,7 +2,8 @@ import PulseLoader from 'react-spinners/PulseLoader'
 import { useGetPrintOrderByIdQuery } from "./ordersApiSlice"
 import { useParams } from "react-router-dom"
 import useTitle from "../../hooks/useTitle"
-import logo from "../../assets/cigarlift-logo-white.png"
+//import logo from "../../assets/cigarlift-logo-white.png"
+import logo from "../../assets/logo.png"
 
 
 function PrintOrder() {
@@ -32,9 +33,9 @@ function PrintOrder() {
         <div className="toPDF">
             <div className="order-header">
                 <div className="seller-header">
-                    <p>Cigarlift.com</p>
-                    <p>(949) 796-2644</p>
-                    <p>(949) 796-2980</p>
+                    <p>Cigarliftdelivery.com</p>
+                    <p>Info@cigarliftdelivery.com</p>
+                    <p>(562) 228-5096</p>
                 </div>
                 <div className="order-client-header">
                     {data.invoiceNum && <p>Invoice No. {data.isTestOrder ? "TEST" : data.invoiceNum}</p>}

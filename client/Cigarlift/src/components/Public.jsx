@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
-import img1 from '../assets/cigarlift-logo-white.png'
+//import img1 from '../assets/cigarlift-logo-white.png'
+import img1 from '../assets/logo.png'
 
 const Public = () => {
     const content = (
@@ -14,7 +15,7 @@ const Public = () => {
                     {/*Cigarlift<br />
                     555 Foo Drive<br />
                     Foo City, CA 12345<br />*/}
-                    <a href="tel:+19497962644">(949) 796-2644</a>
+                    <a href="tel:+15622285096">(562) 228-5096</a>
                 </address>
                 <br />
             </main>
