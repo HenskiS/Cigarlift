@@ -15,7 +15,7 @@ const config = {
     port: 587,
     secure: false,
     auth: {
-        user: "cigarliftapp@gmail.com",
+        user: "noreply@cigarlift.work",
         pass: process.env.EMAIL_PASS
     }
 }
@@ -41,7 +41,7 @@ const sendApptEmail = async (appt) => {
     if (appt.notes) text = text + `\nNotes: ${appt.notes}`
     const data = 
     {
-        "from": "Cigarlift <cigarliftapp@gmail.com>",
+        "from": "Cigarlift <noreply@cigarlift.work>",
         "to": cc[0],
         "cc": cc.slice(1),
         "subject": `Appointment added, ${appt.client.dba}`,
@@ -64,7 +64,7 @@ const sendEmail = async (order) => {
 
     const data = 
     {
-        "from": "Cigarlift <cigarliftapp@gmail.com>",
+        "from": "Cigarlift <noreply@cigarlift.work>",
         "to": cc[0],
         "cc": cc.slice(1),
         "subject": `Order for ${order.client.dba}`,
