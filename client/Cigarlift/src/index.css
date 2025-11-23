@@ -594,6 +594,9 @@ th, td {
   background-color: rgb(248, 248, 248);
   color: black;
 }
+.cigarlist-table-row > td {
+  padding: 0px;
+}
 @media print {
   .no-print { display: none !important; }
 }

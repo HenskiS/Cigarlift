@@ -77,7 +77,7 @@ function Order({ orderId='' }) {
                 </thead>
                 <tbody>
                     {data.cigars?.map(cigar => (
-                        <tr key={cigar._id}>
+                        <tr key={cigar._id} className='cigarlist-table-row'>
                         <td>{cigar.name}</td>
                         <td>{cigar.blend}</td>
                         <td>{cigar.size}</td>

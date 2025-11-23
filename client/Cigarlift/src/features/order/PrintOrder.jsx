@@ -55,7 +55,7 @@ function PrintOrder() {
             <div><hr /></div>
             <table className="cigarlist-table">
                 <thead>
-                    <tr>
+                    <tr className='cigarlist-table-row'>
                         <td>Name</td><td>Blend</td><td>Size</td><td>Price</td><td>Qty</td>
                     </tr>
                 </thead>
