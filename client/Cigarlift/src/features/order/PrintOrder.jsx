@@ -55,13 +55,13 @@ function PrintOrder() {
             <div><hr /></div>
             <table className="cigarlist-table">
                 <thead>
-                    <tr className='cigarlist-table-row'>
+                    <tr>
                         <td>Name</td><td>Blend</td><td>Size</td><td>Price</td><td>Qty</td>
                     </tr>
                 </thead>
                 <tbody>
                     {data.cigars?.map(cigar => (
-                        <tr key={cigar._id}>
+                        <tr key={cigar._id} className='cigarlist-table-row'>
                         <td>{cigar.name}</td>
                         <td>{cigar.blend}</td>
                         <td>{cigar.size}</td>
