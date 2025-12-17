@@ -117,6 +117,19 @@ export const clientsApiSlice = apiSlice.injectEndpoints({
                 { type: 'ClientImage', id: formData.get('file').name }
             ]
         }),
+        deleteClientImage: builder.mutation({
+            query: (imageName) => ({
+                url: `/images/${imageName}`,
+                method: 'DELETE'
+            }),
+            async onQueryStarted(queryArg) {
+                console.log('Deleting image:', queryArg);
+            },
+            invalidatesTags: (result, error, imageName) => [
+                'Client',
+                { type: 'ClientImage', id: imageName }
+            ]
+        }),
     }),
 })
 
@@ -130,6 +143,7 @@ export const {
     useDeleteClientMutation,
     useGetClientImageQuery,
     useUploadClientImageMutation,
+    useDeleteClientImageMutation,
 } = clientsApiSlice
 
 // returns the query result object

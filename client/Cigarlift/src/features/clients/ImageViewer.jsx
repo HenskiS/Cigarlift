@@ -7,18 +7,21 @@ import {
   IconButton,
   Box,
 } from '@mui/material';
-import { 
+import {
   ZoomIn as ZoomInIcon,
-  Close as CloseIcon 
+  Close as CloseIcon,
+  Delete as DeleteIcon
 } from '@mui/icons-material';
 import ImageUpload from './ImageUpload';
 
-const ImageViewer = ({ 
-  imageData, 
+const ImageViewer = ({
+  imageData,
   type,
   onUpload,
   isUploading,
-  uploadError
+  uploadError,
+  onDelete,
+  isDeleting
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [scale, setScale] = useState(1);
@@ -99,6 +102,15 @@ const ImageViewer = ({
               type={type}
               variant="compact"
             />
+            <IconButton
+              onClick={onDelete}
+              size="small"
+              disabled={isDeleting}
+              sx={{ color: 'error.main' }}
+              title="Delete image"
+            >
+              <DeleteIcon />
+            </IconButton>
             <IconButton onClick={handleZoom} size="small">
               <ZoomInIcon />
             </IconButton>
