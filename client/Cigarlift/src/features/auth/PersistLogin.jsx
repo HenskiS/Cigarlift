@@ -63,6 +63,10 @@ const PersistLogin = () => {
         console.log('token and uninit')
         console.log(isUninitialized)
         content = <Outlet />
+    } else {
+        // Fallback for any unhandled state - show loading or redirect to login
+        console.log('unhandled state, showing loader')
+        content = <PulseLoader color={"#FFF"} />
     }
 
     return content
