@@ -149,8 +149,23 @@ router.patch("/", async (req, res) => {
     
 });
 
-router.delete("/", async (req, res) => {
-    
+router.delete("/:imageName", async (req, res) => {
+    const imageName = req.params.imageName;
+    const imagePath = path.join(__dirname, '../images', imageName);
+
+    try {
+        if (fs.existsSync(imagePath)) {
+            await fs.promises.unlink(imagePath);
+            console.log('Image deleted:', imagePath);
+            res.json({ message: 'Image deleted successfully', imageName });
+        } else {
+            console.log('Image not found for deletion:', imagePath);
+            res.status(404).json({ message: 'Image not found' });
+        }
+    } catch (error) {
+        console.error('Error deleting image:', error);
+        res.status(500).json({ message: 'Error deleting image' });
+    }
 });
 
 module.exports = router;
